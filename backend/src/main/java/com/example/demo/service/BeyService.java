@@ -27,7 +27,11 @@ public class BeyService {
         return beyRepository.getBeyByTypeID(id);
     }
 
-    public List<BeyBlade> getBeyByChar(String character){
-        return beyRepository.getBeyByChar(character);
+    public BeyBlade getBeyByID(long id) {
+        return beyRepository.getBeyById(id);
     }
+
+//    public List<BeyBlade> getBeyByChar(String character){
+//        return beyRepository.getBeyByChar(character);
+//    }
 }

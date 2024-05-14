@@ -93,7 +93,7 @@
             </div>
           </div>
         </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4">
+        <div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/spin')">
           <div class="item-wrapper">
             <div class="card-box align-left">
               <div class="img-wrapper mt-4 mb-3">
@@ -481,7 +481,9 @@
     goto(link){
       window.open('https://beyblade.fandom.com/wiki/' + link);
   },
-  
+  go(link){
+      window.location.href = link;
+  },
   
   
   }

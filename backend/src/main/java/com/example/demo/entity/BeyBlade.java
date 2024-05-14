@@ -23,9 +23,6 @@ public class BeyBlade {
     @Column(name = "images")
     public String images;
 
-    @Column(name = "character")
-    public String character;
-
     @ManyToOne
     @JoinColumn(name = "type")
     public TypeBey type;
@@ -47,6 +44,8 @@ public class BeyBlade {
     @Column(name = "tiLeNeDon")
     public byte tiLeNeDon;
 
+    @Column(name = "crit")
+    public byte crit;
     
 
 }

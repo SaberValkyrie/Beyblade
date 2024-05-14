@@ -9,7 +9,19 @@ export class GameService {
         return response.data.data;
   }
 
+  async getType() {
+    const response = await axios.get(`${baseURL}/game/getAllTypes`);
+    return response;
+}
 
+async getBeyByType(type) {
+    const response = await axios.get(`${baseURL}/game/getBey/${type}`);
+    return response;
+}
+async getBeyByID(id) {
+    const response = await axios.get(`${baseURL}/game/get/${id}`);
+    return response;
+}
 
    spin(token) {
     const response =  axios.post(`${baseURL}/game/spin/${token}`);

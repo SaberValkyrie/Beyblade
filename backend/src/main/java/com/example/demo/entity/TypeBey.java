@@ -15,7 +15,7 @@ public class TypeBey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public long id;
+    public byte id;
 
     @Column(name = "name")
     public String name;
