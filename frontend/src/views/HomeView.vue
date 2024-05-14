@@ -97,11 +97,11 @@
           <div class="item-wrapper">
             <div class="card-box align-left">
               <div class="img-wrapper mt-4 mb-3">
-                <img src="@/assets/images/photo-1557684387-08927d28c72a.jpeg" data-slide-to="2" data-bs-slide-to="2" alt="">
+                <img src="https://ih1.redbubble.net/image.693422754.2998/st,small,507x507-pad,600x600,f8f8f8.u6.jpg" data-slide-to="2" data-bs-slide-to="2" alt="">
               </div>
               <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Trò Chơi</strong>
-                <p class="card-text mbr-fonts-style display-7">Giá cả hợp lý, chất lượng sản phẩm đỉnh cao!</p>
+                <strong>Thử Thách Boss</strong>
+                <p class="card-text mbr-fonts-style display-7">Đánh bại Bey của Boss để có cơ hội nhận được những phần thưởng hấp dẫn</p>
   
               </h5>
             </div>

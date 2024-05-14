@@ -16,7 +16,7 @@ import Vue3Toast, { toast } from 'vue3-toastify';
 
 const options = {
     position: 'top-center',
-    timeout: 2000,
+    timeout: 1000,
     closeOnClick: true,
     pauseOnFocusLoss: true,
     pauseOnHover: true,

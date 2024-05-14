@@ -35,7 +35,7 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
         Account accountToken = userService.getAccountByUser(userFromToken.username);
-        short time = 5000;
+        short time = 2000;
         short dongia = 1000;
         long timeleft = (time - (System.currentTimeMillis() - st))/1000;
         if (!Util.canDoWithTime(st,time)){
@@ -57,25 +57,15 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
         Account accountToken = userService.getAccountByUser(userFromToken.username);
-//        short time = 15000;
         short dongia = 1000;
-//        long timeleft = (time - (System.currentTimeMillis() - st))/1000;
-//        if (!Util.canDoWithTime(st,time)){
-//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
-//        }
-//        st = System.currentTimeMillis();
-//        if (accountToken.coint < dongia) {
-//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ tiền,vui lòng nạp thêm để tiếp tục", null);
-//        }
-
-
-        if (Util.isTrue(90,100)){
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Chúc bạn may măn lần sau!", null);
-        }
-
 
         accountToken.coint -= dongia;
         userService.saveAccount(accountToken);
+
+        if (Util.isTrue(90,100)){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Chúc bạn may mắn lần sau!", null);
+        }
+
 
         return Util.checkStatusRes(HttpStatus.OK, "Chúc Mừng Bạn Đã Trúng Prize", userFromToken);
     }

@@ -3,15 +3,20 @@
   <div class="lucky-wheel">
     <div class="wheel-container">
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
-        <img src="https://static.wikia.nocookie.net/beyblade/images/1/10/VV.B.V.png" class="wheel-image">
+        <img :src="img" class="wheel-image">
       </div>
       <div class="effect" v-if="showEffect">
         <img src="https://i.gifer.com/origin/4a/4a0225d3bbd093b282a33c369a368730_w200.gif" class="effect-image">
       </div>
+ 
+  
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
-        <img src="https://static.wikia.nocookie.net/beyblade/images/3/39/BBDB-Guilty_Longinus_Karma_Metal_Destroy-2_%28Low_Mode%29.png" class="wheel-image">
+        <img :src="imgBoss" class="wheel-image">
 
       </div>
+
+  
+
     </div>
     <button @click="spinWheel" :disabled="spinning">Quay</button>
   </div>
@@ -29,16 +34,13 @@ import 'vue3-toastify/dist/index.css';
   import moment from 'moment';
 
 export default {
+  components: {
+  'app-header': Header,
+  'app-footer': Footer,
+  },
   data() {
     return {
-      items: ['Prize 1', 
-      'Prize 2',
-      'Prize 3',   'Prize 3',   'Prize 3', 
-        'Prize 3',   'Prize 3',   'Prize 3',
-           'Prize 3',   'Prize 3',   'Prize 3',
-              'Prize 3', 
-       'Prize 4', 
-       'Prize 5'], // Danh sách các phần thưởng
+      items: ['1', '2'], // Danh sách các phần thưởng
       spinning: false, // Trạng thái đang quay
       showEffect: false, // Biến kiểm soát hiển thị của hình ảnh effect
       rotationCount: 0, // Số lần đã quay
@@ -46,11 +48,12 @@ export default {
       spinDuration: 0.5, // Thời gian quay (giây) cho mỗi vòng
       token : localStorage.getItem('token'),
       gameService: new GameService(),
+      img: 'https://m.media-amazon.com/images/I/71WgKP-cPSL._AC_UF1000,1000_QL80_DpWeblab_.jpg',
+      imgBoss:'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg',
 
     };
   },
   created(){
-    this.spinWheel()
     this.stop()
  },
   methods: {
@@ -89,7 +92,6 @@ stop() {
   const finalRotation = this.items.length - 0 - 1;
   document.documentElement.style.setProperty('--final-rotation', finalRotation);
 },
-
 
     stopSpin(index) {
   this.spinning = false; // Đặt lại spinning thành false khi quay kết thúc
@@ -151,14 +153,24 @@ stop() {
   width: 100%; /* Kích thước hình ảnh */
   height: auto; /* Kích thước hình ảnh tự điều chỉnh theo tỉ lệ */
 }
+.effect1 {
+  position: fixed;
+  z-index: 1;
+}
+
+.effect1-image {
+  height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
+}
 
 .effect {
   position: absolute;
-  z-index: 1; /* Đảm bảo hiển thị trên cùng */
+
+  z-index: 3; /* Đảm bảo hiển thị trên cùng */
 }
 
 .effect-image {
   width: 100%; /* Kích thước hình ảnh effect */
+  zoom: 120%;
   height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
 }
 
@@ -206,7 +218,7 @@ button:disabled {
   align-items: center;
   overflow: hidden;
   transition: transform var(--spin-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
-  margin: 0 0px; /* Khoảng cách giữa hai vòng quay */
+  margin: 0 -1px; /* Khoảng cách giữa hai vòng quay */
 }
 
 .wheel img {
