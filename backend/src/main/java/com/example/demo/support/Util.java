@@ -77,9 +77,9 @@ public class Util {
         if (power >= 1000000000) {
             return num.format((double) power / 1000000000) + " Tỷ";
         } else if (power >= 1000000) {
-            return num.format((double) power / 1000000) + " Tr";
+            return num.format((double) power / 1000000) + "Tr";
         } else if (power >= 1000) {
-            return num.format((double) power / 1000) + " k";
+            return num.format((double) power / 1000) + "K";
         } else {
             return num.format(power);
         }

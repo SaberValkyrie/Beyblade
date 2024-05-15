@@ -26,4 +26,12 @@ public interface BeyRepository extends JpaRepository<Cart,Long> {
 
     @Query("select b from BeyBlade b where b.id =:id")
     BeyBlade getBeyById(long id);
+
+    @Query("select b from BeyBlade b where b.isBoss = true")
+    List<BeyBlade> getbosses();
+
+    @Query("select b from BeyBlade b")
+    List<BeyBlade> getAll();
+
+
 }

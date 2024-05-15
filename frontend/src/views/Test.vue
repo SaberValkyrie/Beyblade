@@ -14,12 +14,17 @@
   <body>
 
     <div class="lucky-wheel" v-if="buoc == 0">
+
+      
     <div class="select">
+      
     <img v-if="!selectedBey.images" src ="https://i.pinimg.com/236x/4b/d2/3a/4bd23affc771182ef9569c87eeb2c1bd.jpg">
 
     <button v-if="buoc == 0 && !selectedBey.images" @click="select()">Chọn Bey</button>
     
 </div>
+
+
 <button v-if="selectedBey.images" @click="select()">Đổi Bey khác</button>
 
     <div class="wheel-container" v-if="selectedBey.images">
@@ -33,8 +38,71 @@
         <img :src="imgBoss" class="wheel-image">
       </div>
 
+
+
+
+
+
     </div>
-    <button v-if="selectedBey.images" @click="spinWheel" :disabled="spinning">Chiến Đấu ({{ selectedBey.price }} BeyPoint)</button>
+
+
+
+
+
+    <button v-if="selectedBey.images && hpBoss > 0 && hpMe > 0" @click="spinWheel" :disabled="spinning">Chiến Đấu ({{ selectedBey.price }} BeyPoint)</button>
+    <div v-if=" selectedBey.images && hpMe == 0 && hpBoss == 0"  class="win">
+      <img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
+      <h2>Hòa</h2>
+    </div>
+
+    <div v-if="hpBoss <= 0 && hpMe > 0"  class="win">
+      <img src="https://media4.giphy.com/media/wX7I4l8SfFyG8rqhsd/giphy.gif?cid=6c09b9521m9ha26wetn2vncs3anyrie18dr0kfp6ey3j82jy&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">
+    <img  src="https://i.pinimg.com/originals/de/38/61/de386180de84192a63b1c6186bd6e46c.gif">
+    </div>
+    <div v-if=" selectedBey.images && hpMe <= 0 && hpBoss > 0"  class="win">
+      <img src="https://logos.flamingtext.com/Name-Logos/Lost-design-stripes-name.gif">
+    <img  src="https://media0.giphy.com/media/TpsuCxwsNH8gatbpR5/giphy.gif?cid=6c09b952zptbp0zl5yaxdybsdknmk4dlfwusw4t67j3hc5kb&ep=v1_gifs_search&rid=giphy.gif&ct=g">
+    </div>
+
+
+
+    <div class="col-sm-4 cc" v-if="selectedBey.images" >
+          <div class="concac">
+            <div class="card-body1">
+                <h5 class="d-flex align-items-center mb-3">Chỉ Số Bản Thân</h5>
+                <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                    <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p>Sức Bền:{{ convert(hpMe > 0 ? hpMe : 0) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                    <div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (hpMe / selectedBey.hp * 100) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="concac">
+            <div class="card-body1">
+                <h5 class="d-flex align-items-center mb-3">Chỉ Số Boss</h5>
+                <p>Tấn Công : {{ convert(Boss.dame) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                    <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (Boss.dame / 10000) * ((8 - Boss.bey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p>Sức Bền:{{ convert(hpBoss > 0 ? hpBoss : 0) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                    <div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (hpBoss / Boss.hp * 100) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
 
   </div>
   <div class="lucky-wheel">
@@ -141,8 +209,6 @@
                   <div class="progress mb-3" style="height: 5px">
     <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
-
-
 									<p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
 									<div class="progress mb-3" style="height: 5px">
 										<div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
@@ -208,7 +274,7 @@ export default {
       spinDuration: 0.5, // Thời gian quay (giây) cho mỗi vòng
       token : localStorage.getItem('token'),
       gameService: new GameService(),
-      imgBoss: 'https://m.media-amazon.com/images/I/71WgKP-cPSL._AC_UF1000,1000_QL80_DpWeblab_.jpg',
+      imgBoss: "",
       img:'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg',
       eff:'https://i.gifer.com/origin/4a/4a0225d3bbd093b282a33c369a368730_w200.gif',
       types:[],
@@ -216,17 +282,21 @@ export default {
       selectedType:{},
       listBeyType:[],
       selectedBey:{},
+      Boss:{},
+      hpBoss:0,
+      hpMe:0,
+      dameTru: 0,
     };
   },
   created(){
     this.getType()
-
+    this.getBoss()
     this.stop()
+
  },
   methods: {
     convert(power) {
     const formatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
-
     if (power >= 1e9) {
         return formatter.format(power / 1e9) + ' Tỷ';
     } else if (power >= 1e6) {
@@ -240,11 +310,23 @@ export default {
     setBey(id){
       this.gameService.getBeyByID(id).then(res => {
         this.selectedBey = res.data.data ;
+        this.hpMe = this.selectedBey.hp;
+        this.hpBoss = this.Boss.hp;
+  
+
   }).catch(error => {
       toast.warning(error.response.data.message)
    });
     },
-
+    getBoss(){
+      this.gameService.getBosss().then(res => {
+        this.Boss = res.data.data ;
+        this.imgBoss = this.Boss.bey.images
+        this.hpBoss = this.Boss.hp;
+  }).catch(error => {
+      toast.warning(error.response.data.message)
+   });
+    },
 
     setTypeBey(type){
       this.buoc = 2;
@@ -270,11 +352,12 @@ export default {
 
     accept(){
       this.cancel()
+      toast('Chọn Bey Thành Công')
     },
 
   spinWheel() {
   if (!this.spinning) {
-    this.gameService.checkCoint(this.token).then(res => {
+    this.gameService.checkCoint(this.token,this.selectedBey.id).then(res => {
       this.spinning = true; // Chỉ đặt spinning thành true khi bắt đầu quay thực sự
     this.showEffect = true; // Hiển thị hình ảnh effect khi bắt đầu quay
     this.rotateWheel(); // Bắt đầu quay vòng quay
@@ -308,12 +391,32 @@ stop() {
   const finalRotation = this.items.length - index - 1;
   document.documentElement.style.setProperty('--final-rotation', finalRotation);
 
-  this.gameService.spin(this.token).then(res => {
+  const boss = {
+    boss:this.Boss,
+    me:this.selectedBey
+  };
+  this.gameService.spin(this.token,boss).then(res => {
+    this.dameTru = res.data.data;
+    this.hpBoss -= this.dameTru;
     toast.success(res.data.message)
   }) .catch(error => {
       toast.warning(error.response.data.message)
    });
+
+   this.pst(boss)
 },
+
+pst(boss){
+  this.gameService.pst(boss).then(res => {
+    this.dameTru = res.data.data;
+    this.hpMe -= this.dameTru;
+    toast.success(res.data.message)
+  }).catch(error => {
+      toast.warning(error.response.data.message)
+   });
+},
+
+
 
 getType(){
   this.gameService.getType().then(res => {
@@ -600,7 +703,17 @@ section#team {
     --bs-text-opacity: 1;
     color: #5e0000 !important;
 }
-
+.card-body1 {
+    flex: 1 1 auto;
+    padding: 1rem 1rem;
+    border: 1px solid #a79273;
+    border-radius: 12%;
+    padding: 24px;
+    margin-top: 2rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    /* margin-bottom: -30px; */
+}
 .row {
     zoom: 140%;
     --bs-gutter-x: 1.5rem;
@@ -612,6 +725,15 @@ section#team {
     margin-left: calc(-.5* var(--bs-gutter-x));
 }
 
+.inc {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+                margin-bottom: 30px; /* Khoảng cách giữa các cột */
+
+    }
+
+
 @media (min-width: 992px)
   .col-lg-3 {
     flex: 0 0 auto;
@@ -621,4 +743,12 @@ section#team {
     zoom: 200%;
 }
 
+    
+ 
+.concac {
+    display: inline-flex;
+}
+.win{
+  display: inline-flex;
+}
 </style>

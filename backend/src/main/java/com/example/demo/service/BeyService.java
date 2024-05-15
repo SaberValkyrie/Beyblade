@@ -31,6 +31,14 @@ public class BeyService {
         return beyRepository.getBeyById(id);
     }
 
+    public List<BeyBlade> getBoss() {
+        return beyRepository.getbosses();
+    }
+
+    public List<BeyBlade> findAll() {
+        return beyRepository.getAll();
+    }
+
 //    public List<BeyBlade> getBeyByChar(String character){
 //        return beyRepository.getBeyByChar(character);
 //    }

@@ -30,8 +30,6 @@ public class BeyBlade {
     @Column(name = "price")
     public int price;
 
-
-
     @Column(name = "isBoss")
     public boolean isBoss;
 

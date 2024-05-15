@@ -4,10 +4,19 @@ import 'vue3-toastify/dist/index.css';
 import { baseWeb,baseURL } from '@/router/index';
 
 export class GameService {
-    async checkCoint(token) {
-        const response = await axios.get(`${baseURL}/game/spin/${token}`);
+    async checkCoint(token, bey) {
+        const response = await axios.get(`${baseURL}/game/spin/${token}/${bey}`,);
         return response.data.data;
-  }
+    }
+    
+  spin(token,boss) {
+    const response =  axios.post(`${baseURL}/game/spin/${token}`,boss);
+    return response;
+}
+pst(boss) {
+    const response =  axios.post(`${baseURL}/game/attack`,boss);
+    return response;
+}
 
   async getType() {
     const response = await axios.get(`${baseURL}/game/getAllTypes`);
@@ -22,10 +31,10 @@ async getBeyByID(id) {
     const response = await axios.get(`${baseURL}/game/get/${id}`);
     return response;
 }
-
-   spin(token) {
-    const response =  axios.post(`${baseURL}/game/spin/${token}`);
+async getBosss() {
+    const response = await axios.get(`${baseURL}/game/getBosses`);
     return response;
 }
+
 
 }
