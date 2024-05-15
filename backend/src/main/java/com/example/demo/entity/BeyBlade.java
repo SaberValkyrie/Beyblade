@@ -46,6 +46,9 @@ public class BeyBlade {
 
     @Column(name = "crit")
     public byte crit;
-    
+
+
+    @Column(name = "season")
+    public byte season;
 
 }

@@ -13,11 +13,14 @@
   </head>
   <body>
 
-{{ selectedBey.name }}
-    <div class="lucky-wheel" v-if="!isSelect">
+    <div class="lucky-wheel" v-if="buoc == 0">
     <div class="select">
-  <button @click="select(true)">{{selectedBey.images ? 'Đổi Bey khác' : 'Chọn Bey'}} </button>
+    <img v-if="!selectedBey.images" src ="https://i.pinimg.com/236x/4b/d2/3a/4bd23affc771182ef9569c87eeb2c1bd.jpg">
+
+    <button v-if="buoc == 0 && !selectedBey.images" @click="select()">Chọn Bey</button>
+    
 </div>
+<button v-if="selectedBey.images" @click="select()">Đổi Bey khác</button>
 
     <div class="wheel-container" v-if="selectedBey.images">
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
@@ -31,19 +34,22 @@
       </div>
 
     </div>
-    <button v-if="selectedBey.images" @click="spinWheel" :disabled="spinning">Chiến Đấu (1000 BeyPoint)</button>
+    <button v-if="selectedBey.images" @click="spinWheel" :disabled="spinning">Chiến Đấu ({{ selectedBey.price }} BeyPoint)</button>
 
   </div>
-  <div class="lucky-wheel" v-if="isSelect">
-  
-  
-  
-
-<section id="team" class="section bg-gray-100" v-if="!isDone">
+  <div class="lucky-wheel">
+<section id="team" class="section bg-gray-100" v-if="buoc == 1" >
   <h3 > Vui Lòng Chọn Hệ Quay Bạn Muốn </h3>
     <div class="container">
       
-        <div class="row section-heading justify-content-center text-center wow fadeInUp" data-wow-duration="0.3s" data-wow-delay="0.3s" style="visibility: visible; animation-duration: 0.3s; animation-delay: 0.3s; animation-name: fadeInUp;">
+        <div class="row section-heading justify-content-center text-center wow fadeInUp"
+         data-wow-duration="0.3s" data-wow-delay="0.3s"
+          style="visibility: visible;
+           animation-duration: 0.3s; 
+           animation-delay: 0.3s;
+            animation-name: fadeInUp;
+   
+            ">
  
           <div class="col-lg-8 col-xl-6">
 
@@ -61,7 +67,7 @@
                       </div>
                    
                       <div class="mx-2 mx-xl-3 shadow rounded-3 position-relative mt-n4 bg-white p-4 pt-6 mx-4 text-center hover-top--in">
-                        <h6 class="fw-700 dark-color mb-1">Chọn</h6><small>{{ type.name }}</small>
+                        <h6 class="fw-700 dark-color mb-1"></h6><small>{{ type.name }}</small>
                 </div>
                 </div>
             </div>
@@ -70,34 +76,108 @@
     </div>
 </section>
 
+<div v-if="buoc == 2">
 
 
-<div v-if="isDone" > 
+<div class="team-area sp">
+    <div class="container">
+       <div class="row">
+          <div class="col-sm-6 col-md-4 col-lg-3 single-team" v-for="bey in listBeyType">
+             <div class="inner">
+                <div class="team-img" @click="chonbey(bey.id)">
+                   <img class="demo" :src="bey.images" alt="Member Photo">
+                </div>
+                <div class="team-content">
+                   <h4>{{bey.name}}</h4>
+                
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
 
-  <select class="form-select"  
-        data-trigger="true" 
-        name="choices-single-filter-orderby"
-        id="choices-single-filter-orderby"
-        aria-label="Default select example"
-        @change="setBey($event.target.value)"
-        >
-  <option v-for="bey in listBeyType" :key="bey.id" :value="bey.id">{{ bey.name }}</option>
-</select>
 
 
 
 
-  <button @click="accept()">Xác Nhận</button>
 </div>
+
+<div v-if="buoc == 3" > 
+
   
 
 
-  <button v-else @click="cancel()">Hủy Chọn</button>
+ <div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="d-flex flex-column align-items-center text-center">
+								<img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+								<div class="mt-3">
+									<h4>{{ selectedBey.name }}</h4>
+									<p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
+									<p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
+								</div>
+                <button style="background-color: brown;" @click="setTypeBey(selectedType)">Hủy</button>
+
+                <button @click="accept()">OK</button>
+							</div>
+					
+						</div>
+					</div>
+				</div>
+        
+				<div class="col-lg-8">
+			
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
+									<p>Tấn Công : {{ convert(selectedBey.power) }}</p>
+                  <div class="progress mb-3" style="height: 5px">
+    <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+
+									<p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
+									<div class="progress mb-3" style="height: 5px">
+										<div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
+									</div>
+									<p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
+									<div class="progress mb-3" style="height: 5px">
+										<div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }"  aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+									</div>
+									<p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
+									<div class="progress mb-3" style="height: 5px">
+										<div class="progress-bar bg-warning" role="progressbar"  :style="{ width: (selectedBey.crit) + '%' }"  aria-valuemax="100"></div>
+									</div>
+									<p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
+									<div class="progress" style="height: 5px">
+										<div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+</div>
+
+  <button v-if="buoc == 1" @click="cancel()">Hủy Chọn</button>
 
   </div>
 
   </body>
-
 
 </template>
 
@@ -118,6 +198,7 @@ export default {
   'app-footer': Footer,
   },
   data() {
+
     return {
       items: ['1', '2'], // Danh sách các phần thưởng
       spinning: false, // Trạng thái đang quay
@@ -131,8 +212,7 @@ export default {
       img:'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg',
       eff:'https://i.gifer.com/origin/4a/4a0225d3bbd093b282a33c369a368730_w200.gif',
       types:[],
-      isSelect:false,
-      isDone:false,
+      buoc:0,
       selectedType:{},
       listBeyType:[],
       selectedBey:{},
@@ -144,7 +224,19 @@ export default {
     this.stop()
  },
   methods: {
+    convert(power) {
+    const formatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
 
+    if (power >= 1e9) {
+        return formatter.format(power / 1e9) + ' Tỷ';
+    } else if (power >= 1e6) {
+        return formatter.format(power / 1e6) + ' Tr';
+    } else if (power >= 1e3) {
+        return formatter.format(power / 1e3) + ' K';
+    } else {
+        return formatter.format(power);
+    }
+},
     setBey(id){
       this.gameService.getBeyByID(id).then(res => {
         this.selectedBey = res.data.data ;
@@ -155,25 +247,29 @@ export default {
 
 
     setTypeBey(type){
-      this.isDone = true;
+      this.buoc = 2;
       this.selectedType = type;
       this.getBeyByType()
     },
-    select(s){
-      this.isSelect = s;
+    select(){
+      this.buoc = 1;
     },
     done(){
       this.isSelect = false;
+      
     },
 
     cancel(){
-      this.isDone = false;
-      this.isSelect = false;
+      this.buoc = 0;
+    },
+
+    chonbey(id){
+      this.buoc = 3;
+      this.setBey(id)
     },
 
     accept(){
       this.cancel()
-
     },
 
   spinWheel() {
@@ -253,7 +349,6 @@ getBeyByType(){
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .wheel-container {
@@ -306,7 +401,7 @@ button {
   margin-top: 20px;
   padding: 10px 20px;
   font-size: 16px;
-  background-color: brown;
+  background-color: #138500;
   color: white;
   border: none;
   border-radius: 5px;
@@ -349,8 +444,9 @@ button:disabled {
 }
 
 .wheel img {
-  width: 100%; /* Kích thước hình ảnh */
-  height: auto; /* Kích thước hình ảnh tự điều chỉnh theo tỉ lệ */
+  width: 20rem;
+    zoom: 280%;
+    height: auto;
 }
 
 /* Tùy chỉnh grid layout khi quay */
@@ -374,8 +470,6 @@ button:disabled {
 
 
 body{
-    margin-top:20px;
-
   }
 .rounded-circle {
     border-radius: 50%!important;
@@ -471,6 +565,60 @@ img.rounded-circle.border.border-5.border-white.shadow {
 img.rounded-circle.border.border-5.border-white.shadow:hover {
     background-color: #0029e2;
     box-shadow: 0 1px 2px #999;
+}
+
+
+img.imgshow {
+    max-width: 218px;
+}
+
+
+img {
+    max-width: 11rem;
+    height: auto;
+}
+section#team {
+    zoom: 210%;
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid transparent;
+    border-radius: .25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+}
+.me-2 {
+    margin-right: .5rem!important;
+}
+.text-muted {
+    --bs-text-opacity: 1;
+    color: #5e0000 !important;
+}
+
+.row {
+    zoom: 140%;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    margin-right: calc(-.5* var(--bs-gutter-x));
+    margin-left: calc(-.5* var(--bs-gutter-x));
+}
+
+@media (min-width: 992px)
+  .col-lg-3 {
+    flex: 0 0 auto;
+    width: 10%;
+}
+.select {
+    zoom: 200%;
 }
 
 </style>
