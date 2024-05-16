@@ -126,7 +126,12 @@ public class GameController {
     }
 
 
-
+    @PostMapping("/attack")
+    public ResponseEntity<ResponseOpject> BossAttack(
+            @RequestBody BeyBattle battle
+    ) {
+        return attack(battle.me,battle.boss.bey,battle.boss.dame);
+    }
     @PostMapping("/spin/{token}")
     public ResponseEntity<ResponseOpject> spinNow(
             @PathVariable String token,
@@ -140,53 +145,37 @@ public class GameController {
         int dongia = battle.me.price;
         accountToken.coint -= dongia;
         userService.saveAccount(accountToken);
-        return attack(battle);
+
+        return attack(battle.boss.bey,battle.me,battle.me.power);
     }
-    public ResponseEntity<ResponseOpject> attack(BeyBattle battle){
-        int tlBurst = (5 - battle.boss.bey.type.id) / 2;
-        short tlne = battle.boss.bey.tiLeNeDon;
-        short tlCrit = battle.boss.bey.crit;
-        int dame = battle.me.power;
-        String text = "Bạn đã gây được " + Util.numberToMoney(dame) + " dame";
+
+    public ResponseEntity<ResponseOpject> attack(BeyBlade beyBlade,BeyBlade beyBlade1,int dame){
+        int tlBurst = (5 - beyBlade.type.id) / 2;
+        short tlne = beyBlade.tiLeNeDon;
+        short tlCrit = beyBlade.crit;
+
+        dame += (dame * Util.nextInt(-20,20) / 100) ;
+
+
+        String text = beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame";
         if (Util.isTrue(tlne,100)){
             dame = 0;
         }
+
         if (Util.isTrue(tlCrit,100)){
             dame *= Util.nextInt(2,4);
-            text = "Bạn đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
+            text =  beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
         }
         if (Util.isTrue(tlBurst,100)){
-            dame = (int) battle.boss.hp;
+            dame = (int) beyBlade.hp;
         }
-        return dame >= battle.boss.hp ? Util.checkStatusRes(HttpStatus.OK, "Đối Thủ Đã Bị Đánh Burst", dame)
-                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Đối thủ đã né được đòn của bạn bằng tỉ lệ "+ tlne + "%" , dame)
+        return dame >= beyBlade.hp ? Util.checkStatusRes(HttpStatus.OK,  beyBlade.name + " Đã Bị Đánh Burst", dame)
+                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  beyBlade.name + " đã né được đòn của " + beyBlade1.name + " bằng tỉ lệ "+ tlne + "%" , dame)
                 : Util.checkStatusRes(HttpStatus.OK,  text, dame));
     }
 
-    @PostMapping("/attack")
-    public ResponseEntity<ResponseOpject> BossAttack(
-            @RequestBody BeyBattle battle
-    ) {
-        int tlBurst = (5 - battle.boss.bey.type.id) / 2;
-        short tlne = battle.me.tiLeNeDon;
-        short tlCrit = battle.me.crit;
-        int dame = battle.boss.dame;
-        String text = "Đối thủ đã gây được " + Util.numberToMoney(dame) + " dame";
-        if (Util.isTrue(tlne,100)){
-            dame = 0;
-        }
-        if (Util.isTrue(tlCrit,100)){
-            dame *= Util.nextInt(2,4);
-            text = "Đối thủ đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
-        }
-        if (Util.isTrue(tlBurst,100)){
-            dame = (int) battle.me.hp;
-        }
-        return dame >= battle.me.hp ? Util.checkStatusRes(HttpStatus.OK, "Bạn đã bị đánh Burst", dame)
-                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã né được đòn của đối thủ bằng tỉ lệ "+ tlne + "%" , dame)
-                : Util.checkStatusRes(HttpStatus.OK,  text, dame));
 
-    }
+
 
     public void addPrize(){
     }

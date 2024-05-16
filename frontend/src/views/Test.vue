@@ -25,10 +25,10 @@
 </div>
 
 
-<button v-if="selectedBey.images" @click="select()">Đổi Bey khác</button>
 
     <div class="wheel-container" v-if="selectedBey.images">
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
+         
         <img :src="selectedBey.images" class="wheel-image">
       </div>
       <div class="effect" v-if="showEffect">
@@ -36,6 +36,7 @@
       </div>
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
         <img :src="imgBoss" class="wheel-image">
+     
       </div>
 
 
@@ -45,30 +46,45 @@
 
     </div>
 
+    
+ 
 
 
-
-
+  <div class="concac">
     <button v-if="selectedBey.images && hpBoss > 0 && hpMe > 0" @click="spinWheel" :disabled="spinning">Chiến Đấu ({{ selectedBey.price }} BeyPoint)</button>
-    <div v-if=" selectedBey.images && hpMe == 0 && hpBoss == 0"  class="win">
-      <img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
-      <h2>Hòa</h2>
-    </div>
+    <button style="margin-left: 2rem;background-color: brown;" v-if="selectedBey.images" @click="select()">{{ hpBoss <=0 || hpMe <= 0 ? 'Chơi Lại' : 'Đổi Bey khác' }}</button>
+  </div>
 
-    <div v-if="hpBoss <= 0 && hpMe > 0"  class="win">
-      <img src="https://media4.giphy.com/media/wX7I4l8SfFyG8rqhsd/giphy.gif?cid=6c09b9521m9ha26wetn2vncs3anyrie18dr0kfp6ey3j82jy&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">
-    <img  src="https://i.pinimg.com/originals/de/38/61/de386180de84192a63b1c6186bd6e46c.gif">
-    </div>
-    <div v-if=" selectedBey.images && hpMe <= 0 && hpBoss > 0"  class="win">
-      <img src="https://logos.flamingtext.com/Name-Logos/Lost-design-stripes-name.gif">
-    <img  src="https://media0.giphy.com/media/TpsuCxwsNH8gatbpR5/giphy.gif?cid=6c09b952zptbp0zl5yaxdybsdknmk4dlfwusw4t67j3hc5kb&ep=v1_gifs_search&rid=giphy.gif&ct=g">
-    </div>
+   
 
+    <!--   -->
+    <div class="col-sm-4 cc" 
+    v-if="selectedBey.images">
 
-
-    <div class="col-sm-4 cc" v-if="selectedBey.images" >
+    
           <div class="concac">
-            <div class="card-body1">
+ 
+
+            <div v-if="hpBoss <=0 || hpMe <= 0" class="card-body1" style="left: 0;">              
+<div v-if="hpMe <= 0 && hpBoss <= 0"  class="win">
+<img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
+<h2>Hòa</h2>
+</div>
+<div v-if=" hpBoss <= 0 && hpMe > 0"  class="win">
+<img src="https://media4.giphy.com/media/wX7I4l8SfFyG8rqhsd/giphy.gif?cid=6c09b9521m9ha26wetn2vncs3anyrie18dr0kfp6ey3j82jy&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">
+<img  src="https://i.pinimg.com/originals/de/38/61/de386180de84192a63b1c6186bd6e46c.gif">
+</div>
+<div v-if="hpMe <= 0 && hpBoss > 0"  class="win">
+<img src="https://logos.flamingtext.com/Name-Logos/Lost-design-stripes-name.gif">
+<img  src="https://media0.giphy.com/media/TpsuCxwsNH8gatbpR5/giphy.gif?cid=6c09b952zptbp0zl5yaxdybsdknmk4dlfwusw4t67j3hc5kb&ep=v1_gifs_search&rid=giphy.gif&ct=g">
+</div>
+</div>
+            <div v-else class="card-body1" style="left: 0;">
+
+
+
+         
+
                 <h5 class="d-flex align-items-center mb-3">Chỉ Số Bản Thân</h5>
                 <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
                 <div class="progress mb-3" style="height: 5px">
@@ -81,7 +97,25 @@
             </div>
         </div>
         <div class="concac">
-            <div class="card-body1">
+          <div v-if="hpBoss <=0 || hpMe <= 0" class="card-body1" style="right: 0;">
+
+
+
+              
+<div v-if="hpMe <= 0 && hpBoss <= 0"  class="win">
+<img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
+<h2>Hòa</h2>
+</div>
+<div v-if=" hpBoss > 0 && hpMe <= 0"  class="win">
+  <img  src="https://media1.giphy.com/media/TjSyvpaPRvsaxToCEH/giphy.gif?cid=6c09b952ny20t60n62yl368irqs1e0rv5wwitbfttvb71vwc&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">
+<img src="https://media4.giphy.com/media/wX7I4l8SfFyG8rqhsd/giphy.gif?cid=6c09b9521m9ha26wetn2vncs3anyrie18dr0kfp6ey3j82jy&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">
+</div>
+<div v-if="hpMe > 0 && hpBoss <= 0"  class="win">
+<img src="https://logos.flamingtext.com/Name-Logos/Lost-design-stripes-name.gif">
+<img  src="https://media0.giphy.com/media/TpsuCxwsNH8gatbpR5/giphy.gif?cid=6c09b952zptbp0zl5yaxdybsdknmk4dlfwusw4t67j3hc5kb&ep=v1_gifs_search&rid=giphy.gif&ct=g">
+</div>
+</div>
+            <div v-else class="card-body1" style="right:0;">
                 <h5 class="d-flex align-items-center mb-3">Chỉ Số Boss</h5>
                 <p>Tấn Công : {{ convert(Boss.dame) }}</p>
                 <div class="progress mb-3" style="height: 5px">
@@ -93,7 +127,18 @@
                 </div>
             </div>
         </div>
+    
+       
     </div>
+
+    <div class="concac" v-if="selectedBey.images">
+  <div class="" style="left: 50%;">
+    <a class="text-success blinking-text">{{ textMe }}</a>
+    <br>
+    <a class="text-danger blinking-text">{{ textBoss }}</a>
+  </div>
+</div>
+
 
 
 
@@ -124,7 +169,7 @@
             </div>
 
         </div>
-        <div class="row">
+        <div class="rows">
             <div class="col-lg-3 col-sm-6 my-3 wow fadeInUp" 
             data-wow-duration="0.3s" data-wow-delay="0.3s"
              style="visibility: visible; animation-duration: 0.3s;
@@ -189,9 +234,11 @@
 									<p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
 									<p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
 								</div>
-                <button style="background-color: brown;" @click="setTypeBey(selectedType)">Hủy</button>
+              <div style="display:flex;zoom: 70%" >
+                <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
 
-                <button @click="accept()">OK</button>
+<button @click="accept()">OK</button>
+              </div>
 							</div>
 					
 						</div>
@@ -286,6 +333,10 @@ export default {
       hpBoss:0,
       hpMe:0,
       dameTru: 0,
+      dameTru1:0,
+      textMe:'Dữ liệu cú đánh của tôi',
+      textBoss:'Dữ liệu cú đánh của đối phương',
+      end:false,
     };
   },
   created(){
@@ -345,6 +396,9 @@ export default {
       this.buoc = 0;
     },
 
+ 
+  
+
     chonbey(id){
       this.buoc = 3;
       this.setBey(id)
@@ -353,6 +407,7 @@ export default {
     accept(){
       this.cancel()
       toast('Chọn Bey Thành Công')
+      this.end = false;
     },
 
   spinWheel() {
@@ -396,24 +451,38 @@ stop() {
     me:this.selectedBey
   };
   this.gameService.spin(this.token,boss).then(res => {
-    this.dameTru = res.data.data;
-    this.hpBoss -= this.dameTru;
-    toast.success(res.data.message)
+    this.dameTru1 = res.data.data;
+    this.hpBoss -= this.dameTru1;
+    this.textMe = res.data.message;
   }) .catch(error => {
-      toast.warning(error.response.data.message)
+        this.textMe = error.response.data.message;
    });
 
-   this.pst(boss)
+   if(this.hpBoss > 0){
+    this.pst(boss)
+   }
 },
 
+
+
+
 pst(boss){
+  if(this.hpBoss <= 0){
+    return
+  }
   this.gameService.pst(boss).then(res => {
     this.dameTru = res.data.data;
     this.hpMe -= this.dameTru;
-    toast.success(res.data.message)
+        this.textBoss = res.data.message;
+        
+   if(this.hpBoss <=0 || this.hpMe <= 0){
+      this.end = true;
+    }
   }).catch(error => {
-      toast.warning(error.response.data.message)
+    this.textBoss = error.response.data.message;
    });
+
+
 },
 
 
@@ -435,6 +504,7 @@ getBeyByType(){
 }
 
   },
+
   computed: {
     wheelStyle() {
       return {
@@ -703,19 +773,9 @@ section#team {
     --bs-text-opacity: 1;
     color: #5e0000 !important;
 }
-.card-body1 {
-    flex: 1 1 auto;
-    padding: 1rem 1rem;
-    border: 1px solid #a79273;
-    border-radius: 12%;
-    padding: 24px;
-    margin-top: 2rem;
-    margin-right: 1rem;
-    margin-left: 1rem;
-    /* margin-bottom: -30px; */
-}
+
 .row {
-    zoom: 140%;
+  zoom:140%;
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     display: flex;
@@ -724,7 +784,13 @@ section#team {
     margin-right: calc(-.5* var(--bs-gutter-x));
     margin-left: calc(-.5* var(--bs-gutter-x));
 }
+.rows {
 
+  margin: -2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+}
 .inc {
         display: flex;
         flex-wrap: wrap;
@@ -748,7 +814,67 @@ section#team {
 .concac {
     display: inline-flex;
 }
-.win{
-  display: inline-flex;
+.win {
+  display: inline-grid;
 }
+
+.card-body1 {
+    position: fixed;
+    flex: 1 1 auto;
+    border: 1px solid #a79273;
+    background-color: white;
+    border-radius: 12%;
+    padding: 24px;
+    margin-top: 2rem;
+    /* height: 42%; */
+    top: 50%;
+    margin-right: 1rem;
+    margin-left: 1rem;
+
+}
+
+
+/* Khi kích thước màn hình là 768px hoặc nhỏ hơn */
+@media (max-width: 768px) {
+  .wheel-container,
+  .lucky-wheel 
+ {
+    /* Đặt kích thước tự động hoặc mong muốn khi thu nhỏ */
+    zoom: 80%;
+    /* Thêm bất kỳ thuộc tính CSS khác tùy thuộc vào yêu cầu thiết kế của bạn */
+  }
+  .row{
+    zoom :10%;
+  }
+
+}
+
+/* Khi kích thước màn hình là 576px hoặc nhỏ hơn */
+@media (max-width: 576px) {
+  .wheel-container,
+  .lucky-wheel {
+    /* Đặt kích thước tự động hoặc mong muốn khi thu nhỏ */
+    zoom: 90%;
+    /* Thêm bất kỳ thuộc tính CSS khác tùy thuộc vào yêu cầu thiết kế của bạn */
+  }
+  .row{
+    zoom :20%;
+  }
+
+}
+@keyframes blink {
+  80% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.blinking-text {
+  animation: blink 1s infinite;
+}
+
 </style>
