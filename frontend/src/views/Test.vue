@@ -28,14 +28,13 @@
 
     <div class="wheel-container" v-if="selectedBey.images">
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
-         
         <img :src="selectedBey.images" class="wheel-image">
       </div>
       <div class="effect" v-if="showEffect">
         <img :src="eff" class="effect-image">
       </div>
       <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
-        <img :src="imgBoss" class="wheel-image">
+        <img :src="Boss.bey.images" class="wheel-image">
      
       </div>
 
@@ -50,9 +49,11 @@
  
 
 
-  <div class="concac">
-    <button v-if="selectedBey.images && hpBoss > 0 && hpMe > 0" @click="spinWheel" :disabled="spinning">Đánh 1 cú ({{ selectedBey.price }} BeyPoint)</button>
-    <button style="margin-left: 2rem;background-color: brown;" v-if="selectedBey.images" @click="select()">{{ hpBoss <=0 || hpMe <= 0 ? 'Chơi Lại' : 'Đổi Bey khác' }}</button>
+  <div class="concac" v-if="selectedBey.images">
+    <button v-if="hpBoss > 0 && hpMe > 0 && (pointMe < 3 || pointBoss < 3)" @click="spinWheel" :disabled="spinning">Đánh 1 cú ({{ selectedBey.price }} BeyPoint)</button>
+    <button style="background-color:#a3a3a3" v-if="!concac && (hpBoss <= 0 || hpMe <= 0)" >Vui Lòng Chờ</button>
+    <button v-if="concac" @click="resetGame" :disabled="spinning">Chơi Lại</button>
+    <button style="margin-left: 2rem;background-color: brown;" v-if="round == 1 && !end" @click="select()">Đổi Bey khác</button>
   </div>
     <!--   -->
     <div class="col-sm-4 cc" 
@@ -62,7 +63,7 @@
           <div class="concac">
  
 
-            <div v-if="hpBoss <=0 || hpMe <= 0" class="card-body1" style="left: 0;">              
+            <div v-if="(pointMe >= 3 || pointBoss >= 3)" class="card-body1" style="left: 0;">              
 <div v-if="hpMe <= 0 && hpBoss <= 0"  class="win">
 <img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
 <h2>Hòa</h2>
@@ -77,11 +78,6 @@
 </div>
 </div>
             <div v-else class="card-body1" style="left: 0;">
-
-
-
-         
-
                 <h5 class="d-flex align-items-center mb-3">Chỉ Số Bản Thân</h5>
                 <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
                 <div class="progress mb-3" style="height: 5px">
@@ -94,11 +90,7 @@
             </div>
         </div>
         <div class="concac">
-          <div v-if="hpBoss <=0 || hpMe <= 0" class="card-body1" style="right: 0;">
-
-
-
-              
+          <div v-if="(pointMe >= 3 || pointBoss >= 3)" class="card-body1" style="right: 0;">
 <div v-if="hpMe <= 0 && hpBoss <= 0"  class="win">
 <img src="https://media3.giphy.com/media/aWYqyxiLMZg5dVV81Y/giphy.gif">
 <h2>Hòa</h2>
@@ -133,7 +125,11 @@
     <a class="text-success blinking-text">{{ textMe }}</a>
     <br>
     <a class="text-danger blinking-text">{{ textBoss }}</a>
+    <br>
+    <a style="font-weight:bold" class="text-success blinking-text">Tỉ Số: {{ pointMe }} | {{ pointBoss }}</a>
+
   </div>
+
 </div>
 
 
@@ -173,7 +169,7 @@
               animation-delay: 0.3s; animation-name: fadeInUp;" v-for="type in types">
                 <div class="hover-top-in text-center">
                     <div class="overflow-hidden z-index-1 position-relative px-5" @click="setTypeBey(type)">
-                      <img class="rounded-circle border border-5 border-white shadow" :src="type.images" title="" alt="">
+                      <img class="rounded-circle border border-5 border-white shadow" :src="type.images">
                       </div>
                    
                       <div class="mx-2 mx-xl-3 shadow rounded-3 position-relative mt-n4 bg-white p-4 pt-6 mx-4 text-center hover-top--in">
@@ -314,8 +310,8 @@ export default {
       spinning: false, // Trạng thái đang quay
       showEffect: false, // Biến kiểm soát hiển thị của hình ảnh effect
       rotationCount: 0, // Số lần đã quay
-      maxRotationCount: 10, // Số lần quay tối đa
-      spinDuration: 0.5, // Thời gian quay (giây) cho mỗi vòng
+      maxRotationCount: 3, // Số lần quay tối đa
+      spinDuration: 0.3, // Thời gian quay (giây) cho mỗi vòng
       token : localStorage.getItem('token'),
       gameService: new GameService(),
       imgBoss: "",
@@ -336,6 +332,10 @@ export default {
       textMe:'Dữ liệu cú đánh của tôi',
       textBoss:'Dữ liệu cú đánh của đối phương',
       end:false,
+      concac:false,
+      pointMe:0,
+      pointBoss:0,
+      round:1,
     };
   },
   created(){
@@ -395,8 +395,20 @@ export default {
       this.buoc = 0;
     },
 
- 
-  
+    resetGame(){
+      this.reset()
+      this.round = 1;
+      this.pointBoss = 0;
+      this.pointMe = 0;
+      this.concac = false;
+      this.end = false;
+  },
+
+  reset(){
+  this.hpBoss = this.Boss.hp;
+  this.hpMe = this.selectedBey.hp;
+
+  },
 
     chonbey(id){
       this.buoc = 3;
@@ -407,6 +419,15 @@ export default {
       this.cancel()
       toast('Chọn Bey Thành Công')
       this.end = false;
+      this.round = 1;
+      this.pointMe = 0;
+      this.pointBoss = 0;
+    },
+
+    end(){
+      this.cancel()
+      this.end = false;
+      this.round = 1;
     },
 
   spinWheel() {
@@ -416,7 +437,9 @@ export default {
     this.showEffect = true; // Hiển thị hình ảnh effect khi bắt đầu quay
     this.rotateWheel(); // Bắt đầu quay vòng quay
     })  .catch(error => {
-      toast.error(error.response.data.message)
+      if (error.response.status != 501) {
+        toast.error(error.response.data.message)
+      }
    });
   }
 },
@@ -445,16 +468,15 @@ stop() {
   const finalRotation = this.items.length - index - 1;
   document.documentElement.style.setProperty('--final-rotation', finalRotation);
 
+  this.end = true;
   const boss = {
     boss:this.Boss,
     me:this.selectedBey
   };
   this.gameService.spin(this.token,boss).then(res => { // mình gây lên boss
     this.dameTru1 = res.data.data.dame;
- 
     this.hpBoss -= this.dameTru1;
-
-
+    this.checkBoss()
     this.textMe = res.data.message;
   }) .catch(error => {
         this.textMe = error.response.data.message;
@@ -464,36 +486,54 @@ stop() {
 
    });
     this.pst(boss)
+
+   
 },
 
 
 
 
 pst(boss){
-  if(this.hpBoss <= 0){
-    return
-  }
+ 
   this.gameService.pst(boss).then(res => {
     this.dameTru = res.data.data.dame;
-
-
-
-       
     this.hpMe -= this.dameTru;
-      
+
+    this.checkMe()
    this.textBoss = res.data.message;
+
   }).catch(error => {
     this.hut = error.response.data.data.hutdame;
-
     this.hpMe += this.hut;
-
     this.textBoss = error.response.data.message;
    });
-
-
 },
 
+checkMe(){
+  if(this.hpMe <= 0){
+      this.pointBoss += 1;
+      if (this.pointBoss < 3) {
+        setTimeout(() => {
+        this.reset()
+      				}, 3000);
+      }else{
+        this.concac = true;
+      }
+    }
+},
 
+checkBoss(){
+    if(this.hpBoss <= 0){
+      this.pointMe += 1;
+      if (this.pointMe < 3) {
+        setTimeout(() => {
+        this.reset()
+      				}, 3000);
+      }else{
+        this.concac = true;
+      }
+    }
+},
 
 getType(){
   this.gameService.getType().then(res => {

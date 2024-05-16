@@ -117,7 +117,7 @@ public class GameController {
         int dongia = beyBlade.price;
         long timeleft = (time - (System.currentTimeMillis() - st))/1000;
         if (!Util.canDoWithTime(st,time)){
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
+            return Util.checkStatusRes(HttpStatus.NOT_IMPLEMENTED, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
         }
         st = System.currentTimeMillis();
         if (accountToken.coint < dongia) {
@@ -170,10 +170,7 @@ public class GameController {
             text =  beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
         }
 
-        if (Util.isTrue(tlBurst,100)){
-            dame =  beyBlade.hp;
-            isBurst = true;
-        }
+
 
         boolean hut = false;
         BeyDame beyDame = new BeyDame();
@@ -192,11 +189,15 @@ public class GameController {
             hut = true;
         }
 
+        if (Util.isTrue(tlBurst,100)){
+            dame =  beyBlade.hp * 1000;
+            isBurst = true;
+        }
 
 
 
         return hut && dame > 0? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  hutt, beyDame)
-        : (isBurst ? Util.checkStatusRes(HttpStatus.OK,  beyBlade1.name + " đã chấn động gây ra " + Util.numberToMoney(dame) + " dame", beyDame)
+        : (isBurst ? Util.checkStatusRes(HttpStatus.OK,  beyBlade1.name + " đã đánh burst " + beyBlade.name, beyDame)
                 : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  beyBlade.name + " đã né được đòn của " + beyBlade1.name + " bằng tỉ lệ "+ tlne + "%" , beyDame)
                 : Util.checkStatusRes(HttpStatus.OK,  text, beyDame)));
     }
