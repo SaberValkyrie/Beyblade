@@ -49,4 +49,7 @@ public class BeyBlade {
     @Column(name = "season")
     public byte season;
 
+    @Column(name = "spin")
+    public String spin;
+
 }

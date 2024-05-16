@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BeyBattle;
 import com.example.demo.dto.BeyBoss;
+import com.example.demo.dto.BeyDame;
 import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.*;
 import com.example.demo.service.BeyService;
@@ -149,7 +150,7 @@ public class GameController {
         return attack(battle.boss.bey,battle.me,battle.me.power);
     }
 
-    public ResponseEntity<ResponseOpject> attack(BeyBlade beyBlade,BeyBlade beyBlade1,int dame){
+    public ResponseEntity<ResponseOpject> attack(BeyBlade beyBlade,BeyBlade beyBlade1,long dame){
         int tlBurst = (5 - beyBlade.type.id) / 2;
         short tlne = beyBlade.tiLeNeDon;
         short tlCrit = beyBlade.crit;
@@ -157,24 +158,101 @@ public class GameController {
         dame += (dame * Util.nextInt(-20,20) / 100) ;
 
 
+
+        boolean isBurst = false;
+
         String text = beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame";
         if (Util.isTrue(tlne,100)){
             dame = 0;
         }
-
         if (Util.isTrue(tlCrit,100)){
             dame *= Util.nextInt(2,4);
             text =  beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
         }
+
         if (Util.isTrue(tlBurst,100)){
-            dame = (int) beyBlade.hp;
+            dame =  beyBlade.hp;
+            isBurst = true;
         }
-        return dame >= beyBlade.hp ? Util.checkStatusRes(HttpStatus.OK,  beyBlade.name + " Đã Bị Đánh Burst", dame)
-                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  beyBlade.name + " đã né được đòn của " + beyBlade1.name + " bằng tỉ lệ "+ tlne + "%" , dame)
-                : Util.checkStatusRes(HttpStatus.OK,  text, dame));
+
+        boolean hut = false;
+        BeyDame beyDame = new BeyDame();
+        beyDame.dame = dame;
+        beyDame.hutdame = 0;
+        long damehut = dame / 4;
+
+
+        String hutt = beyBlade.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ ngược chiều";
+        if (isNguocChieu(beyBlade, beyBlade1) && Util.isTrue(50,100)){
+            if (isRubber(beyBlade)){
+                damehut = dame;
+                hutt = beyBlade.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ cao su";
+            }
+            beyDame.hutdame = damehut;
+            hut = true;
+        }
+
+
+
+
+        return hut && dame > 0? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  hutt, beyDame)
+        : (isBurst ? Util.checkStatusRes(HttpStatus.OK,  beyBlade1.name + " đã chấn động gây ra " + Util.numberToMoney(dame) + " dame", beyDame)
+                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  beyBlade.name + " đã né được đòn của " + beyBlade1.name + " bằng tỉ lệ "+ tlne + "%" , beyDame)
+                : Util.checkStatusRes(HttpStatus.OK,  text, beyDame)));
     }
 
 
+private boolean isFafnir(BeyBlade beyBlade){
+        switch ((int) beyBlade.id){
+            case 79:
+            case 122:
+            case 139:
+            case 167:
+            case 185:
+                return true;
+            default:
+                return false;
+        }
+
+
+
+}
+
+    private boolean isRubber(BeyBlade beyBlade){
+        if (isFafnir(beyBlade)){
+            return true;
+        }
+        switch ((int) beyBlade.id){
+            case 100:
+            case 142:
+            case 188:
+            case 154:
+            case 163:
+            case 169:
+            case 177:
+            case 191:
+            case 193:
+            case 203:
+            case 187:
+            case 204:
+            case 205:
+            case 206:
+                return true;
+            default:
+                return false;
+        }
+
+
+
+    }
+
+
+    private boolean isNguocChieu(BeyBlade bey1,BeyBlade bey2){
+        if (!bey1.spin.equals(bey2.spin) && !bey1.spin.equals("LR") && !bey2.spin.equals("LR")){
+            return true;
+        }
+         return false;
+    }
 
 
     public void addPrize(){

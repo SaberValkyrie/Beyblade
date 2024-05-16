@@ -51,12 +51,9 @@
 
 
   <div class="concac">
-    <button v-if="selectedBey.images && hpBoss > 0 && hpMe > 0" @click="spinWheel" :disabled="spinning">Chiến Đấu ({{ selectedBey.price }} BeyPoint)</button>
+    <button v-if="selectedBey.images && hpBoss > 0 && hpMe > 0" @click="spinWheel" :disabled="spinning">Đánh 1 cú ({{ selectedBey.price }} BeyPoint)</button>
     <button style="margin-left: 2rem;background-color: brown;" v-if="selectedBey.images" @click="select()">{{ hpBoss <=0 || hpMe <= 0 ? 'Chơi Lại' : 'Đổi Bey khác' }}</button>
   </div>
-
-   
-
     <!--   -->
     <div class="col-sm-4 cc" 
     v-if="selectedBey.images">
@@ -334,6 +331,8 @@ export default {
       hpMe:0,
       dameTru: 0,
       dameTru1:0,
+       hut: 0,
+      hut1:0,
       textMe:'Dữ liệu cú đánh của tôi',
       textBoss:'Dữ liệu cú đánh của đối phương',
       end:false,
@@ -450,17 +449,21 @@ stop() {
     boss:this.Boss,
     me:this.selectedBey
   };
-  this.gameService.spin(this.token,boss).then(res => {
-    this.dameTru1 = res.data.data;
+  this.gameService.spin(this.token,boss).then(res => { // mình gây lên boss
+    this.dameTru1 = res.data.data.dame;
+ 
     this.hpBoss -= this.dameTru1;
+
+
     this.textMe = res.data.message;
   }) .catch(error => {
         this.textMe = error.response.data.message;
-   });
 
-   if(this.hpBoss > 0){
+        this.hut1 = error.response.data.data.hutdame;
+       this.hpBoss += this.hut1;
+
+   });
     this.pst(boss)
-   }
 },
 
 
@@ -471,14 +474,19 @@ pst(boss){
     return
   }
   this.gameService.pst(boss).then(res => {
-    this.dameTru = res.data.data;
+    this.dameTru = res.data.data.dame;
+
+
+
+       
     this.hpMe -= this.dameTru;
-        this.textBoss = res.data.message;
-        
-   if(this.hpBoss <=0 || this.hpMe <= 0){
-      this.end = true;
-    }
+      
+   this.textBoss = res.data.message;
   }).catch(error => {
+    this.hut = error.response.data.data.hutdame;
+
+    this.hpMe += this.hut;
+
     this.textBoss = error.response.data.message;
    });
 
