@@ -13,8 +13,14 @@ export class GameService {
     const response =  axios.post(`${baseURL}/game/spin/${token}`,boss);
     return response;
 }
+
 pst(boss) {
     const response =  axios.post(`${baseURL}/game/attack`,boss);
+    return response;
+}
+
+checkSpin(option) {
+    const response =  axios.post(`${baseURL}/game/spin/check`,option);
     return response;
 }
 

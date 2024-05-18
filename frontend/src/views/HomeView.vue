@@ -73,7 +73,7 @@
               </div>
               <h5 class="card-title mbr-fonts-style display-7">
                 <strong>Hộp quà bí ẩn</strong>
-                <p class="card-text mbr-fonts-style display-7">Chọn Hộp Quà Ngẫu Nhiên Có Tỉ Lệ Trúng Bey Chỉ Từ 1K </p>
+                <p class="card-text mbr-fonts-style display-7"> Hộp Quà Ngẫu Nhiên Có Tỉ Lệ Trúng Bey Chỉ Từ 1K </p>
   
               </h5>
             </div>
@@ -93,7 +93,7 @@
             </div>
           </div>
         </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/spin')">
+        <div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/game/Boss')">
           <div class="item-wrapper">
             <div class="card-box align-left">
               <div class="img-wrapper mt-4 mb-3">

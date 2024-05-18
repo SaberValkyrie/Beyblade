@@ -149,7 +149,11 @@ const routes = [
     name: 'test',
     component: () => import('../views/Test.vue')
   },
-
+  {
+    path: '/game/Boss',
+    name: 'game.boss',
+    component: () => import('../views/game/BattleBoss.vue')
+  },
 
   {
     path: '/header',

@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.BeyBattle;
-import com.example.demo.dto.BeyBoss;
-import com.example.demo.dto.BeyDame;
-import com.example.demo.dto.ResponseOpject;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.BeyService;
 import com.example.demo.service.TokenService;
@@ -14,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
@@ -149,60 +145,163 @@ public class GameController {
 
         return attack(battle.boss.bey,battle.me,battle.me.power);
     }
+public static int pb = 2_100_000_000;
+    public ResponseEntity<ResponseOpject> attack(BeyBlade beyOrther,BeyBlade beyChinh,long dame){
+        short tiLeNeDon = beyOrther.tiLeNeDon;
+        short tileCrit = beyChinh.crit;
 
-    public ResponseEntity<ResponseOpject> attack(BeyBlade beyBlade,BeyBlade beyBlade1,long dame){
-        int tlBurst = (5 - beyBlade.type.id) / 2;
-        short tlne = beyBlade.tiLeNeDon;
-        short tlCrit = beyBlade.crit;
+        BeyDame beyDame = new BeyDame();
+        beyDame.hutdame = 0;
+        beyDame.notung = false;
+        String txtBurst = beyChinh.name + " đã đánh burst " + beyOrther.name;
+
+        boolean isNe = false;
+        String stringNe = beyOrther.name + " đã né được đòn của " + beyChinh.name + " bằng tỉ lệ "+ tiLeNeDon + "%";
+        String text = beyChinh.name + " đã gây được " + Util.numberToMoney(dame) + " dame";
+        boolean hut = false;
+
 
         dame += (dame * Util.nextInt(-20,20) / 100) ;
 
 
+        if (Util.isTrue(tileCrit,100)){
 
-        boolean isBurst = false;
-
-        String text = beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame";
-        if (Util.isTrue(tlne,100)){
-            dame = 0;
-        }
-        if (Util.isTrue(tlCrit,100)){
             dame *= Util.nextInt(2,4);
-            text =  beyBlade1.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tlCrit +"%";
+            text =  beyChinh.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tileCrit +"%";
         }
 
-
-
-        boolean hut = false;
-        BeyDame beyDame = new BeyDame();
-        beyDame.dame = dame;
-        beyDame.hutdame = 0;
         long damehut = dame / 4;
-
-
-        String hutt = beyBlade.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ ngược chiều";
-        if (isNguocChieu(beyBlade, beyBlade1) && Util.isTrue(50,100)){
-            if (isRubber(beyBlade)){
-                damehut = dame;
-                hutt = beyBlade.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ cao su";
+        String hutt = beyOrther.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ ngược chiều";
+        if (isNguocChieu(beyOrther, beyChinh) && Util.isTrue(33,100)){
+            if (isRubber(beyOrther)){
+                damehut *= 2;
+                hutt = beyOrther.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ cao su";
             }
             beyDame.hutdame = damehut;
             hut = true;
         }
 
-        if (Util.isTrue(tlBurst,100)){
-            dame =  beyBlade.hp * 1000;
-            isBurst = true;
+
+        if (Util.isTrue(20,100)){
+            if (isBurstStopper(beyOrther) && Util.isTrue(70,100) || isLock(beyOrther) && Util.isTrue(90,100)){
+                dame = 2;
+                txtBurst = beyOrther.name + " đã chặn được cú Burst từ " + beyChinh.name;
+
+            }else{
+                dame = pb;
+                beyDame.notung = true;
+            }
+        }
+
+        if (Util.isTrue(tiLeNeDon,100)){
+            dame = 1;
+            isNe = true;
+        }
+        beyDame.name = beyChinh.name;
+        beyDame.dame = dame;
+
+
+        if (hut){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST,  hutt, beyDame);
+        }
+        if (beyDame.notung){
+            return  Util.checkStatusRes(HttpStatus.OK,  txtBurst, beyDame);
+        }
+        if (isNe){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST,  stringNe, beyDame);
+        }
+
+        return Util.checkStatusRes(HttpStatus.OK,  text, beyDame);
+
+    }
+
+    @PostMapping("/spin/check")
+    public ResponseEntity<ResponseOpject> checkout(
+            @RequestBody CheckOption option
+    ) {
+        CheckOption newOption = new CheckOption();
+        BeyBlade me = option.me;
+        BeyBoss boss = option.boss;
+        newOption.dameMe = option.dameMe;
+        newOption.dameBoss = option.dameBoss;
+        newOption.win = option.win;
+        newOption.pointBoss = option.pointBoss;
+        newOption.pointMe = option.pointMe;
+        newOption.me = option.me;
+        newOption.boss = option.boss;
+        byte tiso = 3;
+        String txt = "";
+        byte pointMe = 0;
+        byte pointBoss = 0;
+
+        if (boss.bey == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND,  "Không tìm thấy bey Boss", newOption);
+        }
+
+        if (option.dameMe.dame == pb){// me đánh boss burst
+            pointMe = 2;
+            txt = me.name + "Đã Đánh Burst " + boss.bey.name;
+        }else {
+            if (option.dameMe.dame >= boss.bey.hp) { // me đánh boss hết sta
+                pointMe = 1;
+                txt=boss.bey.name + "Đã Đánh Bại " + me.name;
+            }
         }
 
 
 
-        return hut && dame > 0? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  hutt, beyDame)
-        : (isBurst ? Util.checkStatusRes(HttpStatus.OK,  beyBlade1.name + " đã đánh burst " + beyBlade.name, beyDame)
-                : (dame <= 0 ? Util.checkStatusRes(HttpStatus.BAD_REQUEST,  beyBlade.name + " đã né được đòn của " + beyBlade1.name + " bằng tỉ lệ "+ tlne + "%" , beyDame)
-                : Util.checkStatusRes(HttpStatus.OK,  text, beyDame)));
+        if (option.dameBoss.dame == pb){// boss đánh me burst
+            pointBoss = 2;
+            txt = boss.bey.name + "Đã Đánh Burst " + me.name;
+        }else {
+            if (option.dameBoss.dame >= me.hp) {// boss đánh me hết sta
+                pointBoss = 1;
+                txt = boss.bey.name + "Đã Đánh Bại " + me.name;
+            }
+        }
+
+        newOption.pointMe = pointMe;
+        newOption.pointBoss = pointBoss;
+
+
+
+        return Util.checkStatusRes(HttpStatus.OK,  txt, newOption);
+
     }
 
 
+
+    private boolean isBurstStopper(BeyBlade beyBlade){
+        switch ((int) beyBlade.id){
+            case 128:
+            case 127:
+            case 129:
+            case 142:
+            case 172:
+            case 175:
+            case 186:
+            case 192:
+            case 191:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+
+
+
+    private boolean isLock(BeyBlade beyBlade){
+        switch ((int) beyBlade.id){
+            case 153:
+            case 157:
+                return true;
+            default:
+                return false;
+        }
+
+    }
 private boolean isFafnir(BeyBlade beyBlade){
         switch ((int) beyBlade.id){
             case 79:
