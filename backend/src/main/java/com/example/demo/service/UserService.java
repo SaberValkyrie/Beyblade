@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.*;
+import com.example.demo.repository.ItemsRepository;
 import com.example.demo.repository.product.MyVoucherRepository;
 import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.repository.user.*;
@@ -27,7 +28,8 @@ public class UserService {
 
     @Autowired
     private MyVoucherRepository myVoucherRepository;
-
+    @Autowired
+    private ItemsRepository itemsRepository;
     @Autowired
     private VoucherRepository voucherRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -134,5 +136,21 @@ public class UserService {
 
     public void saveAccount(Account account){
         accountRepository.save(account);
+    }
+
+    public ArrayList<Items> getItemsByUser(User userToken) {
+        return userRepository.getItemByUser(userToken);
+    }
+
+    public ArrayList<Items> getAllItems() {
+        return userRepository.getAllItems();
+    }
+
+    public void saveItem(Items itemEdit) {
+         itemsRepository.save(itemEdit);
+    }
+
+    public void deteleItem(Items items) {
+        itemsRepository.delete(items);
     }
 }

@@ -1,10 +1,10 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 
 @Entity
@@ -33,4 +33,7 @@ public class User {
 
     @Column(name = "ma_xac_nhan")
     public String code;
+
+
+
 }

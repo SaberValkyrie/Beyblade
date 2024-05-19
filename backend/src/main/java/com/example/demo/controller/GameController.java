@@ -6,11 +6,14 @@ import com.example.demo.service.BeyService;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import com.example.demo.support.Util;
+import com.google.gson.JsonElement;
+import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +43,67 @@ public class GameController {
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + " hệ",  list);
     }
 
+
+    @GetMapping("/getItemsBag/{token}")
+    public ResponseEntity<ResponseOpject> getItems(@PathVariable String token) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        Player player = new Player();
+        player.user = userToken.username;
+        player.avatar = userToken.avatar;
+        player.items = userService.getItemsByUser(userToken);
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +player.items.size() + " items",  player);
+    }
+    @PostMapping("/addItemsBag/{token}")
+    public ResponseEntity<ResponseOpject> addItem(@PathVariable String token,
+                                                  @RequestBody Items item) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        long cu = System.currentTimeMillis();
+        long st = 3 * 24 * 60 * 60 * 1000;
+
+        Items newItem = new Items();
+        newItem.user = userToken;
+        newItem.beyBlade = item.beyBlade;
+        newItem.create_time = new Timestamp(cu);
+        newItem.ngayhethan = new Timestamp(cu + st);
+
+        if (Util.isTrue(10,100)){
+            newItem.vinhvien = true;
+        }
+        newItem.selectedBey = false;
+
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +newItem + " ",  newItem);
+    }
+
+
+    @PutMapping("/setItem/{token}")
+    public ResponseEntity<ResponseOpject> setItem(@PathVariable String token,
+                                                  @RequestBody Items item) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        if (item == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Beyblade đã hết hạn",  item);
+        }
+        List<Items> items = userService.getItemsByUser(userToken);
+        for (Items edit : items){
+            if (edit.selectedBey){
+                edit.selectedBey = false;
+            }
+            if (item.equals(edit)){
+                item.selectedBey = true;
+            }
+            userService.saveItem(edit);
+            userService.saveItem(item);
+        }
+        return Util.checkStatusRes(HttpStatus.OK, "Chọn thành công " + item.beyBlade.name,  item);
+    }
 
     @GetMapping("/getBey/{type}")
     public ResponseEntity<ResponseOpject> getBey(@PathVariable byte type) {
@@ -98,10 +162,11 @@ public class GameController {
 
 
 
-    @GetMapping("/spin/{token}/{bey}")
+    @GetMapping("/spin/{token}/{bey}/{type}")
     public ResponseEntity<ResponseOpject> getSpin(
             @PathVariable String token,
-            @PathVariable long bey
+            @PathVariable long bey,
+            @PathVariable int type
     ) {
         User userFromToken = tokenService.getUserFromToken(token);
         if (userFromToken == null) {
@@ -110,15 +175,30 @@ public class GameController {
         BeyBlade beyBlade = service.getBeyByID(bey);
         Account accountToken = userService.getAccountByUser(userFromToken.username);
         short time = 500;
-        int dongia = beyBlade.price;
+        int dongia = beyBlade.price / 10;
+
+        switch (type){
+            case 0: //đấu boss
+                if (accountToken.coint < dongia) {
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
+                }
+                break;
+            case 1:// đấu cùng bạn bè
+                break;
+            case 2:// đấu tranh top
+                break;
+            case 3://đấu từng loại
+                break;
+        }
+
         long timeleft = (time - (System.currentTimeMillis() - st))/1000;
         if (!Util.canDoWithTime(st,time)){
             return Util.checkStatusRes(HttpStatus.NOT_IMPLEMENTED, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
         }
         st = System.currentTimeMillis();
-        if (accountToken.coint < dongia) {
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
-        }
+
+
+
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", userFromToken);
     }
 
@@ -139,7 +219,7 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
         Account accountToken = userService.getAccountByUser(userFromToken.username);
-        int dongia = battle.me.price;
+        int dongia = battle.me.price / 10;
         accountToken.coint -= dongia;
         userService.saveAccount(accountToken);
 
@@ -172,7 +252,7 @@ public static int pb = 2_100_000_000;
 
         long damehut = dame / 4;
         String hutt = beyOrther.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ ngược chiều";
-        if (isNguocChieu(beyOrther, beyChinh) && Util.isTrue(33,100)){
+        if (isNguocChieu(beyOrther, beyChinh) && Util.isTrue(50,100)){
             if (isRubber(beyOrther)){
                 damehut *= 2;
                 hutt = beyOrther.name + " vừa hấp thụ " + Util.numberToMoney(damehut)  + " sức mạnh nhờ cao su";
@@ -180,9 +260,7 @@ public static int pb = 2_100_000_000;
             beyDame.hutdame = damehut;
             hut = true;
         }
-
-
-        if (Util.isTrue(20,100)){
+        if (Util.isTrue(5,100)){
             if (isBurstStopper(beyOrther) && Util.isTrue(70,100) || isLock(beyOrther) && Util.isTrue(90,100)){
                 dame = 2;
                 txtBurst = beyOrther.name + " đã chặn được cú Burst từ " + beyChinh.name;

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 public class Util {
     private static final Random rand;
 
@@ -25,6 +28,25 @@ public class Util {
     public static int nextInt(int max) {
         return rand.nextInt(max);
     }
+
+    public static JsonElement convertStringToJson(String jsonString) {
+            JsonParser parser = new JsonParser();
+            try {
+                return parser.parse(jsonString);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+
+
     public static int getRandomArray( int[] names){
         Random random = new Random();
         int index = random.nextInt(names.length);

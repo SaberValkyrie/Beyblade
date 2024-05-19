@@ -4,8 +4,8 @@ import 'vue3-toastify/dist/index.css';
 import { baseWeb,baseURL } from '@/router/index';
 
 export class GameService {
-    async checkCoint(token, bey) {
-        const response = await axios.get(`${baseURL}/game/spin/${token}/${bey}`,);
+    async checkCoint(token, bey,type) {
+        const response = await axios.get(`${baseURL}/game/spin/${token}/${bey}/${type}`,);
         return response.data.data;
     }
     
@@ -28,7 +28,14 @@ checkSpin(option) {
     const response = await axios.get(`${baseURL}/game/getAllTypes`);
     return response;
 }
-
+async getItems(token) {
+    const response = await axios.get(`${baseURL}/game/getItemsBag/${token}`,);
+    return response;
+}
+setItem(token,item) {
+    const response =  axios.put(`${baseURL}/game/setItem/${token}`,item);
+    return response;
+}
 async getBeyByType(type) {
     const response = await axios.get(`${baseURL}/game/getBey/${type}`);
     return response;

@@ -24,14 +24,16 @@ CREATE TABLE IF NOT EXISTS `account` (
   `coint` double DEFAULT NULL,
   `role` tinyint(4) DEFAULT NULL,
   `vip_id` tinyint(4) DEFAULT NULL,
+  `items` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`account_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table beyblade.account: ~2 rows (approximately)
 DELETE FROM `account`;
-INSERT INTO `account` (`account_id`, `username`, `password`, `created_at`, `is_ban`, `coint`, `role`, `vip_id`) VALUES
-	(30, 'admin', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-13 08:53:14.000000', b'0', 100000, 0, NULL),
-	(31, 'admin1', '$2a$10$kIgBZoeNWvm7ilIE6m3AWOYy1BiOuNA4mSu/HTn/D2HH53kEhnEkC', '2024-05-13 15:06:32.000000', b'0', 9989940871, 0, NULL);
+INSERT INTO `account` (`account_id`, `username`, `password`, `created_at`, `is_ban`, `coint`, `role`, `vip_id`, `items`) VALUES
+	(30, 'admin', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-13 08:53:14.000000', b'0', 100000, 0, NULL, NULL),
+	(31, 'admin1', '$2a$10$kIgBZoeNWvm7ilIE6m3AWOYy1BiOuNA4mSu/HTn/D2HH53kEhnEkC', '2024-05-13 15:06:32.000000', b'0', 106843929, 0, NULL, NULL),
+	(32, 'haia', '$2a$10$S8bHvB4SSA7Q/dJFLIRQ8uIduuI4Fp63ykLWE03jhqBrInd/3mfFi', '2024-05-17 07:36:01.000000', b'0', 0, 0, NULL, NULL);
 
 -- Dumping structure for table beyblade.address_info
 CREATE TABLE IF NOT EXISTS `address_info` (
@@ -95,6 +97,26 @@ CREATE TABLE IF NOT EXISTS `images` (
 
 -- Dumping data for table beyblade.images: ~0 rows (approximately)
 DELETE FROM `images`;
+
+-- Dumping structure for table beyblade.items
+CREATE TABLE IF NOT EXISTS `items` (
+  `id` tinyint(4) NOT NULL DEFAULT 0,
+  `user` int(11) DEFAULT NULL,
+  `beyblade` int(11) DEFAULT NULL,
+  `hsd` timestamp NULL DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `FKc2mjb6l1khi50ypvtkoepg9p0` (`user`),
+  KEY `FK_items_list_bey` (`beyblade`),
+  CONSTRAINT `FK_items_list_bey` FOREIGN KEY (`beyblade`) REFERENCES `list_bey` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FKc2mjb6l1khi50ypvtkoepg9p0` FOREIGN KEY (`user`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table beyblade.items: ~2 rows (approximately)
+DELETE FROM `items`;
+INSERT INTO `items` (`id`, `user`, `beyblade`, `hsd`, `create_time`) VALUES
+	(1, 30, 185, '2024-05-19 02:02:10', '2024-05-19 09:02:12'),
+	(2, 30, 133, '2024-05-19 02:02:10', '2024-05-19 09:02:12');
 
 -- Dumping structure for table beyblade.list_bey
 CREATE TABLE IF NOT EXISTS `list_bey` (
@@ -227,7 +249,7 @@ INSERT INTO `list_bey` (`id`, `type`, `is_boss`, `price`, `name`, `images`, `pow
 	(180, 1, b'0', 13000, 'Dynamite Belial Nexus Venture-2', 'https://i.ebayimg.com/images/g/3-AAAOSwF7BhIwNN/s-l1200.webp', 50000, 400000, 25, 33, 6, 'R'),
 	(181, 3, b'0', 16200, 'Cyclone Ragnaruk Giga Never-6', 'https://down-vn.img.susercontent.com/file/dae3bbfa75ec4e2b447d47cec60e4c37', 12000, 750000, 20, 18, 6, 'R'),
 	(185, 3, b'0', 15000, ' Vanish Fafnir.Tp.Kc-3', 'https://down-vn.img.susercontent.com/file/4ff89aed2884157260a1884a9b3433a0', 50000, 500000, 30, 20, 6, 'L'),
-	(186, 2, b'0', 17000, 'Roar Bahamut Giga Moment-10 ', 'https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg', 50000, 850000, 20, 1, 6, 'L'),
+	(186, 2, b'0', 17000, 'Roar Bahamut Giga Moment-10 ', 'https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg', 20000, 850000, 80, 10, 6, 'L'),
 	(187, 1, b'0', 22000, 'Savior Valkyrie Shot-7', 'https://i.ebayimg.com/images/g/gT0AAOSwcPNg7774/s-l1200.jpg', 200000, 600000, 50, 50, 6, 'R'),
 	(188, 4, b'0', 19800, 'Astral Spriggan Over Quattro-0', 'https://images-na.ssl-images-amazon.com/images/I/71H8Fq2w5XS.jpg', 299000, 495000, 1, 22, 6, 'LR'),
 	(189, 1, b'1', 22000, 'Guilty Longinus Karma Metal Destroy-2', 'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg', 250000, 550000, 30, 70, 6, 'L'),
@@ -278,10 +300,20 @@ CREATE TABLE IF NOT EXISTS `message` (
   CONSTRAINT `FK24x7fsoxkncqylm3cg552wrddi4` FOREIGN KEY (`other`) REFERENCES `users` (`user_id`),
   CONSTRAINT `FK_message_users` FOREIGN KEY (`me`) REFERENCES `users` (`user_id`),
   CONSTRAINT `FKmx36oy0dnj6by9r7i49o2ln2w` FOREIGN KEY (`user_chat`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=296 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=305 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table beyblade.message: ~0 rows (approximately)
+-- Dumping data for table beyblade.message: ~8 rows (approximately)
 DELETE FROM `message`;
+INSERT INTO `message` (`message_id`, `me`, `other`, `text`, `time_chat`, `violate`, `status`, `user_chat`) VALUES
+	(296, NULL, NULL, 'a', '2024-05-17 07:34:47.000000', 0, b'0', NULL),
+	(297, NULL, NULL, 'âs', '2024-05-17 07:34:49.000000', 0, b'0', NULL),
+	(298, NULL, NULL, 'sáa', '2024-05-17 07:34:50.000000', 0, b'0', NULL),
+	(299, NULL, NULL, 's', '2024-05-17 07:34:50.000000', 0, b'0', NULL),
+	(300, NULL, NULL, 'a', '2024-05-17 07:34:50.000000', 0, b'0', NULL),
+	(301, NULL, NULL, 's', '2024-05-17 07:34:51.000000', 0, b'0', NULL),
+	(302, NULL, NULL, 'alo', '2024-05-17 07:35:16.000000', 0, b'0', NULL),
+	(303, NULL, NULL, 'nè', '2024-05-17 07:35:19.000000', 0, b'0', NULL),
+	(304, NULL, NULL, 'hai', '2024-05-17 07:36:19.000000', 0, b'0', NULL);
 
 -- Dumping structure for table beyblade.notify
 CREATE TABLE IF NOT EXISTS `notify` (
@@ -429,12 +461,14 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_1l8br3dq53yfan1deqeb246os` (`account_id`),
   CONSTRAINT `FKlcffqvs57obcjd6a6rt2m07ka` FOREIGN KEY (`account_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
--- Dumping data for table beyblade.token: ~0 rows (approximately)
+-- Dumping data for table beyblade.token: ~3 rows (approximately)
 DELETE FROM `token`;
 INSERT INTO `token` (`id`, `create_time`, `update_time`, `code`, `expiry`, `account_id`) VALUES
-	(140, '2024-05-13 15:06:32.000000', '2024-05-13 15:06:32.000000', '3bce3d30-2a0c-44a6-b493-c1d4ef4cfe44', '2024-05-14 15:06:32.000000', 30);
+	(140, '2024-05-13 15:06:32.000000', '2024-05-13 15:06:32.000000', '3bce3d30-2a0c-44a6-b493-c1d4ef4cfe44', '2024-05-14 15:06:32.000000', 30),
+	(141, '2024-05-17 07:35:05.000000', '2024-05-17 07:35:05.000000', 'dd07e07e-44e0-4422-a721-fb6ac699db8a', '2024-05-18 07:35:05.000000', 29),
+	(142, '2024-05-17 07:36:01.000000', '2024-05-17 07:36:01.000000', 'b945103f-b783-4cdf-9ff1-1e8ed56e57b1', '2024-05-18 07:36:01.000000', 31);
 
 -- Dumping structure for table beyblade.transactions
 CREATE TABLE IF NOT EXISTS `transactions` (
@@ -476,16 +510,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` datetime DEFAULT NULL,
   `rank` tinyint(4) DEFAULT 0,
   `ma_xac_nhan` varchar(255) DEFAULT NULL,
+  `items` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `FK_users_account` (`account_id`),
   CONSTRAINT `FK_users_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table beyblade.users: ~2 rows (approximately)
+-- Dumping data for table beyblade.users: ~3 rows (approximately)
 DELETE FROM `users`;
-INSERT INTO `users` (`user_id`, `username`, `account_id`, `avatar`, `created_at`, `rank`, `ma_xac_nhan`) VALUES
-	(29, 'admin', 30, '71a7fdb526584426b8bdfdc8e77100ef.jpg', '2024-05-13 08:53:14', 0, 'a9283319-a205-4bcc-be9c-3218f46ca5d8'),
-	(30, 'admin1', 31, 'user_avatar.png', '2024-05-13 15:06:32', 0, '4e6905dc-59db-4411-ad86-855846e1553c');
+INSERT INTO `users` (`user_id`, `username`, `account_id`, `avatar`, `created_at`, `rank`, `ma_xac_nhan`, `items`) VALUES
+	(29, 'admin', 30, '71a7fdb526584426b8bdfdc8e77100ef.jpg', '2024-05-13 08:53:14', 0, 'c4b7112c-185a-430c-9d1f-bb75bfdac0da', ''),
+	(30, 'admin1', 31, 'user_avatar.png', '2024-05-13 15:06:32', 0, '4e6905dc-59db-4411-ad86-855846e1553c', '{"bey":"Victory Valkyrie","ngayhethan":30}\r\n'),
+	(31, 'haia', 32, 'user_avatar.png', '2024-05-17 07:36:01', 0, '07d5746f-c152-420c-a7c1-afd39908d063', NULL);
 
 -- Dumping structure for table beyblade.users_info
 CREATE TABLE IF NOT EXISTS `users_info` (

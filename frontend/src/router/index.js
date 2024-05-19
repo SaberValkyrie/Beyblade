@@ -154,7 +154,31 @@ const routes = [
     name: 'game.boss',
     component: () => import('../views/game/BattleBoss.vue')
   },
-
+  {
+    path: '/game/friend',
+    name: 'game.friend',
+    component: () => import('../views/game/BattleFriend.vue')
+  },
+  {
+    path: '/myBag',
+    name: 'game.itemBag',
+    component: () => import('../views/game/Bag.vue')
+  },
+  {
+    path: '/myBag',
+    name: 'game.itemBag',
+    component: () => import('../views/game/Shop.vue')
+  },
+  {
+    path: '/history/:username',
+    name: 'game.history',
+    component: () => import('../views/game/HistoryTop.vue')
+  },
+  {
+    path: '/user/bag',
+    name: 'game.myItems',
+    component: () => import('../views/game/Bag.vue')
+  },
   {
     path: '/header',
     name: 'product.header',

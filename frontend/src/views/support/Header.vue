@@ -155,17 +155,18 @@
         </div>
         <ul class="header__sort-bar">
           <li class="header__sort-item">
-            <a href="" class="header__sort-link">Liên Quan</a>
+            <a href="/" class="header__sort-link">Trang Chủ</a>
+          </li>
+          <li class="header__sort-item">
+            <a href="/shop" class="header__sort-link">Cửa Hàng</a>
           </li>
           <li class="header__sort-item header__sort-item--active">
-            <a href="" class="header__sort-link">Mới Nhất</a>
+            <a href="/user/bag" class="header__sort-link">Kho Đồ</a>
           </li>
           <li class="header__sort-item">
-            <a href="" class="header__sort-link">Bán chạy</a>
+            <a href="/game/Boss" class="header__sort-link">Đánh Boss</a>
           </li>
-          <li class="header__sort-item">
-            <a href="" class="header__sort-link">Giá</a>
-          </li>
+         
         </ul>
         
       </header>

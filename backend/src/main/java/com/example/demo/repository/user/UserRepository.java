@@ -4,6 +4,7 @@ import com.example.demo.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -29,5 +30,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Voucher getVoucherByCode(String code);
 
 
+    @Query("select i from Items i where i.user =:userToken order by i.create_time desc")
+    ArrayList<Items> getItemByUser(User userToken);
+
+    @Query("select i from Items i")
+    ArrayList<Items> getAllItems();
 
 }

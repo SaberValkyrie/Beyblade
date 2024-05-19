@@ -1,7 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.Player;
 import com.example.demo.entity.*;
 import com.example.demo.repository.product.BeyRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +21,25 @@ import java.util.List;
  */
 @Service
 public class BeyService {
+
+    public static BeyService i;
+
+    public static BeyService gI() {
+        if (i == null) {
+            i = new BeyService();
+        }
+        return i;
+    }
+
+
     @Autowired
     private BeyRepository beyRepository;
 
-    public List<TypeBey> getAllTypes(){
+    public List<TypeBey> getAllTypes() {
         return beyRepository.getAllTypes();
     }
 
-    public List<BeyBlade> getBeyByTypeID(byte id){
+    public List<BeyBlade> getBeyByTypeID(byte id) {
         return beyRepository.getBeyByTypeID(id);
     }
 
@@ -39,7 +55,6 @@ public class BeyService {
         return beyRepository.getAll();
     }
 
-//    public List<BeyBlade> getBeyByChar(String character){
-//        return beyRepository.getBeyByChar(character);
-//    }
+
+
 }
