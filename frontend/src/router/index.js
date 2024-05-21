@@ -154,20 +154,37 @@ const routes = [
     name: 'game.boss',
     component: () => import('../views/game/BattleBoss.vue')
   },
+
   {
-    path: '/game/friend',
-    name: 'game.friend',
+    path: '/luyentap',
+    name: 'luyentap',
     component: () => import('../views/game/BattleFriend.vue')
   },
+  // {
+  //   path: '/luyentap/friend',
+  //   name: 'luyentap.friend',
+  //   component: () => import('../views/game/battle/friend.vue')
+  // },
+  // {
+  //   path: '/luyentap/bot',
+  //   name: 'luyentap.bot',
+  //   component: () => import('../views/game/battle/bot.vue')
+  // },
+
   {
     path: '/myBag',
     name: 'game.itemBag',
     component: () => import('../views/game/Bag.vue')
   },
   {
-    path: '/myBag',
-    name: 'game.itemBag',
+    path: '/shop',
+    name: 'game.shop',
     component: () => import('../views/game/Shop.vue')
+  },
+  {
+    path: '/shop/item/:code',
+    name: 'game.shop.item',
+    component: () => import('../views/game/ItemDetails.vue')
   },
   {
     path: '/history/:username',

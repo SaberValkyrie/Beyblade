@@ -55,9 +55,6 @@
                   <li class="header__navbar-user-item">
                     <a href="/changePassWord">Đổi Mật Khẩu</a>
                   </li>
-                  <li class="header__navbar-user-item">
-                    <a href="/order/all">Lịch Sử Giao Dịch</a>
-                  </li>
                 <li class="header__navbar-user-item">
                     <a @click="logout"  style="color: black;"> Đăng Xuất </a>
                   </li>
@@ -155,16 +152,16 @@
         </div>
         <ul class="header__sort-bar">
           <li class="header__sort-item">
-            <a href="/" class="header__sort-link">Trang Chủ</a>
+            <a href="/profile" class="header__sort-link">Cá Nhân</a>
           </li>
           <li class="header__sort-item">
             <a href="/shop" class="header__sort-link">Cửa Hàng</a>
           </li>
-          <li class="header__sort-item header__sort-item--active">
+          <li class="header__sort-item">
             <a href="/user/bag" class="header__sort-link">Kho Đồ</a>
           </li>
-          <li class="header__sort-item">
-            <a href="/game/Boss" class="header__sort-link">Đánh Boss</a>
+          <li class="header__sort-item header__sort-item--active">
+            <a href="/game/select" class="header__sort-link">Thách Đấu</a>
           </li>
          
         </ul>
@@ -174,12 +171,13 @@
 
       <div class="notify" v-if="isShow" @click="acp">
       
-    <div class="tb" >
-      <span class="header__cart-notice" >X</span>
-      <h1 style="color: brown">Thông Báo</h1>
-      Hiện tại đang là phiên bản thử nghiệm,mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 22/6/2024
-      <br>
-    </div>
+        <div class="tb">
+    <span class="header__cart-notice">X</span>
+    <h1 class="notification-title">Thông Báo</h1>
+    <p class="notification-content">
+      Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 22/6/2024.
+    </p>
+  </div>
   
   </div>
 </body>
@@ -427,21 +425,23 @@ this.isShow = true;
 }
 
 .notify.notify--show {
-    background-color: white;
+  background-color: white;
     position: fixed;
     z-index: 9999;
-    width: 80%;
+    width: 35vw;
+    height: 14vw;
     margin-left: 10%;
     box-shadow: 0 24px 62px #999;
-    height: 80%;
+    /* height: 80%; */
     border-radius: 0.5rem;
-    zoom:220%;
+    zoom: 220%;
     font-size: 15px;
     text-align: center;
 }
-.tb {
-    padding: 2rem;
-}
+
+
+
+
 
 button.accept {
     background-color: brown;
@@ -455,5 +455,13 @@ button.accept:hover {
     color: rgb(226, 226, 226);
     border-radius: 4px;
     border: darkslategrey;
+}
+p.notification-content {
+    padding: 0vw;
+    font-size: 1vw;
+}
+.h1, h1 {
+    padding: 1vw;
+    font-size: 2vw;
 }
 </style>

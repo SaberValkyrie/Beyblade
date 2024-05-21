@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.service.BeyService;
 import com.example.demo.support.Logger;
 import com.example.demo.support.Util;
 import com.google.gson.JsonElement;
@@ -20,6 +21,9 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 		Logger.setGreen("Run server thành công : "
 				+ LocalTime.now().getHour() + "h" + LocalTime.now().getMinute() +"p\n" );
+
+
+
 
 	}
 

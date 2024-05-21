@@ -24,6 +24,14 @@ checkSpin(option) {
     return response;
 }
 
+async getItemShop() {
+    const response = await axios.get(`${baseURL}/game/shop`);
+    return response;
+}
+async getItem(code) {
+    const response = await axios.get(`${baseURL}/game/item/${code}`);
+    return response;
+}
   async getType() {
     const response = await axios.get(`${baseURL}/game/getAllTypes`);
     return response;
@@ -34,6 +42,11 @@ async getItems(token) {
 }
 setItem(token,item) {
     const response =  axios.put(`${baseURL}/game/setItem/${token}`,item);
+    return response;
+}
+
+buyItem(token,item) {
+    const response =  axios.post(`${baseURL}/game/buyItem/${token}`,item);
     return response;
 }
 async getBeyByType(type) {

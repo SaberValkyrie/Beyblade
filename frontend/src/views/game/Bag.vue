@@ -3,25 +3,17 @@
     <app-header></app-header>
     <br>    <br>    <br>    <br>    <br>
 <div class="container">
-   
+
+
+    <div class="gift">
+  <input type="text" class="form-control" v-model="code" placeholder="Nhập GIFTCODE" />
+  <button class="apdung" @click="apdung">➔</button>
+</div>
+
+
+
     <div class="row">
-        <div class="col-md-3">
-            <div class="osahan-account-page-left shadow-sm bg-white h-100">
-                <div class="border-bottom p-4">
-                    <div class="osahan-user text-center">
-                        <div class="osahan-user-media">
-                            <img class="mb-3 rounded-pill shadow-sm mt-1" :src="baseUrl + '/files/' + loggedInUser.avatar">
-                            <div class="osahan-user-media-body">
-                                <p class="mb-1">{{loggedInUser.username }}</p>
-                                
-                                <p class="mb-0 text-black font-weight-bold"><a class="text-primary mr-3" data-toggle="modal" data-target="#edit-profile-modal" href="/profile"><i class="icofont-ui-edit"></i> Sửa</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-            </div>
-        </div>
+    
         <div class="col-md-9">
             <div class="osahan-account-page-right shadow-sm bg-white p-4 h-100">
                 <div class="tab-content" id="myTabContent">
@@ -114,12 +106,16 @@ created() {
      gameService: new GameService(),
      userInfo: {},
      ListItems:[],
-     selected:{}
+     selected:{},
+     code:'',
 
    };
  },
 
  methods: {
+    apdung(){
+        toast(this.code)
+    },
 
 setBey(bey){
     this.selected = bey;
@@ -356,4 +352,54 @@ p {
 .col-md-4.col-sm-6.mb-4.pb-2:hover {
     box-shadow: 0 1px 2px #080808;
 }
+
+.row {
+    width: 87vw;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+
+.apdung {
+      border: none;
+    background-color:black;
+ 
+}
+.gift {
+    display: flex;
+    align-items: center;
+    width: 32vw;
+    zoom: 150%;
+}
+
+.form-control {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.apdung {
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+ 
+    margin-left: -2vw;
+
+}
+
+.apdung:hover {
+  background-color: #0056b3;
+}
+
 </style>

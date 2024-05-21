@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/game")
 public class GameController {
+
+
 
 
     @Autowired
@@ -105,6 +109,57 @@ public class GameController {
         return Util.checkStatusRes(HttpStatus.OK, "Chọn thành công " + item.beyBlade.name,  item);
     }
 
+    @PostMapping("/buyItem/{token}")
+    public ResponseEntity<ResponseOpject> buyItem(@PathVariable String token,
+                                                  @RequestBody ItemShop item) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        if (item == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Beyblade đã hết hạn",  item);
+        }
+
+
+        // Tìm đối tượng ItemShop trong danh
+        // sách item_shop
+
+
+
+        Items items = new Items();
+        Account accountToken = userService.getAccountByUser(userToken.username);
+
+        if (item.price > accountToken.coint){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn còn thiếu " + Util.numberToMoney((long) (item.price - accountToken.coint)) + " Beypoint",  null);
+        }
+        if (item.quantity <= 0) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Sản Phẩm Đã Hết Hàng", null);
+        }
+
+        accountToken.coint -= item.price;
+        items.user = userToken;
+        items.beyBlade = item.beyBlade;
+        items.vinhvien = item.day > 0 ? false : true ;
+        items.selectedBey = false;
+
+        // Create the creation timestamp
+        items.create_time = new Timestamp(System.currentTimeMillis());
+
+        long millisecondsInADay = TimeUnit.DAYS.toMillis(item.day);
+
+        items.ngayhethan = new Timestamp(items.create_time.getTime() + millisecondsInADay);
+
+
+        userService.saveAccount(accountToken);
+        userService.saveItem(items);
+
+        // Giảm số lượng của item trong danh sách item_shop
+        service.item_shop.get(item.stt).quantity -= 1;
+
+
+        return Util.checkStatusRes(HttpStatus.OK, "Mua Thành Công " + items.beyBlade.name,  items);
+    }
+
     @GetMapping("/getBey/{type}")
     public ResponseEntity<ResponseOpject> getBey(@PathVariable byte type) {
         List<BeyBlade> list = service.getBeyByTypeID(type);
@@ -158,6 +213,25 @@ public class GameController {
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + beyBoss.bey.name + " với sức mạnh x" + beyBoss.buff, beyBoss);
     }
 
+
+    @GetMapping("/shop")
+    public ResponseEntity<ResponseOpject> getShop() {
+        if (service.loadShop){
+            service.item_shop.clear();
+            service.loadItemShop();
+        }
+        List<ItemShop> beyBlades = service.item_shop;
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + beyBlades.size() + " sản phẩm ", beyBlades);
+    }
+
+    @GetMapping("/item/{code}")
+    public ResponseEntity<ResponseOpject> getItem(@PathVariable String code) {
+       ItemShop itemShop = service.getItemShopByCode(code);
+       if (itemShop == null){
+           return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Không tồn tại sản phẩm", null);
+       }
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + itemShop.beyBlade.name, itemShop);
+    }
 
 
 
@@ -246,7 +320,10 @@ public static int pb = 2_100_000_000;
 
         if (Util.isTrue(tileCrit,100)){
 
-            dame *= Util.nextInt(2,4);
+            dame *= Util.nextInt(3/2,5);
+            if (beyChinh.isBoss){
+                dame *=Util.nextInt(1,2);
+            }
             text =  beyChinh.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tileCrit +"%";
         }
 

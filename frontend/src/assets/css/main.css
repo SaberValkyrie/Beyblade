@@ -474,10 +474,6 @@ font-weight: normal;
   margin: 0 8px;
 }
 
-.header-with-search{
-  padding: 0 12px;
-      /* margin-top: -49px; */
-}
 
 .header__mobile-search{
   padding: 0 12px;
@@ -507,7 +503,7 @@ font-weight: normal;
 
 /* Header search */
 .header__search {
-  height: 40px;
+  height: 3vw;
   flex: 1;
   background-color: var(--white-color);
   border-radius: 29px;
@@ -1155,7 +1151,8 @@ font-weight: normal;
   transform: translateY(-1px);
 }
 .home-product-item__img {
-  padding-top: 100%;
+  width: 13vw;
+  height: 13vw;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

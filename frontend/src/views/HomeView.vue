@@ -58,98 +58,12 @@
       <div class="row mb-5 justify-content-center">
         <div class="col-12 mb-0 content-head">
           <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-            <strong>Trò Chơi Beyblade</strong>
+            <strong>Danh Mục Beyblade</strong>
           </h3>
           
         </div>
       </div>
-      <div class="row">
-
-        <div class="item features-without-image col-12 col-md-6 col-lg-4 active">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="https://vn-test-11.slatic.net/p/33f550fe0a6af86bf9cf178efdac2a17.png" alt="" data-slide-to="0" data-bs-slide-to="0">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Hộp quà bí ẩn</strong>
-                <p class="card-text mbr-fonts-style display-7"> Hộp Quà Ngẫu Nhiên Có Tỉ Lệ Trúng Bey Chỉ Từ 1K </p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="https://shoptretho.com.vn/upload/lucky/20161223/wheel.png" data-slide-to="1" data-bs-slide-to="1" alt="">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Vòng Quay May Mắn</strong>
-                <p class="card-text mbr-fonts-style display-7">Tham Gia Để Có Cơ Hội Trúng Prize Bey</p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/game/Boss')">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="https://ih1.redbubble.net/image.693422754.2998/st,small,507x507-pad,600x600,f8f8f8.u6.jpg" data-slide-to="2" data-bs-slide-to="2" alt="">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Thử Thách Boss</strong>
-                <p class="card-text mbr-fonts-style display-7">Đánh bại Bey của Boss để có cơ hội nhận được những phần thưởng hấp dẫn</p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="@/assets/images/photo-1485811661309-ab85183a729c.jpeg" data-slide-to="4" data-bs-slide-to="4" alt="">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Phạm Thị D</strong>
-                <p class="card-text mbr-fonts-style display-7">Mua sắm trực tuyến chưa bao giờ dễ dàng đến thế!</p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="@/assets/images/photo-1541881856704-3c4b2896c0f8.jpeg" data-slide-to="6" data-bs-slide-to="6" alt="">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Hoàng Văn E</strong>
-                <p class="card-text mbr-fonts-style display-7">Sản phẩm đa dạng, chất lượng đảm bảo!</p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-        <div class="item features-without-image col-12 col-md-6 col-lg-4">
-          <div class="item-wrapper">
-            <div class="card-box align-left">
-              <div class="img-wrapper mt-4 mb-3">
-                <img src="@/assets/images/photo-1591714098656-94a8a95dcf50.jpeg" data-slide-to="7" data-bs-slide-to="7" alt="">
-              </div>
-              <h5 class="card-title mbr-fonts-style display-7">
-                <strong>Nguyễn Thị F</strong>
-                <p class="card-text mbr-fonts-style display-7">Thỏa mãn mọi nhu cầu mua sắm của bạn!</p>
-  
-              </h5>
-            </div>
-          </div>
-        </div>
-      </div>
+      <select-app></select-app>
     </div>
   </section>
   
@@ -443,6 +357,7 @@
   <script>
   import Header from '@/views/support/Header.vue';
   import Footer from '@/views/support/Footer.vue';
+  import Select from '@/views/game/select.vue';
   import { mapGetters } from 'vuex';
   import { baseURL } from '@/router/index';
   import { toast } from 'vue3-toastify';
@@ -460,6 +375,7 @@
   components: {
   'app-header': Header,
   'app-footer': Footer,
+  'select-app':Select,
   },
   data(){
     return {
@@ -474,6 +390,19 @@
   created() {
 
   },
+  mounted() {
+
+setTimeout(() => {
+ const header = document.querySelector('.container');
+ if (header) {
+   header.classList.add('container--show');
+ }
+}, 10); 
+
+
+
+window.addEventListener('scroll', this.handleScroll);
+},
   
 
   methods: {
