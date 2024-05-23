@@ -34,6 +34,7 @@ public class User {
     @Column(name = "ma_xac_nhan")
     public String code;
 
-
+    @Column(name = "diem")
+    public int diem;
 
 }

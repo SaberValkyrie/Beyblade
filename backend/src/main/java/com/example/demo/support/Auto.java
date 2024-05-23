@@ -38,7 +38,8 @@ public class Auto {
     @Scheduled(cron = "0 0 * * * *") // Chạy mỗi giờ
     public void resetShop() {
         beyService.loadShop = true;
-        System.out.println("reset cửa hàng thành công!");
+        beyService.loadTop = true;
+        System.out.println("Reset Shop /TOP thành công");
     }
 
 }

@@ -1,7 +1,7 @@
 <template>
     <link rel="stylesheet" href="https://allyoucan.cloud/cdn/icofont/1.0.1/icofont.css" integrity="sha384-jbCTJB16Q17718YM9U22iJkhuGbS0Gd2LjaWb4YJEZToOPmnKDjySVa323U+W7Fv" crossorigin="anonymous">
     <app-header></app-header>
-    <br>    <br>    <br>    <br>    <br>
+    <br>    <br>    <br>    
 <div class="container">
 
 
@@ -9,6 +9,7 @@
   <input type="text" class="form-control" v-model="code" placeholder="Nhập GIFTCODE" />
   <button class="apdung" @click="apdung">➔</button>
 </div>
+
 
 
 
@@ -102,6 +103,7 @@ created() {
    return {
      baseUrl : baseURL,
      token: localStorage.getItem('token'),
+   
      accountService: new AccountService(),
      gameService: new GameService(),
      userInfo: {},
@@ -116,6 +118,7 @@ created() {
     apdung(){
         toast(this.code)
     },
+ 
 
 setBey(bey){
     this.selected = bey;

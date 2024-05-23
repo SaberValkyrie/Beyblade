@@ -1,6 +1,6 @@
 <template>
     <app-header></app-header>
-    <br><br><br>
+    <br><br><br>  <br><br><br>
   
     <div class="container">
       <div class="main-body">
@@ -90,6 +90,9 @@ import 'vue3-toastify/dist/index.css';
           this.service.getItem(this.code).then(res => {
               this.item = res.data.data;
               this.selectedBey = this.item.beyBlade
+              setTimeout(() => {
+          // window.location.href = "/shop";
+				}, 1000);
           }).catch(error => {
  toast.warning(error.response.data.message)
  this.go('/shop')

@@ -1,345 +1,139 @@
 <template>
+  <!DOCTYPE html>
+  <html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="icon" type="image/png" href="./google_play.png">
-  <title>Shop Plaza</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" type="text/css" href="./assets/css/base.css" />
-  <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
-  <link rel="stylesheet" type="text/css" href="./assets/css/grid.css" />
-  <link rel="stylesheet" type="text/css" href="./assets/css/responsive.css" />
-  <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"  />
-  <link   href="https://fonts.googleapis.com/css?family=Roboto&display=swap"  rel="stylesheet"  />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link  href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Beyblade Burst</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
-<body>
-  <header   class="header" :class="{ 'header--sticky': isSticky }">
-        <div class="grid wide">
-          <nav class="header__navbar hide-on-mobile-tablet">
-            <ul class="header__navbar-list">
-             
-              <li class="header__navbar-item">
-                <span class="header__navbar-title--no-pointer">Kết Nối</span>
+  <body>
 
-                <a href="" class="header__navbar-icon-link">
-                  <i class="header__navbar-icon fab fa-facebook"></i>
-                </a>
-                <a href="" class="header__navbar-icon-link">
-                  <i class="header__navbar-icon fab fa-instagram"></i>
-                </a>
-              </li>
-            </ul>      
-            <ul class="header__navbar-list">
-          
-              <li class="header__navbar-item">
-                <a href="" class="header__navbar-item-link">
-                  <i class="header__navbar-icon far fa-question-circle"></i>                  Trợ giúp
-                </a>
-              </li>
-              <li class="header__navbar-item header__navbar-user">
-                <img :src="loggedInUser && loggedInUser.avatar ? baseUrl + '/files/' + loggedInUser.avatar : baseUrl + '/files/user_avatar.png'" 
-     alt="" class="header__navbar-user-img" style="margin-top: 3px;" />
-                <span class="header__navbar-user-name" v-if="!loggedInUser" v-on:click="redirectToLogin"> Đăng Nhập  </span>
-                  <span class="header__navbar-user-name"  v-if="loggedInUser">
-                    {{ loggedInUserName }}
-
-                    </span>
-                <ul class="header__navbar-user-menu " v-if="loggedInUser">
-                  <br>
-                  <li class="header__navbar-user-item">
-                    <a href="/profile">Tài khoản của tôi</a>
-                  </li>
-                  <li class="header__navbar-user-item">
-                    <a href="/changePassWord">Đổi Mật Khẩu</a>
-                  </li>
-                <li class="header__navbar-user-item">
-                    <a @click="logout"  style="color: black;"> Đăng Xuất </a>
-                  </li>
-                    <br>
-                
-                </ul>
-              </li>
-            </ul>
-
-
-
-
-
-
-            
-          </nav>
-
-          <!-- Header with Search -->
-          <div class="header-with-search">
-            <label for="mobile-search-checkbox" class="header__mobile-search">
-              <i class="header__mobile-search-icon fas fa-search"></i>
-            </label>
-
-            <!-- Header Logo -->
-            <div class="header__logo hide-on-tablet">
-              <a href="/" class="header__logo-link">
-                <img class="header__logo-img" :src="baseUrl + '/files/logo.png'">
-              </a>
-            </div>
-            <input
-              type="checkbox"
-              hidden
-              id="mobile-search-checkbox"
-              class="header__search-checkbox"
-            />
-         <!-- Header Search -->
-<div class="header__search ">
-  <div class="header__search-input-wrap">
-      <input
-            type="text"
-            class="header__search-input"
-            placeholder="Nhập để tìm kiếm sản phẩm" @keyup.enter ="searchProducts"
-            v-model="keyword"
-          />
-    <div class="header__search-history" v-if="sortedHistorySearch.length > 0">
-      <h3 class="header__search-history-heading" >
-        Lịch sử tìm kiếm
-      </h3>
-
-      <ul class="header__search-history-list"  v-for="product in sortedHistorySearch">
-        <div 
-        @click.middle="goto('/search/search?keyword=' + product.keyword)">
-        <li class="header__search-history-item" >
-          <a >{{ product.keyword }}</a>
-        </li>
-      </div>
-       
-      </ul>
-
-    </div>
-  </div>
-  <div class="header__search-select">
-    <span class="header__search-select-label">Tất Cả</span>
-    <i class="header__search-select-icon fas fa-angle-down"></i>
-
-    <ul class="header__search-option">
-      <li
-        class="header__search-option-item header__search-option-item--active"
-      >
-        <span>Tìm Shop</span>
-        <i class="fas fa-check "></i>
-      </li>
-      <li class="header__search-option-item">
-        <span>Tìm Sản Phẩm</span>
-        <i class="fas fa-check"></i>
-      </li>
-    </ul> 
-  </div> 
-
-<button class="header__search-btn" @click="searchProducts">
-          <i class="header__search-btn-icon fas fa-search"></i>
-        </button>
-
-</div>
- <div v-if="searchResult">
-      <div v-for="product in searchResult" :key="product.productId">
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-      </div>
-    </div>
-
-
+  <header class="header-area overlay">
+    <nav class="navbar navbar-expand-md navbar-dark">
+      <div class="container">
+        <a href="#" class="navbar-brand">
+          <div class="header__logo img">
+            <a href="/" class="header__logo-link">
+              <img class="header__logo-img" :src="baseUrl + '/files/logo.png'">
+            </a>
         
+
           </div>
-        </div>
-        <ul class="header__sort-bar">
-          <li class="header__sort-item">
-            <a href="/profile" class="header__sort-link">Cá Nhân</a>
-          </li>
-          <li class="header__sort-item">
-            <a href="/shop" class="header__sort-link">Cửa Hàng</a>
-          </li>
-          <li class="header__sort-item">
-            <a href="/user/bag" class="header__sort-link">Kho Đồ</a>
-          </li>
-          <li class="header__sort-item header__sort-item--active">
-            <a href="/game/select" class="header__sort-link">Thách Đấu</a>
-          </li>
-         
-        </ul>
-        
-      </header>
-      <br>   <br>   <br>   <br>   <br>  
-
-      <div class="notify" v-if="isShow" @click="acp">
       
-        <div class="tb">
-    <span class="header__cart-notice">X</span>
-    <h1 class="notification-title">Thông Báo</h1>
-    <p class="notification-content">
-      Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 22/6/2024.
-    </p>
-  </div>
-  
-  </div>
-</body>
+        </a>
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#main-nav">
+          <span class="menu-icon-bar"></span>
+          <span class="menu-icon-bar"></span>
+          <span class="menu-icon-bar"></span>
+        </button>
+        <div id="main-nav" class="collapse navbar-collapse">
+          <ul class="navbar-nav ml-auto">
+            <li><a href="/shop" class="nav-item nav-link">Cửa Hàng</a></li>
+            <li><a href="/user/bag" class="nav-item nav-link">Kho Đồ</a></li>
+            <li class="dropdown" v-if="loggedInUser">
+              <a href="#" class="nav-item nav-link" data-toggle="dropdown">Tài Khoản</a>
+              <div class="dropdown-menu">
+                <a href="/profile" class="dropdown-item">Thông Tin Cá Nhân</a>
+                <a  @click="logout()" class="dropdown-item">Đăng Xuất</a>
+              </div>
 
+            </li>
+            <li v-else ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
+
+            <li><a  v-if="loggedInUser"  class="nav-item nav-link">Số Dư :{{account.coint}}</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+  </header>
+  <br><br><br><br><br>
+  </body>
+  </html>
 </template>
+
 <script>
+import { ref, onMounted } from 'vue';
+import { baseURL } from '@/router/index';
+import { AccountService } from '@/core/service/accountservice';
 import axios from 'axios';
-import { baseWeb,baseURL } from '@/router/index';
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { AccountService } from '@/core/service/accountservice';
-
-
 export default {
-  name:'Header',
-  computed: {
+  name: 'Header',
+  setup() {
+    const scrollTop = ref(0);
+    const adjustNav = () => {
+      const winWidth = window.innerWidth;
+      const dropdown = document.querySelectorAll('.dropdown');
+      const dropdownMenu = document.querySelectorAll('.dropdown-menu');
 
-
-    sortedHistorySearch() {
-    return this.HistorySearch.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
-  },
-
-    ...mapGetters(['loggedInUser']),
-    loggedInUserName() {
-      return this.loggedInUser ? this.loggedInUser.username : 'Đăng Nhập';
-    },
-    cartSize() {
-  const productCount = {}; // Using an object to store unique product IDs
-
-  if (this.cartProducts && this.cartProducts.length > 0) {
-    this.cartProducts.forEach(cart => {
-      if (cart.cartDetails && cart.cartDetails.length > 0) {
-        cart.cartDetails.forEach(details => {
-          const productId = details.product.productId; // Get the product ID
-          if (!productCount[productId]) {
-            productCount[productId] = true; // Using an object to track unique products
-          }
+      if (winWidth >= 768) {
+        dropdown.forEach(item => {
+          item.addEventListener('mouseenter', () => {
+            item.classList.add('show');
+            const menu = item.querySelector('.dropdown-menu');
+            if (menu) menu.classList.add('show');
+          });
+          item.addEventListener('mouseleave', () => {
+            item.classList.remove('show');
+            const menu = item.querySelector('.dropdown-menu');
+            if (menu) menu.classList.remove('show');
+          });
+        });
+      } else {
+        dropdown.forEach(item => {
+          item.removeEventListener('mouseenter', () => {});
+          item.removeEventListener('mouseleave', () => {});
         });
       }
-    });
-  }
-  const totalQuantity = Object.keys(productCount).length;
-  return totalQuantity.toString(); 
-},
+    };
 
+    onMounted(() => {
+      // Thêm script vào DOM
+      const jQueryScript = document.createElement('script');
+      jQueryScript.src = 'https://code.jquery.com/jquery-3.2.1.slim.min.js';
+      document.body.appendChild(jQueryScript);
+
+      const bootstrapScript = document.createElement('script');
+      bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js';
+      document.body.appendChild(bootstrapScript);
+
+      window.addEventListener('resize', adjustNav);
+      adjustNav();
+    });
+
+    window.addEventListener('scroll', () => {
+      scrollTop.value = window.scrollY;
+    });
+
+    return { scrollTop };
   },
   data() {
     return {
-      accountService: new AccountService(),
-      isSticky: true,
-      scrollPosition: 0,
-      ticking: false,
-      basew: baseWeb,
-      baseUrl : baseURL,
-      createdAt: '',
-      keyword: '',
-      cartProducts: [], // Khởi tạo với một mảng rỗng
-      cart: null,
-      isSearchPage: false ,// Đặt thành true nếu đây là trang tìm kiếm
-      searchResult: null,
-      currentUser: '',
-      searchKeyword: '',
+      service: new AccountService(),
       token: localStorage.getItem('token'),
-      listUser:[],
-      HistorySearch: JSON.parse(localStorage.getItem('searchHistory')) || [],
-      isShow: false,
-    };
-  },
-  mounted() {
+      loggedInUser: localStorage.getItem('loggedInUser'),
+      codeXN: localStorage.getItem('codeXN'),
 
-     setTimeout(() => {
-      const header = document.querySelector('.header');
-      if (header) {
-        header.classList.add('header--show');
-      }
-    }, 10); 
-
-
-    setTimeout(() => {
-      const header = document.querySelector('.notify');
-      if (header) {
-        this.isShow = true;
-        header.classList.add('notify--show');
-      }
-    }, 10); 
-
-
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-  methods: {
-    gotoDashBoard(){
-window.location.href = '/dashboard';
-    },
-    goto(link){
-window.location.href = '/' + link;
-  },
-    handleScroll() {
-    const threshold = 0; // Ngưỡng để kích hoạt thanh header cố định
-    const scrollPosition = window.scrollY || window.pageYOffset;
-
-    if (scrollPosition >= threshold) {
-      this.isSticky = true;
-    } else {
-      this.isSticky = false;
+      account: {},
+      baseUrl: baseURL,
     }
   },
-    checkSticky() {
-      const threshold = 100;
-      this.isSticky = this.scrollPosition > threshold;
-    },
-    getCart(id){
-      window.location.href = '/product/' + id;
-    },
-      
-getAllMess(){
-  this.accountService.getAllUserChat(this.token)
-      .then(response => {
-        this.listUser = response.data.data;
-          })
-      .catch(error => {
-      });
-    },
-
-          
-checkAuthenticate(){
-  this.accountService.checkAuthenticate(this.token,this.loggedInUser.code)
+  methods: {
+  
+    checkAuthenticate(){
+  this.service.checkAuthenticate(this.token,this.codeXN)
       .then(response => {
           })
       .catch(error => {
+        console.log(error)
         toast(error.response.data.message)
         this.logout();
       });
     },
-    goto(link){
-window.location.href = '/' + link;
-  },
-DeleteCart(id){
-  this.accountService.deleteCart(this.token,id).then(cart => {
-          this.fetchCartItems();
-			}).catch(error => {
-        window.location.reload();
-    });;
-},
-fetchCartItems() {
-  this.accountService.getCart(this.token)
-    .then(cart => {
-      this.cartProducts = cart; 
-    })
-    .catch(error => {
-    });
-},
-
-acp(){
-
-this.isShow = false;
-},
-
     logout() {
     axios.post(`${this.baseUrl}/logout/${this.token}`)
       .then(response => {
@@ -353,115 +147,359 @@ this.isShow = false;
         console.error('Error logging out:', error);
       });
   },
-     redirectToLogin() {
-       window.location.href = '/login'; // Chuyển hướng bằng cách thay đổi URL
-    },
-
-    formatCreatedAt(timestamp) {
-      return moment(timestamp).format('DD/MM/YYYY HH:mm'); // Định dạng ngày tháng giờ phút theo ý muốn
-  },   
-  
-  fetchNotifications() {
-     this.accountService.getNotify(this.token)
-           .then(response => {
-        this.notifications = response.data.data;
-      })
-      .catch(error => {
-        console.error('Error fetching notifications:', error);
-      });
-    },
-    searchProducts() {
-  const keyword = this.keyword.trim();
-  if (keyword !== '') {
-
-    const searchItem = {
-      keyword: keyword,
-      timestamp: new Date()
-    };
-    this.HistorySearch.push(searchItem);
-    localStorage.setItem('searchHistory', JSON.stringify(this.HistorySearch));
-
-
-    window.open(`https://shopee.vn/search?keyword=${keyword}`);
-
-  
-
-  } else {
-    keyword == '';
-    console.log('Từ khóa tìm kiếm trống');
-  }
-
-
+  acp(){
+this.isShow = false;
 },
+    getAcc() {
+      this.service.getAccountLogin(this.token).then(res => {
+        this.account = res;
+      })
+    },
   },
   created() {
-if(this.loggedInUser){
-  this.checkAuthenticate()
+   if(this.loggedInUser){
+    this.getAcc()
+    this.checkAuthenticate()
+   }
+  },
+  mounted() {
+    setTimeout(() => {
+      const header = document.querySelector('.header-area');
+      if (header) {
+        header.classList.add('header-area--show');
+      }
+    }, 10);
+  }
 }
-this.isShow = true;
-  
-}
-};
 </script>
-<style scoped>
-.header {
-  opacity: 0; /* Mặc định ẩn */
-  transition: opacity 0.5s ease-in-out; /* Thời gian và kiểu chuyển đổi */
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700,800');
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+html {
+  font-size: 62.5%;
 }
-
-.header--show {
-  opacity: 1; /* Hiển thị dần dần */
+body {
+  top:0;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
 }
-
-
-
-.header--sticky {
-  position: fixed;
-  top: 0;
+h1 {
+  margin-bottom: 0.5em;
+  font-size: 3.6rem;
+}
+p {
+  margin-bottom: 0.5em;
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+.button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 25px;
+  border-radius: 4px;
+}
+.button-primary {
+  position: relative;
+  background-color: #c0ca33;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  transition: color 0.3s ease-in;
+  z-index: 1;
+}
+.button-primary:hover {
+  color: #c0ca33;
+  text-decoration: none;
+}
+.button-primary::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
   left: 0;
-  padding: 1px;
-  width: 100%;
+  right: 0;
+  top: 0;
+  background-color: #fff;
+  border-radius: 4px;
+  opacity: 0;
+  -webkit-transform: scaleX(0.8);
+  -ms-transform: scaleX(0.8);
+  transform: scaleX(0.8);
+  transition: all 0.3s ease-in;
+  z-index: -1;
+}
+.button-primary:hover::after {
+  opacity: 1;
+  -webkit-transform: scaleX(1);
+  -ms-transform: scaleX(1);
+  transform: scaleX(1);
+}
+.overlay::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, .3);
+}
+.header-area {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  position: fixed;
   z-index: 1000;
+  width: 100%;
+  background-image: linear-gradient(0, #610404, #b11e0a);
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-
-.notify.notify--show {
-  background-color: white;
-    position: fixed;
-    z-index: 9999;
-    width: 35vw;
-    height: 14vw;
-    margin-left: 10%;
-    box-shadow: 0 24px 62px #999;
-    /* height: 80%; */
-    border-radius: 0.5rem;
-    zoom: 220%;
-    font-size: 15px;
-    text-align: center;
+.banner {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  color: #fff;
+  text-align: center;
+  z-index: 1;
 }
-
-
-
-
-
-button.accept {
-    background-color: brown;
-    color: aliceblue;
-    border-radius: 4px;
-    border: darkslategrey;
+.banner h1 {
+  font-weight: 800;
 }
-
-button.accept:hover {
-    background-color: rgb(0, 0, 0);
-    color: rgb(226, 226, 226);
-    border-radius: 4px;
-    border: darkslategrey;
+.banner p {
+  font-weight: 700;
 }
-p.notification-content {
-    padding: 0vw;
-    font-size: 1vw;
+.navbar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  width: 100%;
+  transition: background 0.6s ease-in;
+  z-index: 99999;
 }
-.h1, h1 {
-    padding: 1vw;
-    font-size: 2vw;
+.navbar .navbar-brand {
+  font-family: 'Lobster', cursive;
+  font-size: 2.5rem;
+}
+.navbar .navbar-toggler {
+  position: relative;
+  height: 50px;
+  width: 50px;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+.navbar .navbar-toggler .menu-icon-bar {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  height: 2px;
+  background-color: #fff;
+  opacity: 0;
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+  transition: all 0.3s ease-in;
+}
+.navbar .navbar-toggler .menu-icon-bar:first-child {
+  opacity: 1;
+  -webkit-transform: translateY(-1px) rotate(45deg);
+  -ms-transform: translateY(-1px) rotate(45deg);
+  transform: translateY(-1px) rotate(45deg);
+}
+.navbar .navbar-toggler .menu-icon-bar:last-child {
+  opacity: 1;
+  -webkit-transform: translateY(-1px) rotate(135deg);
+  -ms-transform: translateY(-1px) rotate(135deg);
+  transform: translateY(-1px) rotate(135deg);
+}
+.navbar .navbar-toggler.collapsed .menu-icon-bar {
+  opacity: 1;
+}
+.navbar .navbar-toggler.collapsed .menu-icon-bar:first-child {
+  -webkit-transform: translateY(-7px) rotate(0);
+  -ms-transform: translateY(-7px) rotate(0);
+  transform: translateY(-7px) rotate(0);
+}
+.navbar .navbar-toggler.collapsed .menu-icon-bar:last-child {
+  -webkit-transform: translateY(5px) rotate(0);
+  -ms-transform: translateY(5px) rotate(0);
+  transform: translateY(5px) rotate(0);
+}
+.navbar-dark .navbar-nav .nav-link {
+  position: relative;
+  color: #fff;
+  font-size: 1.6rem;
+}
+.navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+  color: #fff;
+}
+.navbar .dropdown-menu {
+  padding: 0;
+  background-color: rgba(0, 0, 0, .9);
+}
+.navbar .dropdown-menu .dropdown-item {
+  position: relative;
+  padding: 10px 20px;
+  color: #fff;
+  font-size: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+  transition: color 0.2s ease-in;
+}
+.navbar .dropdown-menu .dropdown-item:last-child {
+  border-bottom: none;
+}
+.navbar .dropdown-menu .dropdown-item:hover {
+  background: transparent;
+  color: #c0ca33;
+}
+.navbar .dropdown-menu .dropdown-item::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  width: 5px;
+  background-color: #c0ca33;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+.navbar .dropdown-menu .dropdown-item:hover::before {
+  opacity: 1;
+}
+.navbar.fixed-top {
+  position: fixed;
+  -webkit-animation: navbar-animation 0.6s;
+  animation: navbar-animation 0.6s;
+  background-color: rgba(0, 0, 0, .9);
+}
+.navbar.fixed-top.navbar-dark .navbar-nav .nav-link.active {
+  color: #c0ca33;
+}
+.navbar.fixed-top.navbar-dark .navbar-nav .nav-link::after {
+  background-color: #c0ca33;
+}
+.content {
+  padding: 120px 0;
+}
+@media screen and (max-width: 768px) {
+  .navbar-brand {
+    margin-left: 20px;
+  }
+  .navbar-nav {
+    padding: 0 20px;
+    background-color: rgba(0, 0, 0, .9);
+  }
+  .navbar.fixed-top .navbar-nav {
+    background: transparent;
+  }
+}
+@media screen and (min-width: 767px) {
+  .banner {
+    padding: 0 150px;
+  }
+  .banner h1 {
+    font-size: 5rem;
+  }
+  .banner p {
+    font-size: 2rem;
+  }
+  .navbar-dark .navbar-nav .nav-link {
+    padding: 23px 15px;
+  }
+  .navbar-dark .navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 15px;
+    left: 30%;
+    right: 30%;
+    height: 1px;
+    background-color: #fff;
+    -webkit-transform: scaleX(0);
+    -ms-transform: scaleX(0);
+    transform: scaleX(0);
+    transition: transform 0.1s ease-in;
+  }
+  .navbar-dark .navbar-nav .nav-link:hover::after {
+    -webkit-transform: scaleX(1);
+    -ms-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  .dropdown-menu {
+    min-width: 200px;
+    -webkit-animation: dropdown-animation 0.3s;
+    animation: dropdown-animation 0.3s;
+    -webkit-transform-origin: top;
+    -ms-transform-origin: top;
+    transform-origin: top;
+  }
+}
+@-webkit-keyframes navbar-animation {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@keyframes navbar-animation {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@-webkit-keyframes dropdown-animation {
+  0% {
+    -webkit-transform: scaleY(0);
+    -ms-transform: scaleY(0);
+    transform: scaleY(0);
+  }
+  75% {
+    -webkit-transform: scaleY(1.1);
+    -ms-transform: scaleY(1.1);
+    transform: scaleY(1.1);
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+    -ms-transform: scaleY(1);
+    transform: scaleY(1);
+  }
+}
+@keyframes dropdown-animation {
+  0% {
+    -webkit-transform: scaleY(0);
+    -ms-transform: scaleY(0);
+    transform: scaleY(0);
+  }
+  75% {
+    -webkit-transform: scaleY(1.1);
+    -ms-transform: scaleY(1.1);
+    transform: scaleY(1.1);
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+    -ms-transform: scaleY(1);
+    transform: scaleY(1);
+  }
+}
+.header-area--show {
+  opacity: 1;
 }
 </style>

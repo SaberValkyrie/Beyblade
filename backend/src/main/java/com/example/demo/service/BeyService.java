@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.ItemShop;
 import com.example.demo.dto.Player;
 import com.example.demo.entity.*;
+import com.example.demo.repository.TopRepository;
 import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.support.Util;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,9 +40,10 @@ public class BeyService {
     }
 
     public List<ItemShop> item_shop = new ArrayList<>();
-
+    public List<TOP> topList = new ArrayList<>();
     public int hour = 0;
     public boolean loadShop = true;
+    public boolean loadTop = true;
     public void loadItemShop(){
         if (!loadShop){
             return;
@@ -84,9 +86,59 @@ public class BeyService {
         System.out.println("Load Item Shop Thành Công! " + hour);
     }
 
+    public void addTOP(User user){
+        TOP top = new TOP();
+        top.user = user;
+        top.win = 0;
+        top.buff = 0;
+        top.lost = 0;
+        top.top = 0;
+        top.createdAt = new Timestamp(System.currentTimeMillis());
+        top.endBuff = top.createdAt;
+        saveTop(top);
+    }
+    public void loadTop(){
+       if (!loadTop){
+           return;
+       }
+        topList.clear();
+        for (int i = 1; i <= 100; i++){
+            User userclone = new User();
+            userclone.username = "user" + Util.generateRandomText(5) + i;
+            userclone.userId = 0;
+            userclone.accountId = 0;
+            userclone.code ="";
+            userclone.createdAt = new Timestamp(System.currentTimeMillis());
+            userclone.avatar ="https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg";
+            userclone.diem = i * 2;
+            userclone.rank= (byte) i;
+
+            List<BeyBlade> beyBlades = getBasicBey();
+            int randomIndex1 = new Random().nextInt(beyBlades.size());
+            int randomId1 = (int) beyBlades.get(randomIndex1).id;  // Fixed line
+            BeyBlade bey = getBeyByID(randomId1);
+            TOP top = new TOP();
+            top.user = userclone;
+            top.win = (short) Util.nextInt(1,10);
+            top.buff = 5;
+            top.selectBey = bey;
+            top.lost = (short) Util.nextInt(1,10);
+            top.top = i;
+            top.createdAt = new Timestamp(System.currentTimeMillis());
+            top.endBuff = top.createdAt;
+            topList.add(top);
+        }
+        loadTop = false;
+        System.out.println("Load TOP Thành Công! " + topList.size());
+    }
 
 
+    @Autowired
+    private TopRepository topRepository;
 
+    public void saveTop(TOP top){
+        topRepository.save(top);
+    }
 
     @Autowired
     private BeyRepository beyRepository;
@@ -130,5 +182,13 @@ public class BeyService {
             }
         }
         return null;
+    }
+
+    public TOP getTopByUser(User user) {
+        return topRepository.getTopByUser(user);
+    }
+
+    public List<TOP> getTop() {
+        return topRepository.getTop();
     }
 }

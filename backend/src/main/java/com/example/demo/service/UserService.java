@@ -141,7 +141,9 @@ public class UserService {
     public ArrayList<Items> getItemsByUser(User userToken) {
         return userRepository.getItemByUser(userToken);
     }
-
+    public ArrayList<BeyBlade> getItemsByUserAndType(User userToken,byte type) {
+        return userRepository.getItemsByUserAndType(userToken, type);
+    }
     public ArrayList<Items> getAllItems() {
         return userRepository.getAllItems();
     }

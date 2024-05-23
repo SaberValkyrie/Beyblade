@@ -9,8 +9,8 @@ export class GameService {
         return response.data.data;
     }
     
-  spin(token,boss) {
-    const response =  axios.post(`${baseURL}/game/spin/${token}`,boss);
+  spin(token,boss,type) {
+    const response =  axios.post(`${baseURL}/game/spin/${token}/${type}`,boss);
     return response;
 }
 
@@ -26,6 +26,10 @@ checkSpin(option) {
 
 async getItemShop() {
     const response = await axios.get(`${baseURL}/game/shop`);
+    return response;
+}
+async getTop() {
+    const response = await axios.get(`${baseURL}/game/top`);
     return response;
 }
 async getItem(code) {
@@ -51,6 +55,10 @@ buyItem(token,item) {
 }
 async getBeyByType(type) {
     const response = await axios.get(`${baseURL}/game/getBey/${type}`);
+    return response;
+}
+async getMyBeyByType(token,type) {
+    const response = await axios.get(`${baseURL}/game/getBey/${type}/${token}`);
     return response;
 }
 async getBeyByID(id) {

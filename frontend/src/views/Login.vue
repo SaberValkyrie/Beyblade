@@ -109,6 +109,10 @@ window.location.href = '/' + link;
   },
    
     async checklogin() {
+
+      
+
+
       try {
         let object = {
           username: this.username,
@@ -119,6 +123,7 @@ window.location.href = '/' + link;
           toast.success(res?.data.message);
           localStorage.setItem("token", res?.data.data.token);
           localStorage.setItem('loggedInUser', JSON.stringify(res?.data.data.user));
+          localStorage.setItem('codeXN', (res.data.data.user.code));
           setTimeout(() => {
           window.location.href = "/";
 				}, 1000);

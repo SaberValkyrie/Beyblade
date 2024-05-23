@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.AccountResponse;
 import com.example.demo.dto.MessageRespone;
 import com.example.demo.dto.UserResponse;
+import com.example.demo.service.BeyService;
 import com.example.demo.support.Util;
 import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.Account;
@@ -26,6 +27,8 @@ public class UserController {
     @Autowired
     private  UserService userService;
 
+    @Autowired
+    private BeyService beyService;
 
 
     @Autowired
@@ -49,6 +52,7 @@ public class UserController {
         user.code = UUID.randomUUID().toString();
         userService.saveUser(user);
 
+
         Token token = tokenService.getTokenByUser(user);
         if (token == null) {
                  token = tokenService.generateToken(user);
@@ -57,6 +61,14 @@ public class UserController {
 
         accountResponse.token = token.code;
         accountResponse.user = user;
+
+
+
+        TOP top = beyService.getTopByUser(user);
+        if (top == null) {
+            beyService.addTOP(user);
+        }
+
         return Util.checkStatusRes(HttpStatus.OK, "Xác Minh Thành Công : " + user.username, accountResponse);
     }
 
@@ -285,6 +297,7 @@ public ResponseEntity<ResponseOpject> check(@PathVariable String token,
         return Util.checkStatus(HttpStatus.UNAUTHORIZED, "Token sai", null);
     }
     if (!userToken.code.equals(code)){
+
         return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Vui Lòng Đăng Nhập Lại", null);
     }
 //    System.out.println(userToken.code + '/' + code);

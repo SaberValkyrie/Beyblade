@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -184,6 +185,40 @@ public class GameController {
         return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + " beyblade với hệ " + he,  list);
     }
 
+    @GetMapping("/getBey/{type}/{token}")
+    public ResponseEntity<ResponseOpject> getBeyByToken(@PathVariable byte type,@PathVariable String token) {
+
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        List<BeyBlade> list = userService.getItemsByUserAndType(userToken,type);
+
+        String he = "";
+        switch (type){
+            case 1:
+                he = "Tấn Công";
+                break;
+            case 2:
+                he = "Phòng Thủ";
+                break;
+            case 3:
+                he = "Bền Bỉ";
+                break;
+            case 4:
+                he = "Cân Bằng";
+                break;
+        }
+
+        if (type > 4){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Không tồn tại hệ này",  null);
+        }
+
+        return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + " beyblade với hệ " + he,  list);
+    }
+
+
+
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ResponseOpject> getBey(@PathVariable long id) {
@@ -257,7 +292,7 @@ public class GameController {
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
                 }
                 break;
-            case 1:// đấu cùng bạn bè
+            case 1:// luyện tập
                 break;
             case 2:// đấu tranh top
                 break;
@@ -277,15 +312,54 @@ public class GameController {
     }
 
 
+
+
+
+
+
+
+
+    @GetMapping("/top")
+    public ResponseEntity<ResponseOpject> getTop() {
+        List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
+        service.loadTop(); // Dữ liệu cứng
+        List<TOP> topBOT = service.topList;
+
+        // Kết hợp hai danh sách
+        List<TOP> topAll = new ArrayList<>(topBOT);
+
+//         Lặp qua danh sách từ cơ sở dữ liệu
+        for (TOP topDBItem : topDB) {
+            // Lặp qua danh sách kết hợp để thay thế tất cả các phần tử có cùng giá trị "top"
+            for (int i = 0; i < topAll.size(); i++) {
+                TOP topAllItem = topAll.get(i);
+                if (topDBItem.top == topAllItem.top) {
+                    // Thay thế phần tử từ cơ sở dữ liệu vào danh sách kết hợp
+                    topAll.set(i, topDBItem);
+                }
+            }
+        }
+
+        // Sắp xếp danh sách kết hợp theo thuộc tính top
+        topAll.sort(Comparator.comparing(TOP::getTop));
+
+        return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", topAll);
+    }
+
+
+
+
+
     @PostMapping("/attack")
     public ResponseEntity<ResponseOpject> BossAttack(
             @RequestBody BeyBattle battle
     ) {
         return attack(battle.me,battle.boss.bey,battle.boss.dame);
     }
-    @PostMapping("/spin/{token}")
+    @PostMapping("/spin/{token}/{type}")
     public ResponseEntity<ResponseOpject> spinNow(
             @PathVariable String token,
+            @PathVariable byte type,
             @RequestBody BeyBattle battle
     ) {
         User userFromToken = tokenService.getUserFromToken(token);
@@ -293,9 +367,14 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
         Account accountToken = userService.getAccountByUser(userFromToken.username);
+
+
+
+    if (type == 0){
         int dongia = battle.me.price / 10;
         accountToken.coint -= dongia;
         userService.saveAccount(accountToken);
+    }
 
         return attack(battle.boss.bey,battle.me,battle.me.power);
     }
@@ -320,9 +399,9 @@ public static int pb = 2_100_000_000;
 
         if (Util.isTrue(tileCrit,100)){
 
-            dame *= Util.nextInt(3/2,5);
+            dame *= 2;
             if (beyChinh.isBoss){
-                dame *=Util.nextInt(1,2);
+                dame *=Util.nextInt(1,3);
             }
             text =  beyChinh.name + " đã gây được " + Util.numberToMoney(dame) + " dame chí mạng với tỉ lệ là "+tileCrit +"%";
         }

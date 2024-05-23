@@ -25,24 +25,27 @@
     
   </head>
   <body>
-    
- 
-  
-  <section data-bs-version="5.1" class="header18 cid-ubHUN1zw53 mbr-fullscreen" id="hero-16-ubHUN1zw53">
+    <div class="headers">
+    <app-header></app-header>
+</div>
 
-<div class="background-video-wrapper">
+
+    <section data-bs-version="5.1" class="header18 cid-ubHUN1zw53 mbr-fullscreen" id="hero-16-ubHUN1zw53">
+  <div class="background-video-wrapper">
     <iframe
-      src="https://www.youtube.com/embed/VA1cxDICrLA?autoplay=1&loop=1&controls=0&mute=1"
+      src="https://www.youtube.com/embed/ShWh5nh28ps?autoplay=1&start=1029&controls=0&mute=1"
       frameborder="0"
       allow="autoplay; encrypted-media"
       allowfullscreen
       class="background-video">
     </iframe>
   </div>
-  <app-header></app-header>
-  <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(0, 0, 0);"></div> 
 
- </section>
+
+  <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(0, 0, 0);"></div> 
+</section>
+
+
 
 
   
@@ -293,7 +296,7 @@
       </div>
   </section>
   
-  
+  <top-app></top-app>
   
   <section data-bs-version="5.1" class="contacts4 map1 cid-ubHUN1CDhi" id="contacts-3-ubHUN1CDhi">
   
@@ -342,7 +345,7 @@
     </div>
   </section>
   
-      
+
   <app-footer></app-footer>
 
   
@@ -358,6 +361,7 @@
   import Header from '@/views/support/Header.vue';
   import Footer from '@/views/support/Footer.vue';
   import Select from '@/views/game/select.vue';
+  import TOP from '@/views/game/BattleTop.vue';
   import { mapGetters } from 'vuex';
   import { baseURL } from '@/router/index';
   import { toast } from 'vue3-toastify';
@@ -366,6 +370,8 @@
   import { AccountService } from '@/core/service/accountservice';
   import { OrderService } from '@/core/service/orderservice';
   import Chart from 'chart.js/auto';
+
+
   
   
   
@@ -376,6 +382,7 @@
   'app-header': Header,
   'app-footer': Footer,
   'select-app':Select,
+  'top-app':TOP,
   },
   data(){
     return {
@@ -421,20 +428,20 @@ window.addEventListener('scroll', this.handleScroll);
   }
   </script>
   <style>
-  .background-video-wrapper {
+  /* .background-video-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
+} */
 
-.background-video {
+/* .background-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
+} */
 
   body{
     margin-top: -25rem;
@@ -461,6 +468,8 @@ window.addEventListener('scroll', this.handleScroll);
   zoom: 120%;
     border: 1px solid bisque;
     box-shadow: 0 1px 2px #999;
+}.headers {
+    max-height: 5vw;
 }
 
         </style>

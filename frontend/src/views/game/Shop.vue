@@ -2,6 +2,7 @@
  
     <html lang="vi">
     <app-header ></app-header>
+
       <body>
         <div class="app">
   
@@ -178,7 +179,6 @@ go(link){
   .row.sm-gutter {
       margin-left: -5px;
       margin-right: -5px;
-      margin: 27px;
   }
   .home-filter {
       /* padding: 18px; */

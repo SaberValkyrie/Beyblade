@@ -363,11 +363,10 @@ setBey(id){
    this.selectedBey = res.data.data ;
    this.hpMe = this.selectedBey.hp;
    this.hpBoss = this.Boss.hp;
-
-
 }).catch(error => {
  toast.warning(error.response.data.message)
 });
+
 },
 getBoss(){
  this.gameService.getBosss().then(res => {
@@ -484,7 +483,7 @@ const boss = {
 boss:this.Boss,
 me:this.selectedBey
 };
-this.gameService.spin(this.token,boss).then(res => { // mình gây lên boss
+this.gameService.spin(this.token,boss,0).then(res => { // mình gây lên boss
 this.dameMe = res.data.data;
 this.textMe = res.data.message;
 this.hpBoss -= this.dameMe.dame;
@@ -599,7 +598,7 @@ this.types = res.data.data
 },
 
 getBeyByType(){
-this.gameService.getBeyByType(this.selectedType.id).then(res => {
+this.gameService.getMyBeyByType(this.token,this.selectedType.id).then(res => {
 this.listBeyType = res.data.data 
 }).catch(error => {
  toast.warning(error.response.data.message)

@@ -49,6 +49,9 @@ export default createStore({
     account: state => {
       return JSON.parse(localStorage.getItem('account'));
     },
+    codeXN: state => {
+      return JSON.parse(localStorage.getItem('codeXN'));
+    },
     searchHistory: state => {
       return JSON.parse(localStorage.getItem('searchHistory'));
     },

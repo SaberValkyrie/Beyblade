@@ -32,6 +32,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select i from Items i where i.user =:userToken order by i.create_time desc")
     ArrayList<Items> getItemByUser(User userToken);
+    @Query("select i.beyBlade from Items i where i.user =:userToken and i.beyBlade.type.id =:type order by i.create_time desc")
+    ArrayList<BeyBlade> getItemsByUserAndType(User userToken,byte type);
 
     @Query("select i from Items i")
     ArrayList<Items> getAllItems();
