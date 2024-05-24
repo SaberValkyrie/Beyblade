@@ -24,6 +24,11 @@ checkSpin(option) {
     return response;
 }
 
+updateBoss(option,token) {
+    const response =  axios.post(`${baseURL}/game/updateBoss/${token}`,option);
+    return response;
+}
+
 async getItemShop() {
     const response = await axios.get(`${baseURL}/game/shop`);
     return response;
@@ -53,6 +58,12 @@ buyItem(token,item) {
     const response =  axios.post(`${baseURL}/game/buyItem/${token}`,item);
     return response;
 }
+
+ getUserTop(token,top) {
+    const response = axios.post(`${baseURL}/game/thachdau/${token}`,top);
+    return response;
+}
+
 async getBeyByType(type) {
     const response = await axios.get(`${baseURL}/game/getBey/${type}`);
     return response;
@@ -69,6 +80,9 @@ async getBosss() {
     const response = await axios.get(`${baseURL}/game/getBosses`);
     return response;
 }
-
+async getBosssTG() {
+    const response = await axios.get(`${baseURL}/game/getBossTG`);
+    return response;
+}
 
 }

@@ -48,9 +48,10 @@
 
 
 <div class="concac" v-if="selectedBey.images">
+
   <button v-if="End" @click="resetGame" :disabled="spinning">Chơi Lại</button>
-  <button v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End" @click="spinWheel" :disabled="spinning">Đánh 1 cú ({{ selectedBey.price / 10 }} BeyPoint)</button>
-  <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Vui Lòng Chờ</button>
+  <button v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End" @click="spinWheel" :disabled="spinning">Đánh 1 cú: {{ !loggedInUser.active ? '(100 BeyPoint)' : '(Miễn Phí)' }}</button>
+  <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Trận Chiến Kết Thúc</button>
 <button style="margin-left: 2rem;background-color: brown;" v-if="End" @click="select()">Đổi Bey khác</button>
 </div>
 <!--   -->
@@ -112,15 +113,22 @@ v-if="selectedBey.images">
 </div>
 
 <div class="concac" v-if="selectedBey.images">
-<div class="text">
+
+<div class="text" v-if="!Boss.playerKill">
 <a class="text-success blinking-text">{{ textMe }}</a>
 <br>
 <a class="text-danger blinking-text">{{ textBoss }}</a>
 <br>
-<a style="font-weight:bold" class="text-success blinking-text">Tỉ Số: {{ pointMe }} | {{ pointBoss }}</a>
 <br>
 
 
+</div>
+<div class="text" v-else>
+  <a class="text-success blinking-text">Boss đã bị đánh bại bởi  {{ Boss.playerKill.username }}</a>
+<br>
+<a class="text-danger blinking-text">Vui lòng chờ tới {{ Boss.time + 1 }}:00 để Boss Hồi Sinh</a>
+<br>
+ 
 </div>
 
 </div>
@@ -295,6 +303,7 @@ components: {
 'app-header': Header,
 'app-footer': Footer,
 },
+
 data() {
 
 return {
@@ -305,6 +314,8 @@ return {
  maxRotationCount: 3, // Số lần quay tối đa
  spinDuration: 0.3, // Thời gian quay (giây) cho mỗi vòng
  token : localStorage.getItem('token'),
+ loggedInUser : localStorage.getItem('loggedInUser'),
+
  gameService: new GameService(),
  imgBoss: "",
  img:'https://i.gifer.com/origin/d7/d7ac4f38b77abe73165d85edf2cbdb9e_w200.gif',
@@ -326,8 +337,6 @@ return {
  textBoss:'Dữ liệu cú đánh của đối phương',
  end:false,
  concac:false,
- pointMe:0,
- pointBoss:0,
  round:1,
  End: false,
  BossBurst:false,
@@ -339,10 +348,22 @@ this.getType()
 this.getBoss()
 this.stop()
 
+
+  // Call this.getBoss() every 3 seconds
+  setInterval(() => {
+
+
+    // toast('sdfghj')
+      this.getBoss();
+    }, 100);
+
 },
 
 methods: {
-
+  resetGame(){
+ this.reset()
+ this.End = false
+},
 
 
 convert(power) {
@@ -369,7 +390,7 @@ setBey(id){
 
 },
 getBoss(){
- this.gameService.getBosss().then(res => {
+ this.gameService.getBosssTG().then(res => {
    this.Boss = res.data.data ;
    this.imgBoss = this.Boss.bey.images
    this.hpBoss = this.Boss.hp;
@@ -395,22 +416,10 @@ cancel(){
  this.buoc = 0;
 },
 
-resetGame(){
- this.reset()
- this.pointBoss = 0;
- this.pointMe = 0;
- this.concac = false;
- this.End = false;
- this.playerWin = {}
-},
 
 reset(){
- 
-this.hpBoss = this.Boss.hp;
+// this.hpBoss = this.Boss.hp;
 this.hpMe = this.selectedBey.hp;
-this.BossBurst = false;
-this.MeBurst = false;
-
 },
 
 chonbey(id){
@@ -423,8 +432,6 @@ accept(){
  toast('Chọn Bey Thành Công')
  this.end = false;
  this.round = 1;
- this.pointMe = 0;
- this.pointBoss = 0;
  this.playerWin = {}
 },
 
@@ -434,6 +441,10 @@ end(){
 },
 
 spinWheel() {
+  if(this.Boss.die){
+    toast.warning('Boss đã bị chết,vui lòng load lại trang để xem')
+    return
+  }
 if (!this.spinning) {
 this.gameService.checkCoint(this.token,this.selectedBey.id,0).then(res => {
  this.spinning = true; // Chỉ đặt spinning thành true khi bắt đầu quay thực sự
@@ -483,11 +494,12 @@ const boss = {
 boss:this.Boss,
 me:this.selectedBey
 };
-this.gameService.spin(this.token,boss,0).then(res => { // mình gây lên boss
+this.gameService.spin(this.token,boss,2).then(res => { // mình gây lên boss
 this.dameMe = res.data.data;
 this.textMe = res.data.message;
-this.hpBoss -= this.dameMe.dame;
-this.truHPBoss(1)
+
+
+this.truHPBoss(this.dameMe.dame)
 }) .catch(error => {
   this.dameMe = error.response.data.data;
 this.textMe = error.response.data.message;
@@ -530,63 +542,42 @@ checkKQ() {
     me: this.selectedBey,
     boss: this.Boss,
     dameMe: this.dameMe,
-    dameBoss: this.dameBoss,
-    pointMe: this.pointMe,
-    pointBoss: this.pointBoss,
-    win: this.playerWin,
+    dameBoss: this.dameBoss
   };
-    this.gameService.checkSpin(option).then(res => {
-
-  console.log(res)
+    this.gameService.updateBoss(option,this.token).then(res => {
+    this.hpBoss = res.data.data
     }).catch(error => {
+
+      setTimeout(() => {
+        window.location.href = '/game/Boss'
+}, 1000); 
  toast.warning(error.response.data.message)
 });
-
-
-
 },
 
-truHPMe(point) {
+
+
+truHPMe() {
   if (this.hpMe <= 0) {
     this.hpMe = 0;
-    if(this.dameBoss.dame > 2000000000){
-  this.pointBoss += 1;
-  this.MeBurst = true;
-}
-    this.pointBoss += point;
-    if (this.pointBoss >= 3 && this.playerWin != this.selectedBey) {
-      this.End = true;
-      this.playerWin = this.Boss.bey;
-    }
+this.End = true;
   }
 
-  this.checkEndGame();
 },
 
-truHPBoss(point) {
+truHPBoss(dame) {
+
+
+this.hpBoss -= dame;
   if (this.hpBoss <= 0) {
     this.hpBoss = 0
-    if(this.dameMe.dame > 2000000000){
-  this.pointMe += 1;
-  this.BossBurst = true;
-}
-    this.pointMe += point;
-    if (this.pointMe >= 3) {
-      this.End = true;
-      this.playerWin = this.selectedBey;
-    }
+
+    this.End = true;
   }
 
-  this.checkEndGame();
 },
 
-checkEndGame() {
-  if (this.hpMe <= 0 || this.hpBoss <= 0) {
-    setTimeout(() => {
-      this.reset();
-    }, 3000);
-  }
-},
+
 
 
 getType(){

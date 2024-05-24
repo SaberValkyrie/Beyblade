@@ -47,6 +47,7 @@ public class UserController {
             user.accountId = account.accountId;
             user.avatar = "user_avatar.png";
             user.username = account.username;
+            user.active = false;
             user.createdAt = new Timestamp(System.currentTimeMillis());
         }
         user.code = UUID.randomUUID().toString();

@@ -234,7 +234,9 @@ go(link){
     font-weight: bold;
     text-align: center;
 }
-
+span {
+    font-size: 1vw;
+}
   </style>
   
   

@@ -3,8 +3,13 @@
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <app-header></app-header>
+<br>
+<br>
+<br>
 
-<div class="event-schedule-area-two bg-color pad100">
+
+
+<div class="event-schedule-area-two bg-color pad100" v-if="!info">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -20,8 +25,6 @@
             </div>
             <!-- /.col end-->
         </div>
-        <!-- row end-->
-
         <div class="row">
             <div class="col-lg-12">
             
@@ -81,7 +84,7 @@
                                                       <span style="font-size: 1.5vw;">  Tỉ Lệ K/D: </span> 
                                                       <span v-if="player.lost == 0"  class="text-success"> {{ player.win + '/' + player.lost }}</span>
 
-                                                      <span v-else :class="(player.win / player.lost ) > 1 ? 'text-success' : 'text-danger'">  {{ convert(player.win / player.lost) }}%</span>
+                                                      <span v-else :class="(player.win / player.lost ) > 1 ? 'text-success' : 'text-danger'">  {{ convert(player.win / player.lost) }}</span>
  </div>
 
                                                 </div>
@@ -91,14 +94,14 @@
                                             <div class="r-no">
                                                 <div class="event-img">
                                                 <img :src="player.selectBey ? player.selectBey.images : 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg'" alt="" />
-                                                <h3><a href="#">{{ player.selectBey ? player.selectBey.name : 'Valkyrie Wing Accel' }}</a></h3>
+                                                <h3><a href="#">{{ player.selectBey ? truncated(player.selectBey.name) : 'Valkyrie Wing Accel' }}</a></h3>
 
                                             </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="primary-btn" >
-                                                <a class="btn btn-primary" href="#">{{ loggedInUser.username != player.user.username ? 'Thách Đấu' : 'Buff Chỉ Số'}}</a>
+                                                <a class="btn btn-primary" @click="setThachDau(player)">{{ loggedInUser.username != player.user.username ? 'Thách Đấu' : 'Buff Chỉ Số'}}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -118,6 +121,12 @@
         </div>
         <!-- /row end-->
     </div>
+</div>
+<div v-else>
+
+{{ kethu }}
+
+
 </div>
 </template>
 
@@ -156,6 +165,8 @@ export default {
       baseUrl: baseURL,
       players: [],
       token: localStorage.getItem('token'),
+      info:false,
+      kethu:{},
 
     };
   },
@@ -164,6 +175,32 @@ export default {
 
   },
   methods: {
+
+    setInfo(s){
+        this.info = s;
+    },
+
+    setThachDau(top){
+        this.getTop()
+        this.service.getUserTop(this.token,top).then(res => {
+this.kethu = res.data.data;
+// this.setInfo(true)
+toast.success(res.data.message)
+})    .catch(error => {
+toast.error(error.response.data.message);
+});
+
+
+
+    },
+
+    truncated(name) {
+    const max = 18;
+          if (name.length > max) {
+              return name.substring(0, max) + '...';
+          }
+          return name;
+      },
     getTop() {
     this.service.getTop()
         .then(res => {
@@ -206,8 +243,15 @@ window.location.href = link;
 
 
 
-<style>
-body{margin-top:20px;}
+<style scoped>
+
+
+
+
+body {
+    margin-top: 20px;
+}
+
 .event-schedule-area .section-title .title-text {
     margin-bottom: 50px;
 }
@@ -218,12 +262,7 @@ body{margin-top:20px;}
 
 .event-schedule-area .tab-area .nav {
     border-bottom: inherit;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
     flex-direction: column;
     margin-top: 80px;
 }
@@ -231,9 +270,10 @@ body{margin-top:20px;}
 .event-schedule-area .tab-area .nav-item {
     margin-bottom: 75px;
 }
+
 .event-schedule-area .tab-area .nav-item .nav-link {
     text-align: center;
-    font-size: 22px;
+    font-size: 2vw;
     color: #333;
     font-weight: 600;
     border-radius: inherit;
@@ -241,6 +281,7 @@ body{margin-top:20px;}
     padding: 0px;
     text-transform: capitalize !important;
 }
+
 .event-schedule-area .tab-area .nav-item .nav-link.active {
     color: #4125dd;
     background-color: transparent;
@@ -248,77 +289,85 @@ body{margin-top:20px;}
 
 .event-schedule-area .tab-area .tab-content .table {
     margin-bottom: 0;
-    width: 80%;
+    width: 100%;
 }
+
 .event-schedule-area .tab-area .tab-content .table thead td,
 .event-schedule-area .tab-area .tab-content .table thead th {
     border-bottom-width: 1px;
-    font-size: 20px;
+    font-size: 2vw;
     font-weight: 600;
     color: #252525;
 }
+
 .event-schedule-area .tab-area .tab-content .table td,
 .event-schedule-area .tab-area .tab-content .table th {
     border: 1px solid #b7b7b7;
-    padding-left: 30px;
+    padding-left: 1vw;
 }
+
 .event-schedule-area .tab-area .tab-content .table tbody th .heading,
 .event-schedule-area .tab-area .tab-content .table tbody td .heading {
-    font-size: 16px;
+    font-size: 1.6vw;
     text-transform: capitalize;
-    margin-bottom: 16px;
+    margin-bottom: 1.6vw;
     font-weight: 500;
     color: #252525;
-    margin-bottom: 6px;
+    margin-bottom: 0.6vw;
 }
+
 .event-schedule-area .tab-area .tab-content .table tbody th span,
 .event-schedule-area .tab-area .tab-content .table tbody td span {
     color: #4125dd;
-    font-size: 18px;
+    font-size: 1.8vw;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 0.6vw;
     display: block;
 }
+
 .event-schedule-area .tab-area .tab-content .table tbody th span.date,
 .event-schedule-area .tab-area .tab-content .table tbody td span.date {
     color: #656565;
-    font-size: 14px;
+    font-size: 1.4vw;
     font-weight: 500;
-    margin-top: 15px;
+    margin-top: 1.5vw;
 }
+
 .event-schedule-area .tab-area .tab-content .table tbody th p {
-    font-size: 14px;
+    font-size: 1.4vw;
     margin: 0;
     font-weight: normal;
 }
 
 .event-schedule-area-two .section-title .title-text h2 {
-    margin: 0px 0 15px;
+    margin: 0 0 1.5vw;
 }
 
 .event-schedule-area-two ul.custom-tab {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
     border-bottom: 1px solid #dee2e6;
-    margin-bottom: 30px;
+    margin-bottom: 3vw;
 }
+
 .event-schedule-area-two ul.custom-tab li {
-    margin-right: 70px;
+    margin-right: 7vw;
     position: relative;
 }
+
 .event-schedule-area-two ul.custom-tab li a {
     color: #252525;
-    font-size: 25px;
-    line-height: 25px;
+    font-size: 2.5vw;
+    line-height: 2.5vw;
     font-weight: 600;
     text-transform: capitalize;
-    padding: 35px 0;
+    padding: 3.5vw 0;
     position: relative;
 }
+
 .event-schedule-area-two ul.custom-tab li a:hover:before {
     width: 100%;
 }
+
 .event-schedule-area-two ul.custom-tab li a:before {
     position: absolute;
     left: 0;
@@ -326,147 +375,169 @@ body{margin-top:20px;}
     content: "";
     background: #4125dd;
     width: 0;
-    height: 2px;
-    -webkit-transition: all 0.4s;
-    -o-transition: all 0.4s;
+    height: 0.2vw;
     transition: all 0.4s;
 }
+
 .event-schedule-area-two ul.custom-tab li a.active {
     color: #4125dd;
 }
 
 .event-schedule-area-two .primary-btn {
-    margin-top: 40px;
+    margin-top: 4vw;
 }
 
 .event-schedule-area-two .tab-content .table {
-    -webkit-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.1vw 3vw rgba(0, 0, 0, 0.1);
     margin-bottom: 0;
 }
+
 .event-schedule-area-two .tab-content .table thead {
     background-color: #007bff;
     color: #fff;
-    font-size: 20px;
+    font-size: 2vw;
 }
+
 .event-schedule-area-two .tab-content .table thead tr th {
-    padding: 20px;
+    padding: 2vw;
     border: 0;
 }
+
 .event-schedule-area-two .tab-content .table tbody {
     background: #fff;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr.inner-box {
     border-bottom: 1px solid #dee2e6;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr th {
     border: 0;
-    padding: 30px 20px;
+    padding: 3vw 2vw;
     vertical-align: middle;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr th .event-date {
     color: #252525;
     text-align: center;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr th .event-date span {
-    font-size: 50px;
-    line-height: 50px;
+    font-size: 5vw;
+    line-height: 5vw;
     font-weight: normal;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td {
-    padding: 30px 20px;
+    padding: 3vw 2vw;
     vertical-align: middle;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .r-no span {
     color: #252525;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap h3 a {
-    font-size: 20px;
-    line-height: 20px;
+    font-size: 2vw;
+    line-height: 2vw;
     color: #cf057c;
-    -webkit-transition: all 0.4s;
-    -o-transition: all 0.4s;
     transition: all 0.4s;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap h3 a:hover {
     color: #4125dd;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .categories {
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
     display: inline-flex;
-    margin: 10px 0;
+    margin: 1vw 0;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .categories a {
     color: #252525;
-    font-size: 16px;
-    margin-left: 10px;
-    -webkit-transition: all 0.4s;
-    -o-transition: all 0.4s;
+    font-size: 1.6vw;
+    margin-left: 1vw;
     transition: all 0.4s;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .categories a:before {
     content: "\f07b";
     font-family: fontawesome;
-    padding-right: 5px;
+    padding-right: 0.5vw;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .time span {
     color: #252525;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .organizers {
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
     display: inline-flex;
-    margin: 10px 0;
+    margin: 1vw 0;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .organizers a {
     color: #4125dd;
-    font-size: 16px;
-    -webkit-transition: all 0.4s;
-    -o-transition: all 0.4s;
+    font-size: 1.6vw;
     transition: all 0.4s;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .organizers a:hover {
     color: #4125dd;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-wrap .organizers a:before {
     content: "\f007";
     font-family: fontawesome;
-    padding-right: 5px;
+    padding-right: 0.5vw;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .primary-btn {
     margin-top: 0;
     text-align: center;
 }
+
 .event-schedule-area-two .tab-content .table tbody tr td .event-img img {
-    width: 100px;
-    height: 100px;
+    width: 10vw;
+    height: 10vw;
     border-radius: 50%;
 }
+
 .event-date {
     background-color: antiquewhite;
-    border: 2px solid #5c5c5c;
+    border: 0.2vw solid #5c5c5c;
     border-radius: 50%;
     width: 5vw;
-    height: 4vw;
+    height: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 img.imgtop {
     width: 5vw;
 }
+
 a.btn.btn-primary {
-    width: 100%;
-    font-size: 1.5vw;
-    border: 1px solid blueviolet;
-    border-radius: -3%;
+
+      zoom: 150%;
+    padding: 1rem;
+    /* font-size: 1.5vw; */
+    border: 1px solid;
+
 }
+
 a.btn.btn-primary:hover {
-    font-size: 1.5vw;
-
-    border: 1px solid blueviolet;
-
+   background-color: #656565;
 }
+
 span {
     font-size: 2vw;
 }
+
+table.table {
+    /* width: 84vw; */
+    zoom: 60%;
+}
+
+
 </style>

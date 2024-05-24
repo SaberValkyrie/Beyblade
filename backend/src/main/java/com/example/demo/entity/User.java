@@ -37,4 +37,7 @@ public class User {
     @Column(name = "diem")
     public int diem;
 
+    @Column(name = "active")
+    public boolean active;
+
 }

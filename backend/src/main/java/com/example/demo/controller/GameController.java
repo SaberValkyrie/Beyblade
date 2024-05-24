@@ -6,8 +6,6 @@ import com.example.demo.service.BeyService;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import com.example.demo.support.Util;
-import com.google.gson.JsonElement;
-import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -230,23 +228,6 @@ public class GameController {
     }
 
 
-    @GetMapping("/getBosses")
-    public ResponseEntity<ResponseOpject> getbosss() {
-        List<BeyBlade> list = service.getBoss();
-
-        int randomIndex = new Random().nextInt(list.size());
-        int randomId = (int) list.get(randomIndex).id;
-
-        BeyBoss beyBoss = new BeyBoss();
-        beyBoss.bey = service.getBeyByID(randomId);
-        beyBoss.buff = (byte) (beyBoss.bey.type.id + Util.nextInt(1,5) / 5);
-        beyBoss.time = (byte) LocalTime.now().getHour();
-
-        beyBoss.hp = beyBoss.buff * beyBoss.bey.hp;
-        beyBoss.dame = beyBoss.buff * beyBoss.bey.power;
-
-        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + beyBoss.bey.name + " với sức mạnh x" + beyBoss.buff, beyBoss);
-    }
 
 
     @GetMapping("/shop")
@@ -284,13 +265,15 @@ public class GameController {
         BeyBlade beyBlade = service.getBeyByID(bey);
         Account accountToken = userService.getAccountByUser(userFromToken.username);
         short time = 500;
-        int dongia = beyBlade.price / 10;
+        int dongia = 100;
 
         switch (type){
             case 0: //đấu boss
-                if (accountToken.coint < dongia) {
-                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
-                }
+               if(!userFromToken.active){
+                   if (accountToken.coint < dongia) {
+                       return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
+                   }
+               }
                 break;
             case 1:// luyện tập
                 break;
@@ -305,18 +288,107 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.NOT_IMPLEMENTED, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
         }
         st = System.currentTimeMillis();
-
-
-
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", userFromToken);
     }
 
 
+    @PostMapping("/updateBoss/{token}")
+    public ResponseEntity<ResponseOpject> updateBoss(
+            @RequestBody CheckOption option,
+            @PathVariable String token
+    ) {
+        User userFromToken = tokenService.getUserFromToken(token);
+        if (userFromToken == null) {
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
+        }
+
+        service.boss.hp -= option.dameMe.dame;
+
+        if (service.boss.playerKill != null){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Boss đã bị hạ bởi " + service.boss.playerKill.username, service.boss.playerKill);
+        }
+
+        if (service.boss.hp <= 0){
+            service.boss.playerKill = userFromToken;
+            service.boss.die = true;
+        }
+
+        return Util.checkStatusRes(HttpStatus.OK,  "update thành công", service.boss.hp);
+    }
+
+    @PostMapping("/thachdau/{token}")
+    public ResponseEntity<ResponseOpject> getTopByUser(
+            @PathVariable String token,
+           @RequestBody TOP topdich
+    ) {
+        User userFromToken = tokenService.getUserFromToken(token);
+        if (userFromToken == null) {
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Vui Lòng Đăng Nhập Lại", null);
+        }
+
+        TOP topme = service.getTopByUser(userFromToken);
+
+        if (userFromToken.equals(topdich.user)){
+            return Util.checkStatusRes(HttpStatus.OK, "Hãy Buff chỉ số bản thân để tăng cơ hội giữ top nhé!", null);
+        }
+
+        if (topme.top < topdich.top){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Top của bạn đã cao hơn đối thủ rồi", null);
+        }
+
+        if (!userFromToken.active && userFromToken.diem >= 10){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Ngày hôm nay bạn đã thách đấu đủ 10 lần,vui lòng mở thành viên để tăng hạn mức thách đấu!", null);
+        }
 
 
+        int maxHangPK;
+        if (topme.top >= 51 && topme.top <= 100) { //top 51-100 thách đấu tối đa 5 bậc
+            maxHangPK = 5;
+        } else if (topme.top >= 31 && topme.top <= 50) { //top 31-50 chỉ thách đấu tối đa 4 bậc
+            maxHangPK = 4;
+        } else if (topme.top >= 21 && topme.top <= 30) { //top 21-30 chỉ thách đấu tối đa 3 bậc
+            maxHangPK = 3;
+        } else if (topme.top >= 11 && topme.top <= 20) { //top 11-20 chỉ thách đấu tối đa 2 bậc
+            maxHangPK = 2;
+        } else if (topme.top <= 10) { //top 1 tới 9 chỉ thách đấu tối đa 1 bậc
+            maxHangPK = 1;
+        } else {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Thứ hạng của bạn không nằm trong khoảng cho phép thách đấu", null);
+        }
+
+        if (topme.top - topdich.top > maxHangPK) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Hạng của bạn chỉ có thể thách đấu tối đa " + maxHangPK + " bậc", null);
+        }
 
 
+        return Util.checkStatusRes(HttpStatus.OK, "đã tìm được đối thủ ở hạng " +topdich.top , topdich);
+    }
 
+    @GetMapping("/getBosses")
+    public ResponseEntity<ResponseOpject> getbosss() {
+        List<BeyBlade> list = service.getBoss();
+
+        int randomIndex = new Random().nextInt(list.size());
+        int randomId = (int) list.get(randomIndex).id;
+
+        BeyBoss beyBoss = new BeyBoss();
+        beyBoss.bey = service.getBeyByID(randomId);
+        beyBoss.buff = (byte) (beyBoss.bey.type.id + Util.nextInt(1,5) / 5);
+        beyBoss.time = (byte) LocalTime.now().getHour();
+
+        beyBoss.hp = beyBoss.buff * beyBoss.bey.hp;
+        beyBoss.dame = beyBoss.buff * beyBoss.bey.power;
+
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + beyBoss.bey.name + " với sức mạnh x" + beyBoss.buff, beyBoss);
+    }
+
+
+    @GetMapping("/getBossTG")
+    public ResponseEntity<ResponseOpject> getbossTG() {
+        service.loadBoss();
+        BeyBoss boss = service.boss;
+        return Util.checkStatusRes(HttpStatus.OK, "          HP:" + Util.numberToMoney(boss.hp) + "                ", boss);
+    }
 
 
     @GetMapping("/top")
@@ -354,7 +426,7 @@ public class GameController {
     public ResponseEntity<ResponseOpject> BossAttack(
             @RequestBody BeyBattle battle
     ) {
-        return attack(battle.me,battle.boss.bey,battle.boss.dame);
+        return attack(battle.me,battle.boss.bey,battle.boss.dame, (byte) 0);
     }
     @PostMapping("/spin/{token}/{type}")
     public ResponseEntity<ResponseOpject> spinNow(
@@ -368,18 +440,24 @@ public class GameController {
         }
         Account accountToken = userService.getAccountByUser(userFromToken.username);
 
-
-
     if (type == 0){
-        int dongia = battle.me.price / 10;
-        accountToken.coint -= dongia;
-        userService.saveAccount(accountToken);
+        if (!userFromToken.active){
+            int dongia = 100;
+            accountToken.coint -= dongia;
+            userService.saveAccount(accountToken);
+        }
+    }
+        return attack(battle.boss.bey,battle.me,battle.me.power,type);
     }
 
-        return attack(battle.boss.bey,battle.me,battle.me.power);
-    }
+
+
+
 public static int pb = 2_100_000_000;
-    public ResponseEntity<ResponseOpject> attack(BeyBlade beyOrther,BeyBlade beyChinh,long dame){
+
+
+
+    public ResponseEntity<ResponseOpject> attack(BeyBlade beyOrther,BeyBlade beyChinh,long dame,byte type){
         short tiLeNeDon = beyOrther.tiLeNeDon;
         short tileCrit = beyChinh.crit;
 
@@ -416,7 +494,7 @@ public static int pb = 2_100_000_000;
             beyDame.hutdame = damehut;
             hut = true;
         }
-        if (Util.isTrue(5,100)){
+        if (type == 0 && Util.isTrue(5,100)){
             if (isBurstStopper(beyOrther) && Util.isTrue(70,100) || isLock(beyOrther) && Util.isTrue(90,100)){
                 dame = 2;
                 txtBurst = beyOrther.name + " đã chặn được cú Burst từ " + beyChinh.name;
@@ -571,6 +649,9 @@ private boolean isFafnir(BeyBlade beyBlade){
             case 204:
             case 205:
             case 206:
+            case 194:
+            case 184:
+            case 162:
                 return true;
             default:
                 return false;

@@ -1,19 +1,14 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.BeyBoss;
 import com.example.demo.dto.ItemShop;
-import com.example.demo.dto.Player;
 import com.example.demo.entity.*;
 import com.example.demo.repository.TopRepository;
 import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.support.Util;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
-import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.lang.model.type.UnionType;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -41,17 +36,19 @@ public class BeyService {
 
     public List<ItemShop> item_shop = new ArrayList<>();
     public List<TOP> topList = new ArrayList<>();
+
+    public BeyBoss boss = new BeyBoss();
+
     public int hour = 0;
     public boolean loadShop = true;
+    public boolean loadBoss = true;
     public boolean loadTop = true;
     public void loadItemShop(){
         if (!loadShop){
             return;
         }
-        List<BeyBlade> list = getBoss();
-        int randomIndex = new Random().nextInt(list.size());
-        int randomId = (int) list.get(randomIndex).id;
-        BeyBlade index1 = getBeyByID(randomId);
+
+        BeyBlade index1 = getRandomBeyBoss();
 
         ItemShop itemShop = new ItemShop();
         itemShop.code = String.valueOf(UUID.randomUUID());
@@ -111,6 +108,7 @@ public class BeyService {
             userclone.createdAt = new Timestamp(System.currentTimeMillis());
             userclone.avatar ="https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg";
             userclone.diem = i * 2;
+            userclone.active = true;
             userclone.rank= (byte) i;
 
             List<BeyBlade> beyBlades = getBasicBey();
@@ -132,6 +130,35 @@ public class BeyService {
         System.out.println("Load TOP Thành Công! " + topList.size());
     }
 
+    public void truHp(long dame) {
+        boss.hp -= dame;
+    }
+
+    public BeyBlade getRandomBeyBoss(){
+        List<BeyBlade> list = getBoss();
+        int randomIndex = new Random().nextInt(list.size());
+        int randomId = (int) list.get(randomIndex).id;
+        return getBeyByID(randomId);
+
+    }
+
+    public void loadBoss(){
+        if (!loadBoss){
+            return;
+        }
+        BeyBlade beyBlade = getRandomBeyBoss();
+        boss.bey = beyBlade;
+        boss.time = (byte) LocalTime.now().getHour();
+        boss.buff = (byte) Util.nextInt(20,120);
+        boss.dame = boss.bey.power;
+        boss.hp = 10_000_000
+//                + boss.buff * boss.bey.hp * (8 - boss.bey.season)
+        ;
+        boss.playerKill = null;
+        boss.die = false;
+        loadBoss = false;
+        System.out.println("Load Boss Thành Công! " + boss.bey.name);
+    }
 
     @Autowired
     private TopRepository topRepository;
@@ -191,4 +218,6 @@ public class BeyService {
     public List<TOP> getTop() {
         return topRepository.getTop();
     }
+
+
 }
