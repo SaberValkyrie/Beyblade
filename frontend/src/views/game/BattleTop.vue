@@ -747,20 +747,20 @@ a.btn:hover {
   font-weight: 700;
   margin: 0 0 6px;
 }
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
   .about-text h3 {
     font-size: 35px;
   }
-}
+} */
 .about-text h6 {
   font-weight: 600;
   margin-bottom: 15px;
 }
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
   .about-text h6 {
     font-size: 18px;
   }
-}
+} */
 .about-text p {
   font-size: 18px;
   max-width: 450px;
@@ -805,11 +805,11 @@ a.btn:hover {
   font-size: 15px;
 }
 
-@media (max-width: 991px) {
+/* @media (max-width: 991px) {
   .about-avatar {
     margin-top: 30px;
   }
-}
+} */
 
 .about-section .counter {
   padding: 22px 20px;
@@ -864,7 +864,9 @@ button:hover {
 }
 
 
-
+.concu button {
+    zoom: 200%;
+}
 
 
 

@@ -145,6 +145,7 @@ window.location.href = link;
 
   
   <style scoped>
+  
   .container {
     display: flex;
     flex-direction: column;

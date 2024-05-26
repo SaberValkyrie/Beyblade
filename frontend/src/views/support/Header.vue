@@ -170,11 +170,14 @@ this.isShow = false;
     },
   },
   created() {
-   if(this.loggedInUser){
+   this.isShow = true;
+   setInterval(() => {
+    if(this.loggedInUser){
     this.getAcc()
     this.checkAuthenticate()
    }
-   this.isShow = true;
+  }, 1000);
+
   },
   mounted() {
     setTimeout(() => {

@@ -420,7 +420,32 @@ public class GameController {
 
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được bey", beyBoss);
     }
+    @PostMapping("/getKQ")
+    public ResponseEntity<ResponseOpject> getKQ(@RequestBody CheckKQ battle) {
+        List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
+        List<TOP> topBOT = service.topList;
 
+        // Kết hợp hai danh sách
+        List<TOP> topAll = service.getTopAll(topBOT,topDB);
+
+        User userByTopInDB = service.getUserByTop(battle.topUser2); //check top x có phải user này không?
+
+        boolean case1 = userByTopInDB != null && !userByTopInDB.username.equals(battle.user2);
+
+        TOP topcung = new TOP();
+        for (TOP top : topAll){
+            if (top.top == battle.topUser2){
+               topcung = top;
+               break;
+            }
+        }
+        boolean case2 = topcung.user.username.equals(battle.user2) ;
+
+        if (case1 || !case2){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Đối thủ đã bị người khác đánh bại trước bạn", null);
+        }
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được bey", null);
+    }
     @PostMapping("/setKQ")
     public ResponseEntity<ResponseOpject> setKQ(@RequestBody CheckKQ battle) {
 
@@ -433,11 +458,14 @@ public class GameController {
         // Kết hợp hai danh sách
         List<TOP> topAll = service.getTopAll(topBOT,topDB);
         int top = 0;
+        User kethu = null;
         for (TOP t : topAll){
             if (t.top == battle.topUser2){
                  topAnother = service.getTopByUserName(battle.user2);
 
                 top = topAnother != null ? topAnother.top : t.top;
+
+                kethu = t.user;
 
               if (topAnother != null){
                   topAnother.top = topMe.top;

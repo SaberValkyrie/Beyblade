@@ -27,6 +27,10 @@ setKQ(option) {
     const response =  axios.post(`${baseURL}/game/setKQ`,option);
     return response;
 }
+getKQ(option) {
+    const response =  axios.post(`${baseURL}/game/getKQ`,option);
+    return response;
+}
 updateBoss(option,token) {
     const response =  axios.post(`${baseURL}/game/updateBoss/${token}`,option);
     return response;

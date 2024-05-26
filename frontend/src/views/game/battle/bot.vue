@@ -202,69 +202,63 @@ v-if="selectedBey.images">
 </div>
 
 <div v-if="buoc == 3" > 
+  
+  
+  
+  
+  
+  <div class="container">
+    <div class="main-body">
+      <div class="row">
+        <div class="left-column">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+                <div class="mt-3">
+                  <h4>{{ selectedBey.name }}</h4>
+                  <p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
+                  <p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
 
-
-
-
-<div class="container">
-<div class="main-body">
- <div class="row">
-   <div class="col-lg-4">
-     <div class="card">
-       <div class="card-body">
-         <div class="d-flex flex-column align-items-center text-center">
-           <img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
-           <div class="mt-3">
-             <h4>{{ selectedBey.name }}</h4>
-             <p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
-             <p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
-           </div>
-         <div style="display:flex;zoom: 70%" >
-           <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
-
-<button @click="accept()">OK</button>
-         </div>
-         </div>
-     
-       </div>
-     </div>
-   </div>
-   
-   <div class="col-lg-8">
- 
-     <div class="row">
-       <div class="col-sm-12">
-         <div class="card">
-           <div class="card-body">
-             <h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
-             <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
-             <div class="progress mb-3" style="height: 5px">
-<div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-             <p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
-             <div class="progress mb-3" style="height: 5px">
-               <div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
-             </div>
-             <p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
-             <div class="progress mb-3" style="height: 5px">
-               <div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }"  aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-             </div>
-             <p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
-             <div class="progress mb-3" style="height: 5px">
-               <div class="progress-bar bg-warning" role="progressbar"  :style="{ width: (selectedBey.crit) + '%' }"  aria-valuemax="100"></div>
-             </div>
-             <p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
-             <div class="progress" style="height: 5px">
-               <div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
-</div>
-</div>
+                </div>
+                <div style="display:flex;zoom: 70%">
+                  <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
+                  <button @click="accept()">Chọn</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="right-column">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
+              <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
+              <div class="progress mb-3" style="height: 5px">
+                <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
+              <div class="progress mb-3" style="height: 5px">
+                <div class="progress-bar bg-danger" role="progressbar" :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
+              <div class="progress mb-3" style="height: 5px">
+                <div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
+              <div class="progress mb-3" style="height: 5px">
+                <div class="progress-bar bg-warning" role="progressbar" :style="{ width: (selectedBey.crit) + '%' }" aria-valuemax="100"></div>
+              </div>
+              <p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
+              <div class="progress" style="height: 5px">
+                <div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -641,353 +635,357 @@ wheelStyle() {
 
 
 
-
-
 <style scoped>
-.lucky-wheel {
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-}
 
-.wheel-container {
-display: flex;
-justify-content: center;
-align-items: center;
-}
 
-.wheel {
-    position: relative;
-    width: 23vw;
-    height: 23vw;
-    zoom: 150%;
-    border-radius: 50%;
-    background-color: rgb(255, 255, 255);
+
+  
+.container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    overflow: hidden;
-    transition: transform var(--spin-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
-    margin: 0 -1px;
-}
+    max-width: 90vw;
+  }
+  
+  .main-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
 
-.wheel-image {
-width: 100%; /* Kích thước hình ảnh */
-height: auto; /* Kích thước hình ảnh tự điều chỉnh theo tỉ lệ */
-}
-.effect1 {
-position: fixed;
-z-index: 1;
-}
-
-.effect1-image {
-height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
-}
-
-.effect {
-position: absolute;
-
-z-index: 3; /* Đảm bảo hiển thị trên cùng */
-}
-
-.effect-image {
-width: 100%; /* Kích thước hình ảnh effect */
-zoom: 120%;
-height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
-}
-
-/* Thêm style cho nút quay */
-button {
-margin-top: 20px;
-padding: 10px 20px;
-font-size: 16px;
-background-color: #138500;
-color: white;
-border: none;
-border-radius: 5px;
-cursor: pointer;
-transition: background-color 0.3s ease;
-}
-
-button:hover {
-background-color: #8b4513; /* Tương phản màu sắc */
-}
-
-button:disabled {
-background-color: #ccc; /* Màu sắc khi nút bị vô hiệu hóa */
-cursor: not-allowed;
-}
-
-.item {
-width: 100px;
-height: 100px;
-border-radius: 50%;
-background-color: white; /* Màu trắng */
-display: flex;
-justify-content: center;
-align-items: center;
-transform: rotate(calc((var(--item-count) * 45deg) * (1 - var(--direction, 1))));
-}
-
-
-.wheel img {
-width: 100%;
-zoom: 280%;
-height: auto;
-}
-
-/* Tùy chỉnh grid layout khi quay */
-.wheel.spinning {
-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
-transform: rotate(calc(var(--final-rotation, 0) * 360deg));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-body{
-}
-.rounded-circle {
-border-radius: 50%!important;
-}
-.border-5 {
-border-width: 5px;
-}
-
-.border-white {
-border-opacity: 1;
-border-color: rgba(255,255,255, 1) !important;
-}
-
-.shadow {
-box-shadow: 0 0.375rem 1.5rem 0 rgba(140,152,164,.125)!important;
-}
-
-
-img {
-max-width: 100%;
-height: auto;
-}
-
-.icon-sm {
-width: 1.5rem;
-height: 1.5rem;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-font-size: 75%;
-line-height: normal;
-}
-.rounded-circle {
-border-radius: 50%!important;
-}
-
-.hover-top-in .hover-top--in {
-transition: ease-in-out all .35s;
-position: relative;
-top: 0
-}
-
-.hover-top-in:hover .hover-top--in {
-top: -10px
-}
-
-.me-1 {
-margin-right: 0.25rem!important;
-}
-
-.fw-700 {
-font-weight: 700!important;
-}
-.mb-1 {
-margin-bottom: 0.25rem!important;
-}
-
-.z-index-1 {
-z-index: 1!important;
-}
-
-.pt-6 {
-padding-top: 2.5rem!important;
-}
-.p-4 {
-padding: 1.5rem!important;
-}
-.mt-n4 {
-margin-top: -1.5rem!important;
-}
-
-.shadow {
-box-shadow: 0 0.375rem 1.5rem 0 rgba(var(--bs-gray-700-rgb),.125)!important;
-}
-.px-5 {
-padding-right: 2rem!important;
-padding-left: 2rem!important;
-}
-.position-relative {
-position: relative!important;
-}
-.overflow-hidden {
-overflow: hidden !important;
-zoom: 70%;
-}
-
-
-img.rounded-circle.border.border-5.border-white.shadow {
-zoom: 60%;
-}
-
-img.rounded-circle.border.border-5.border-white.shadow:hover {
-background-color: #0029e2;
-box-shadow: 0 1px 2px #999;
-}
-
-
-img.imgshow {
-max-width: 218px;
-}
-
-
-img {
-max-width: 11rem;
-height: auto;
-}
-section#team {
-zoom: 210%;
-}
-.card {
-position: relative;
-display: flex;
-flex-direction: column;
-min-width: 0;
-word-wrap: break-word;
-background-color: #fff;
-background-clip: border-box;
-border: 0 solid transparent;
-border-radius: .25rem;
-margin-bottom: 1.5rem;
-box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
-}
-.me-2 {
-margin-right: .5rem!important;
-}
-.text-muted {
---bs-text-opacity: 1;
-color: #5e0000 !important;
-}
-
-.row {
-zoom:140%;
---bs-gutter-x: 1.5rem;
---bs-gutter-y: 0;
-display: flex;
-flex-wrap: wrap;
-margin-top: calc(-1* var(--bs-gutter-y));
-margin-right: calc(-.5* var(--bs-gutter-x));
-margin-left: calc(-.5* var(--bs-gutter-x));
+  .lucky-wheel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  }
+  
+  .wheel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+  
+  .wheel {
+      position: relative;
+      width: 23vw;
+      height: 23vw;
+      zoom: 150%;
+      border-radius: 50%;
+      background-color: rgb(255, 255, 255);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: transform var(--spin-duration) cubic-bezier(0.25, 0.1, 0.25, 1);
+      margin: 0 -1px;
+  }
+  
+  .wheel-image {
+  width: 100%; /* Kích thước hình ảnh */
+  height: auto; /* Kích thước hình ảnh tự điều chỉnh theo tỉ lệ */
+  }
+  .effect1 {
+  position: fixed;
+  z-index: 1;
+  }
+  
+  .effect1-image {
+  height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
+  }
+  
+  .effect {
+  position: absolute;
+  
+  z-index: 3; /* Đảm bảo hiển thị trên cùng */
+  }
+  
+  .effect-image {
+  width: 100%; /* Kích thước hình ảnh effect */
+  zoom: 120%;
+  height: auto; /* Kích thước hình ảnh effect tự điều chỉnh theo tỉ lệ */
+  }
+  
+  /* Thêm style cho nút quay */
+  button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #138500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+  background-color: #8b4513; /* Tương phản màu sắc */
+  }
+  
+  button:disabled {
+  background-color: #ccc; /* Màu sắc khi nút bị vô hiệu hóa */
+  cursor: not-allowed;
+  }
+  
+  .item {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: white; /* Màu trắng */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(calc((var(--item-count) * 45deg) * (1 - var(--direction, 1))));
+  }
+  
+  
+  .wheel img {
   width: 100%;
+  zoom: 280%;
+  height: auto;
+  }
+  
+  /* Tùy chỉnh grid layout khi quay */
+  .wheel.spinning {
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  transform: rotate(calc(var(--final-rotation, 0) * 360deg));
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  body{
+  }
+  .rounded-circle {
+  border-radius: 50%!important;
+  }
+  .border-5 {
+  border-width: 5px;
+  }
+  
+  .border-white {
+  border-opacity: 1;
+  border-color: rgba(255,255,255, 1) !important;
+  }
+  
+  .shadow {
+  box-shadow: 0 0.375rem 1.5rem 0 rgba(140,152,164,.125)!important;
+  }
+  
+  
+  img {
+  max-width: 100%;
+  height: auto;
+  }
+  
+  .icon-sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 75%;
+  line-height: normal;
+  }
+  .rounded-circle {
+  border-radius: 50%!important;
+  }
+  
+  .hover-top-in .hover-top--in {
+  transition: ease-in-out all .35s;
+  position: relative;
+  top: 0
+  }
+  
+  .hover-top-in:hover .hover-top--in {
+  top: -10px
+  }
+  
+  .me-1 {
+  margin-right: 0.25rem!important;
+  }
+  
+  .fw-700 {
+  font-weight: 700!important;
+  }
+  .mb-1 {
+  margin-bottom: 0.25rem!important;
+  }
+  
+  .z-index-1 {
+  z-index: 1!important;
+  }
+  
+  .pt-6 {
+  padding-top: 2.5rem!important;
+  }
+  .p-4 {
+  padding: 1.5rem!important;
+  }
+  .mt-n4 {
+  margin-top: -1.5rem!important;
+  }
+  
+  .shadow {
+  box-shadow: 0 0.375rem 1.5rem 0 rgba(var(--bs-gray-700-rgb),.125)!important;
+  }
+  .px-5 {
+  padding-right: 2rem!important;
+  padding-left: 2rem!important;
+  }
+  .position-relative {
+  position: relative!important;
+  }
+  .overflow-hidden {
+  overflow: hidden !important;
+  zoom: 70%;
+  }
+  
+  
+  img.rounded-circle.border.border-5.border-white.shadow {
+    width: 5vw;
+    height: 5vw;
+  }
+  
+  img.rounded-circle.border.border-5.border-white.shadow:hover {
+  background-color: #0029e2;
+  box-shadow: 0 1px 2px #999;
+  }
+  
+  
+  img.imgshow {
+  max-width: 218px;
+  }
+  
+  
+  img {
+  max-width: 11rem;
+  height: auto;
+  }
+  section#team {
+  zoom: 210%;
+  }
 
-}
-.rows {
+  .me-2 {
+  margin-right: .5rem!important;
+  }
+  .text-muted {
+  --bs-text-opacity: 1;
+  color: #5e0000 !important;
+  }
+  .progress {
+    height: 5px;
+  }
 
-margin: -2rem;
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .left-column, .right-column {
+    width: 45vw;
+    margin-bottom: 1rem;
+  }
+  .card {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
 
-display: flex;
-flex-wrap: wrap;
-}
-.inc {
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: space-between;
-           margin-bottom: 30px; /* Khoảng cách giữa các cột */
-
-}
-
-
-
-.select {
-zoom: 200%;
-}
-
-
-
-.concac {
-display: inline-flex;
-}
-.win {
-display: inline-grid;
-}
-h5.d-flex.align-items-center.mb-3 {
+  .rows {
+    display: ruby; 
+  }
+  .inc {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between;
+             margin-bottom: 30px; /* Khoảng cách giữa các cột */
+  
+  }
+  
+  
+  
+  .select {
+  zoom: 200%;
+  }
+  
+  
+  
+  .concac {
+  display: inline-flex;
+  }
+  .win {
+  display: inline-grid;
+  }
+  h5.d-flex.align-items-center.mb-3 {
+      font-size: 2vw;
+  }
+  .card-body1 {   
+     position: fixed;
+     width: 28vw;
+      /* height: 17vw; */
+      flex: 1 1 auto;
+      font-size: 2vw;
+      border: 1px solid #a79273;
+      background-color: white;
+      border-radius: 12%;
+      padding: 4vw;
+      margin-top: -5rem;
+      /* height: 42%; */
+      top: 50%;
+      margin-right: 1rem;
+      margin-left: 1rem;
+  }
+  
+  
+  
+  
+  .wheel-container,
+  .lucky-wheel {
+    width: 100%;
+      margin-top: 2%;
+      height: 100%;
+      zoom: 80%;
+  
+  }
+  .text {
     font-size: 2vw;
-}
-.card-body1 {   
-   position: fixed;
-   width: 28vw;
-    /* height: 17vw; */
-    flex: 1 1 auto;
-    font-size: 2vw;
-    border: 1px solid #a79273;
-    background-color: white;
-    border-radius: 12%;
-    padding: 4vw;
-    margin-top: -5rem;
-    /* height: 42%; */
-    top: 50%;
-    margin-right: 1rem;
-    margin-left: 1rem;
-}
+      max-width: 61vw;
+  }
+  
+  @keyframes blink {
+  80% {
+  opacity: 1;
+  }
+  70% {
+  opacity: 1;
+  }
+  100% {
+  opacity: 0;
+  }
+  }
+  .blinking-text {
+  animation: blink 1s infinite;
+  }
+  
+  
+  .col-lg-3 {
+    /* Thay đổi kích thước cột theo phần trăm mong muốn */
+    flex: 0 0 auto;
+    width: 33.33%; /* 1/3 chiều rộng */
+  }
 
-
-
-
-.wheel-container,
-.lucky-wheel {
-  width: 100%;
-    margin-top: 2%;
-    height: 100%;
-    zoom: 80%;
-
-}
-.text {
-  font-size: 2vw;
-    max-width: 61vw;
-}
-
-@keyframes blink {
-80% {
-opacity: 1;
-}
-70% {
-opacity: 1;
-}
-100% {
-opacity: 0;
-}
-}
-.blinking-text {
-animation: blink 1s infinite;
-}
-
-
-.col-lg-3 {
-  /* Thay đổi kích thước cột theo phần trăm mong muốn */
-  flex: 0 0 auto;
-  width: 33.33%; /* 1/3 chiều rộng */
-}
-
-
-
-</style>
+  
+  
+  </style>

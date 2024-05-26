@@ -175,8 +175,7 @@
   </section>
   
   <div v-if="buoc == 2">
-  
-  
+
   <div class="team-area sp">
   <div class="container">
     <div class="row">
@@ -206,65 +205,59 @@
   
   
   
-  <div class="container">
-  <div class="main-body">
-   <div class="row">
-     <div class="col-lg-4">
-       <div class="card">
-         <div class="card-body">
-           <div class="d-flex flex-column align-items-center text-center">
-             <img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
-             <div class="mt-3">
-               <h4>{{ selectedBey.name }}</h4>
-               <p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
-               <p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
-             </div>
-           <div style="display:flex;zoom: 70%" >
-             <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
   
-  <button @click="accept()">OK</button>
-           </div>
-           </div>
-       
-         </div>
-       </div>
-     </div>
-     
-     <div class="col-lg-8">
-   
-       <div class="row">
-         <div class="col-sm-12">
-           <div class="card">
-             <div class="card-body">
-               <h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
-               <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
-               <div class="progress mb-3" style="height: 5px">
-  <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-  </div>
-               <p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
-               <div class="progress mb-3" style="height: 5px">
-                 <div class="progress-bar bg-danger" role="progressbar"  :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
-               </div>
-               <p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
-               <div class="progress mb-3" style="height: 5px">
-                 <div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }"  aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-               </div>
-               <p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
-               <div class="progress mb-3" style="height: 5px">
-                 <div class="progress-bar bg-warning" role="progressbar"  :style="{ width: (selectedBey.crit) + '%' }"  aria-valuemax="100"></div>
-               </div>
-               <p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
-               <div class="progress" style="height: 5px">
-                 <div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
-  </div>
-  </div>
+    <div class="container">
+      <div class="main-body">
+        <div class="row">
+          <div class="left-column">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+                  <div class="mt-3">
+                    <h4>{{ selectedBey.name }}</h4>
+                    <p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
+                    <p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
+
+                  </div>
+                  <div style="display:flex;zoom: 70%">
+                    <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
+                    <button @click="accept()">Chọn</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-column">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
+                <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                  <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
+                <div class="progress mb-3" style="height: 5px">
+                  <div class="progress-bar bg-danger" role="progressbar" :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
+                <div class="progress mb-3" style="height: 5px">
+                  <div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
+                <div class="progress mb-3" style="height: 5px">
+                  <div class="progress-bar bg-warning" role="progressbar" :style="{ width: (selectedBey.crit) + '%' }" aria-valuemax="100"></div>
+                </div>
+                <p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
+                <div class="progress" style="height: 5px">
+                  <div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   
   
   
@@ -565,22 +558,25 @@ const option = {
   user2:this.userB,
   topUser2:this.top,
 };
-  this.gameService.setKQ(option).then(res => {
-    toast.success(res.data.message)
 
+this.gameService.getKQ(option).then(res => {
+
+  this.gameService.setKQ(option).then(res => {
+
+    toast.success(res.data.message)
 }).catch(error => {
 toast.warning(error.response.data.message)
 });
 
+}).catch(error => {
+toast.warning(error.response.data.message)
+return
+});
 this.isWin = false;
 setTimeout(() => {
           window.location.href = "/game/top";
-				}, 5000);
+				}, 4000);
     }
-   
-  
-  
-  
   },
   
   truHPMe(point) {
@@ -685,6 +681,23 @@ setTimeout(() => {
   
   
   <style scoped>
+
+
+
+  
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 90vw;
+  }
+  
+  .main-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
   .lucky-wheel {
   display: flex;
   flex-direction: column;
@@ -888,7 +901,8 @@ setTimeout(() => {
   
   
   img.rounded-circle.border.border-5.border-white.shadow {
-  zoom: 60%;
+    width: 5vw;
+    height: 5vw;
   }
   
   img.rounded-circle.border.border-5.border-white.shadow:hover {
@@ -909,19 +923,7 @@ setTimeout(() => {
   section#team {
   zoom: 210%;
   }
-  .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: #fff;
-  background-clip: border-box;
-  border: 0 solid transparent;
-  border-radius: .25rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
-  }
+
   .me-2 {
   margin-right: .5rem!important;
   }
@@ -929,25 +931,25 @@ setTimeout(() => {
   --bs-text-opacity: 1;
   color: #5e0000 !important;
   }
-  
-  .row {
-  zoom:140%;
-  --bs-gutter-x: 1.5rem;
-  --bs-gutter-y: 0;
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: calc(-1* var(--bs-gutter-y));
-  margin-right: calc(-.5* var(--bs-gutter-x));
-  margin-left: calc(-.5* var(--bs-gutter-x));
-    width: 100%;
-  
+  .progress {
+    height: 5px;
   }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .left-column, .right-column {
+    width: 45vw;
+    margin-bottom: 1rem;
+  }
+  .card {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
   .rows {
-  
-  margin: -2rem;
-  
-  display: flex;
-  flex-wrap: wrap;
+    display: ruby; 
   }
   .inc {
      display: flex;
@@ -1028,7 +1030,7 @@ setTimeout(() => {
     flex: 0 0 auto;
     width: 33.33%; /* 1/3 chiều rộng */
   }
-  
+
   
   
   </style>
