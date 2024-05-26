@@ -311,6 +311,7 @@ public class GameController {
         if (service.boss.hp <= 0){
             service.boss.playerKill = userFromToken;
             service.boss.die = true;
+            //boss TG die
         }
 
         return Util.checkStatusRes(HttpStatus.OK,  "update thành công", service.boss.hp);
@@ -357,7 +358,8 @@ public class GameController {
         }
 
         if (topme.top - topdich.top > maxHangPK) {
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Hạng của bạn chỉ có thể thách đấu tối đa " + maxHangPK + " bậc", null);
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, maxHangPK > 1? "Hạng của bạn chỉ có thể thách đấu từ hạng " + (topme.top -maxHangPK )  + " tới " + (topme.top - 1)
+                    : "Hạng của bạn chỉ có thể thách đấu với hạng " + (topme.top -1 ), null);
         }
 
 
@@ -396,32 +398,64 @@ public class GameController {
         List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
         service.loadTop(); // Dữ liệu cứng
         List<TOP> topBOT = service.topList;
-
         // Kết hợp hai danh sách
-        List<TOP> topAll = new ArrayList<>(topBOT);
-
-//         Lặp qua danh sách từ cơ sở dữ liệu
-        for (TOP topDBItem : topDB) {
-            // Lặp qua danh sách kết hợp để thay thế tất cả các phần tử có cùng giá trị "top"
-            for (int i = 0; i < topAll.size(); i++) {
-                TOP topAllItem = topAll.get(i);
-                if (topDBItem.top == topAllItem.top) {
-                    // Thay thế phần tử từ cơ sở dữ liệu vào danh sách kết hợp
-                    topAll.set(i, topDBItem);
-                }
-            }
-        }
-
-        // Sắp xếp danh sách kết hợp theo thuộc tính top
-        topAll.sort(Comparator.comparing(TOP::getTop));
-
+        List<TOP> topAll = service.getTopAll(topBOT,topDB);
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", topAll);
     }
 
 
 
+    @PostMapping("/setKeThu")
+    public ResponseEntity<ResponseOpject> setKeThu(
+            @RequestBody TOP top
+    ) {
+        BeyBoss beyBoss = new BeyBoss();
+        beyBoss.dame =  top.selectBey.power;
+        beyBoss.hp = top.selectBey.hp;
+        beyBoss.buff = top.buff;
+        beyBoss.time = (byte) LocalTime.now().getHour();
+        beyBoss.bey = top.selectBey;
+        beyBoss.die = false;
+        beyBoss.playerKill = null;
 
+        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được bey", beyBoss);
+    }
 
+    @PostMapping("/setKQ")
+    public ResponseEntity<ResponseOpject> setKQ(@RequestBody CheckKQ battle) {
+
+        TOP topMe = service.getTopByUserName(battle.user1);
+        TOP topAnother = null;
+
+        List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
+        List<TOP> topBOT = service.topList;
+
+        // Kết hợp hai danh sách
+        List<TOP> topAll = service.getTopAll(topBOT,topDB);
+        int top = 0;
+        for (TOP t : topAll){
+            if (t.top == battle.topUser2){
+                 topAnother = service.getTopByUserName(battle.user2);
+
+                top = topAnother != null ? topAnother.top : t.top;
+
+              if (topAnother != null){
+                  topAnother.top = topMe.top;
+                  topAnother.lost += 1;
+                  service.saveTop(topAnother);
+              }
+                break;
+            }
+        }
+
+        if (top != battle.topUser2) { // so sánh nếu top của another hiện tại khác top lúc thách đấu
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Đã có người đánh bại " + battle.user2 + " trước bạn", null);
+        }
+        topMe.top = top;
+        topMe.win += 1;
+        service.saveTop(topMe);
+        return Util.checkStatusRes(HttpStatus.OK, "Chúc Mừng Bạn đã đánh bại được " + battle.user2 + " và đạt top " + top, battle);
+    }
     @PostMapping("/attack")
     public ResponseEntity<ResponseOpject> BossAttack(
             @RequestBody BeyBattle battle

@@ -23,7 +23,10 @@ checkSpin(option) {
     const response =  axios.post(`${baseURL}/game/spin/check`,option);
     return response;
 }
-
+setKQ(option) {
+    const response =  axios.post(`${baseURL}/game/setKQ`,option);
+    return response;
+}
 updateBoss(option,token) {
     const response =  axios.post(`${baseURL}/game/updateBoss/${token}`,option);
     return response;
@@ -61,6 +64,10 @@ buyItem(token,item) {
 
  getUserTop(token,top) {
     const response = axios.post(`${baseURL}/game/thachdau/${token}`,top);
+    return response;
+}
+setPK(kethu) {
+    const response = axios.post(`${baseURL}/game/setKeThu`,kethu);
     return response;
 }
 

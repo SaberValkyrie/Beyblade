@@ -35,7 +35,7 @@
    <img :src="eff" class="effect-image">
  </div>
  <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
-  <img v-if="BossBurst" :src="img" class="effect">
+  <img v-if="Boss.hp <= 0" :src="img" class="effect">
      <img :src="Boss.bey.images" class="wheel-image">
  </div>
 

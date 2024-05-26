@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * CartService.
@@ -111,10 +108,7 @@ public class BeyService {
             userclone.active = true;
             userclone.rank= (byte) i;
 
-            List<BeyBlade> beyBlades = getBasicBey();
-            int randomIndex1 = new Random().nextInt(beyBlades.size());
-            int randomId1 = (int) beyBlades.get(randomIndex1).id;  // Fixed line
-            BeyBlade bey = getBeyByID(randomId1);
+            BeyBlade bey = getRandomBey();
             TOP top = new TOP();
             top.user = userclone;
             top.win = (short) Util.nextInt(1,10);
@@ -130,8 +124,37 @@ public class BeyService {
         System.out.println("Load TOP Thành Công! " + topList.size());
     }
 
-    public void truHp(long dame) {
-        boss.hp -= dame;
+
+    public List<TOP> getTopAll(List<TOP> topBOT,List<TOP> topDB){
+        List<TOP> topAll = new ArrayList<>(topBOT);
+
+//         Lặp qua danh sách từ cơ sở dữ liệu
+        for (TOP topDBItem : topDB) {
+            // Lặp qua danh sách kết hợp để thay thế tất cả các phần tử có cùng giá trị "top"
+            for (int i = 0; i < topAll.size(); i++) {
+                TOP topAllItem = topAll.get(i);
+                if (topDBItem.top == topAllItem.top) {
+                    // Thay thế phần tử từ cơ sở dữ liệu vào danh sách kết hợp
+                    topAll.set(i, topDBItem);
+                }
+            }
+        }
+
+        // Sắp xếp danh sách kết hợp theo thuộc tính top
+        topAll.sort(Comparator.comparing(TOP::getTop));
+        return topAll;
+    }
+
+    public BeyBlade getRandomBey(){
+        List<BeyBlade> list0 = getBoss();
+        List<BeyBlade> list1 = getBasicBey();
+        List<BeyBlade> list = new ArrayList<>();
+        list.addAll(list0);
+        list.addAll(list1);
+        int randomIndex = new Random().nextInt(list.size());
+        int randomId = (int) list.get(randomIndex).id;
+        return getBeyByID(randomId);
+
     }
 
     public BeyBlade getRandomBeyBoss(){
@@ -152,7 +175,7 @@ public class BeyService {
         boss.buff = (byte) Util.nextInt(20,120);
         boss.dame = boss.bey.power;
         boss.hp = 10_000_000
-//                + boss.buff * boss.bey.hp * (8 - boss.bey.season)
+                + boss.buff * boss.bey.hp * (8 - boss.bey.season)
         ;
         boss.playerKill = null;
         boss.die = false;
@@ -214,7 +237,13 @@ public class BeyService {
     public TOP getTopByUser(User user) {
         return topRepository.getTopByUser(user);
     }
+    public TOP getTopByUserName(String user) {
+        return topRepository.getTopByUserName(user);
+    }
 
+    public User getUserByTop(int top) {
+        return topRepository.getUserByTop(top);
+    }
     public List<TOP> getTop() {
         return topRepository.getTop();
     }

@@ -1,15 +1,10 @@
+
 <template>
+<div class="event-schedule-area-two bg-color pad100" v-if="!info && !thachdau">
+    <app-header></app-header>
 
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<app-header></app-header>
-<br>
-<br>
-<br>
-
-
-
-<div class="event-schedule-area-two bg-color pad100" v-if="!info">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -101,7 +96,7 @@
                                         </td>
                                         <td>
                                             <div class="primary-btn" >
-                                                <a class="btn btn-primary" @click="setThachDau(player)">{{ loggedInUser.username != player.user.username ? 'Thách Đấu' : 'Buff Chỉ Số'}}</a>
+                                                <a class="btn" @click="setThachDau(player)">{{ loggedInUser.username != player.user.username ? 'Thách Đấu' : 'Buff Chỉ Số'}}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -122,59 +117,204 @@
         <!-- /row end-->
     </div>
 </div>
-<div v-else>
+<div  class="event-schedule-area-two bg-color pad100" v-if="info">
+    <section class="section about-section gray-bg" id="about">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-lg-6">
+                        <div class="about-text go-to">
+                            <h3 class="dark-color">Thông tin đối thủ</h3>
+                    
+                         
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="about-avatar">
+                            <img  class="avatar" :src="kethu.user.userId == 0 ? 'https://i.pinimg.com/originals/4b/32/f7/4b32f753e28ef8f590e3c9356c16f117.jpg' : baseUrl + '/files/' + kethu.user.avatar" title="" alt="">
+                        </div>
+                        
+                    </div>
+                </div>
+                <br>
+                <div class="counter">
+                    <div class="row">
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="500" data-speed="500">Top {{ kethu.top }}</h6>
+                                <p class="m-0px font-w-600">Người Xuất Sắc</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="150" data-speed="150">{{ kethu.win }}</h6>
+                                <p class="m-0px font-w-600">Trận Thắng</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="850" data-speed="850">{{convert(kethu.selectBey.hp * (kethu.buff > 0 ? kethu.buff : 1))}}</h6>
+                                <p class="m-0px font-w-600">HP</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="count-data text-center">
+                                <h6 class="count h2" data-to="850" data-speed="850">{{convert(kethu.selectBey.power)}}</h6>
+                                <p class="m-0px font-w-600">Dame</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="concu">
+                    <button @click="back()">Quay Lại</button>
+                    <button @click="thachdauNgay(kethu)">Thách Đấu Ngay</button>
+                </div>
+               
+            </div>
+        </section>
+    
+</div>
+<div class="thachdau" v-if="thachdau">
+    
 
-{{ kethu }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<app-top></app-top>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </div>
+
 </template>
-
-
-
-
-
-
-
-
 <script>
 import axios from 'axios'; // Import Axios
 import { baseURL } from '@/router/index';
 import Header from '/src/views/support/Header.vue'
 import Foooter from '/src/views/support/Footer.vue'
+import TOP from '/src/views/game/battle/top.vue'
+
 import { toast } from 'vue3-toastify';
 import {GameService} from '@/core/service/game';
+
 import 'vue3-toastify/dist/index.css';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
 
 export default {
-    name:'TOP',
+    name:'TOPBattle',
   components: {
     'app-header': Header,
     'app-footer': Foooter,
+    'app-top': TOP,
   },
   computed: {
     ...mapGetters(['loggedInUser']),
-   
+    wheelStyle() {
+ return {
+   '--item-count': this.items.length,
+   '--spin-duration': `${this.spinDuration}s`,
+ };
+},
   },
 
   data() {
     return {
-      service: new GameService(),
+        gameService: new GameService(),
       baseUrl: baseURL,
       players: [],
       token: localStorage.getItem('token'),
       info:false,
+      menuBuff:false,
       kethu:{},
-
+      banthan:{},
+      thachdau: false,
     };
   },
   created() {
     this.getTop()
-
+    setInterval(() => {
+        this.getTop()
+}, 1000);
   },
   methods: {
+
+//--------------------------------------------------
+
+
+    thachdauNgay(kethu){
+        this.info = false;
+        this.thachdau = true;
+        localStorage.setItem('kethuTop', JSON.stringify(kethu));    
+    },
+
+
+
+
+
+
 
     setInfo(s){
         this.info = s;
@@ -182,9 +322,16 @@ export default {
 
     setThachDau(top){
         this.getTop()
-        this.service.getUserTop(this.token,top).then(res => {
+        
+        if (this.loggedInUser.username === top.user.username) {
+        this.menuBuff = true;
+            return
+        }
+
+
+        this.gameService.getUserTop(this.token,top).then(res => {
 this.kethu = res.data.data;
-// this.setInfo(true)
+this.setInfo(true)
 toast.success(res.data.message)
 })    .catch(error => {
 toast.error(error.response.data.message);
@@ -201,14 +348,17 @@ toast.error(error.response.data.message);
           }
           return name;
       },
+      back(){
+        this.info = false
+      },
     getTop() {
-    this.service.getTop()
+    this.gameService.getTop()
         .then(res => {
             this.players = res.data.data;
+            this.banthan = this.players.find(player => player.user.username === this.loggedInUser.username);
         })
         .catch(error => {
-            console.error("There was an error fetching the top players:", error);
-            toast.error("Failed to load top players!");
+    
         });
 },
 
@@ -521,7 +671,6 @@ a.btn.btn-primary {
 
       zoom: 150%;
     padding: 1rem;
-    /* font-size: 1.5vw; */
     border: 1px solid;
 
 }
@@ -538,6 +687,191 @@ table.table {
     /* width: 84vw; */
     zoom: 60%;
 }
+
+a.btn {
+    background-color: #f3f3f3;
+    zoom: 145%;
+    color: red;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1px solid #d10000;
+}
+a.btn:hover {
+    background-color: #a3ff9b;
+    zoom: 145%;
+    color: red;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1px solid #ffffff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.section {
+    zoom: 80%;
+    padding: 100px 0;
+    position: relative;
+}
+.gray-bg {
+    background-color: #f5f5f5;
+}
+
+.avatar {
+    vertical-align: middle;
+    border-style: none;
+    width: 26vw;
+    height: 26vw;
+    border-radius: 50%;
+    border: 9px solid #080178;
+}
+/* About Me 
+---------------------*/
+.about-text h3 {
+  font-size: 45px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+@media (max-width: 767px) {
+  .about-text h3 {
+    font-size: 35px;
+  }
+}
+.about-text h6 {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+@media (max-width: 767px) {
+  .about-text h6 {
+    font-size: 18px;
+  }
+}
+.about-text p {
+  font-size: 18px;
+  max-width: 450px;
+}
+.about-text p mark {
+  font-weight: 600;
+  color: #20247b;
+}
+
+.about-list {
+  padding-top: 10px;
+}
+.about-list .media {
+  padding: 5px 0;
+}
+.about-list label {
+  color: #20247b;
+  font-weight: 600;
+  width: 88px;
+  margin: 0;
+  position: relative;
+}
+.about-list label:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 11px;
+  width: 1px;
+  height: 12px;
+  background: #20247b;
+  -moz-transform: rotate(15deg);
+  -o-transform: rotate(15deg);
+  -ms-transform: rotate(15deg);
+  -webkit-transform: rotate(15deg);
+  transform: rotate(15deg);
+  margin: auto;
+  opacity: 0.5;
+}
+.about-list p {
+  margin: 0;
+  font-size: 15px;
+}
+
+@media (max-width: 991px) {
+  .about-avatar {
+    margin-top: 30px;
+  }
+}
+
+.about-section .counter {
+  padding: 22px 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(31, 45, 61, 0.125);
+}
+.about-section .counter .count-data {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.about-section .counter .count {
+  font-weight: 700;
+  color: #20247b;
+  margin: 0 0 5px;
+}
+.about-section .counter p {
+  font-weight: 600;
+  margin: 0;
+}
+mark {
+    background-image: linear-gradient(rgba(252, 83, 86, 0.6), rgba(252, 83, 86, 0.6));
+    background-size: 100% 3px;
+    background-repeat: no-repeat;
+    background-position: 0 bottom;
+    background-color: transparent;
+    padding: 0;
+    color: currentColor;
+}
+.theme-color {
+    color: #fc5356;
+}
+.dark-color {
+    color: #20247b;
+}
+
+
+button {
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+    background-color: white;
+    border: 1px solid darkred;
+    border-radius: 9px;
+}
+button:hover {
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+    color:white;
+    background-color: rgb(92, 0, 0);
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 9px;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 </style>

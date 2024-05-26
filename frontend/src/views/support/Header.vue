@@ -48,7 +48,20 @@
     </nav>
     
   </header>
+
   <br><br><br><br><br>
+  
+  <div class="notify" v-if="isShow" @click="acp">
+      
+      <div class="tb">
+  <span class="header__cart-notice">X</span>
+  <h1 class="notification-title">Thông Báo</h1>
+  <p class="notification-content">
+    Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 22/6/2024.
+  </p>
+</div>
+
+</div>
   </body>
   </html>
 </template>
@@ -117,7 +130,7 @@ export default {
       token: localStorage.getItem('token'),
       loggedInUser: localStorage.getItem('loggedInUser'),
       codeXN: localStorage.getItem('codeXN'),
-
+      isShow: false,
       account: {},
       baseUrl: baseURL,
     }
@@ -161,6 +174,7 @@ this.isShow = false;
     this.getAcc()
     this.checkAuthenticate()
    }
+   this.isShow = true;
   },
   mounted() {
     setTimeout(() => {
@@ -169,11 +183,20 @@ this.isShow = false;
         header.classList.add('header-area--show');
       }
     }, 10);
+
+
+    setTimeout(() => {
+      const header = document.querySelector('.notify');
+      if (header) {
+        this.isShow = true;
+        header.classList.add('notify--show');
+      }
+    }, 10); 
   }
 }
 </script>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700,800');
 @import url('https://fonts.googleapis.com/css?family=Lobster');
 html {
@@ -256,6 +279,20 @@ p {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.notify.notify--show {
+    background-color: white;
+    position: fixed;
+    z-index: 9999;
+    width: 80vw;
+    margin-left: 10%;
+    box-shadow: 0 24px 62px #999;
+    /* height: 80%; */
+    border-radius: 0.5rem;
+    font-size: 1.5vw;
+    zoom: 80vw;
+    text-align: center;
+}
 .banner {
   display: flex;
   align-items: center;
@@ -272,6 +309,7 @@ p {
   font-weight: 700;
 }
 .navbar {
+  background-color: brown;
   position: absolute;
   left: 0;
   top: 0;

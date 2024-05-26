@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import com.example.demo.entity.BeyBlade;
+import com.example.demo.entity.User;
 import lombok.Data;
 
 @Data
@@ -15,5 +16,4 @@ public class CheckOption {
     public byte pointBoss;
 
     public BeyBlade win;
-
 }
