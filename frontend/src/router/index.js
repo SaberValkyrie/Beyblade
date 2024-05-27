@@ -12,7 +12,11 @@ const routes = [
     name: 'product.list',
     component: () => import('../views/products/List.vue')
   },
- 
+  {
+    path: '/checkIn',
+    name: 'game.checkIn',
+    component: () => import('../views/game/DiemDanh.vue')
+  },
   {
     path: '/profile',
     name: 'user.profile',

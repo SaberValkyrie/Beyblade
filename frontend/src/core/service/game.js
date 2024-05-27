@@ -66,6 +66,12 @@ buyItem(token,item) {
     return response;
 }
 
+
+diemdanh(token,item) {
+    const response =  axios.post(`${baseURL}/checkIn/${token}/${item}`);
+    return response;
+}
+
  getUserTop(token,top) {
     const response = axios.post(`${baseURL}/game/thachdau/${token}`,top);
     return response;

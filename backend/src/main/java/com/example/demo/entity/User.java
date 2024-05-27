@@ -40,4 +40,10 @@ public class User {
     @Column(name = "active")
     public boolean active;
 
+
+    @Column(name = "diemdanh")
+    public boolean diemdanh;
+
+    @Column(name = "diemdanhVIP")
+    public boolean diemdanhVIP;
 }

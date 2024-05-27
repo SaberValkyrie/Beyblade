@@ -9,13 +9,7 @@
        <div class="app__container">
             <div class="grid wide">
               <div class="row sm-gutter app__content">
-                <!-- Category -->
-                <!-- <div class="col l-10 m-18 c-2"> -->
                   <div class="item">
-    <!-- Product -->
-
-<!--
-    {{products}} -->
     <div class="home-product">
       <div class="row sm-gutter">
         <!-- Product item -->
@@ -27,17 +21,12 @@
 <div v-if="product.quantity <= 0" class="home-product-item__out-of-stock">
         Hết Hàng
       </div>
-
-
             <h4 class="home-product-item__name">{{ product.beyBlade.name }}</h4>
             <div class="home-product-item__price">
         
                 <span class="home-product-item__price-current">Giá: {{ convert(product.price) }}</span>   
                 <span class="home-product-item__price-current">Còn: {{ convert(product.quantity) }}</span>   
-
                  </div>
-      
-
     
             <div class="home-product-item__action">
               <span class="home-product-item__like home-product-item__like--liked">
@@ -95,6 +84,10 @@
     </html>
     
     </template>
+
+
+
+
     <script>
     import axios from 'axios'; // Import Axios
     import { baseURL } from '@/router/index';
@@ -160,83 +153,100 @@ go(link){
       }
     };
     </script>
+
+
+
+
+
+
+
     <style>
-    body{
     
-      text-decoration: none;
-      background-color: #f6f6f6;
-    }
-    .product-item {
-    width: 16vw;
-    margin-bottom: 3px;
-    padding-right: 10px;
+    body {
+  text-decoration: none;
+  background-color: #f6f6f6;
 }
-    .app {
-    overflow: hidden;
 
-    width: 100%;
+.product-item {
+  width: 18vw; /* Giảm chút để có khoảng cách giữa các sản phẩm */
+  margin-bottom: 3px;
+  padding-right: 1vw;
+  box-sizing: border-box;
 }
-  .row.sm-gutter {
-      margin-left: -5px;
-      margin-right: -5px;
-  }
-  .home-filter {
-      /* padding: 18px; */
-      background-color: rgb(226 226 226 / 4%);
-      display: flex;
-      align-items: center;
-      padding: 9px 111px;
-      margin-bottom: -35px;
-      border-radius: 2px;
-  }
-  .select-input {
-      text-align: center;
-      font-size: 20px;
-      min-width: 200px;
-      height: 34px;
-      padding: 0 12px;
-      border-radius: 2px;
-      background-color: var(--white-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-  }
-  .select-input {
-    margin-right: -11px;
-      margin-left: 24px;
-  }
-  button.home-filter__btn.btn {
-      font-size: 15px;
-  }
-  button.home-filter__btn.btn:hover {
-      font-size: 16px;
-      color: rgb(2, 2, 2);
-  }
-  .home-product {
-      margin-bottom: 10px;
-      margin-left: 109px;
-  }
 
-  .home-product-item__out-of-stock {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
+.app {
+  overflow: hidden;
+  width: 100%;
 }
+
+.row.sm-gutter {
+  margin-left: -5px;
+  margin-right: -5px;
+}
+
+.home-filter {
+  background-color: rgb(226 226 226 / 4%);
+  display: flex;
+  align-items: center;
+  padding: 9px 111px;
+  margin-bottom: -35px;
+  border-radius: 2px;
+}
+
+.select-input {
+  text-align: center;
+  font-size: 20px;
+  min-width: 200px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 2px;
+  background-color: var(--white-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.select-input {
+  margin-right: -11px;
+  margin-left: 24px;
+}
+
+button.home-filter__btn.btn {
+  font-size: 15px;
+}
+
+button.home-filter__btn.btn:hover {
+  font-size: 16px;
+  color: rgb(2, 2, 2);
+}
+
+.home-product {
+  margin-bottom: 10px;
+  margin-left: 3vw; /* Điều chỉnh căn lề trái */
+}
+
+.home-product-item__out-of-stock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
 span {
-    font-size: 1vw;
+  font-size: 1vw;
 }
+
   </style>
   
   

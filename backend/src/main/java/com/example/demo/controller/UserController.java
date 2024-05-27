@@ -149,7 +149,58 @@ public class UserController {
         return account != null ? Util.checkStatusRes(HttpStatus.OK, "Tìm thành công: " + account.username, account)
                 : Util.checkStatusRes(HttpStatus.NOT_FOUND, "không tìm thấy account với username là " + userFromToken.username, null);
     }
+    @PostMapping("/checkIn/{token}/{type}")
+    public ResponseEntity<ResponseOpject> mtv(
+            @PathVariable String token,
+            @PathVariable byte type
+    ) {
+        User userFromToken = tokenService.getUserFromToken(token);
+        if (userFromToken == null) {
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
+        }
+        Account account = userService.getAccountByUser(userFromToken.username);
 
+        String txt = "";
+        switch (type){
+            case 0:
+                if (userFromToken.diemdanh){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã điểm danh rồi,vui lòng chờ tới ngày mai", null);
+                }
+                double coint = Util.nextInt(1,5) * 1000;
+                txt = "Điểm Danh thành công,bạn nhận được " + coint + " Beypoint";
+                account.coint += coint;
+                userFromToken.diemdanh = true;
+                break;
+            case 1:
+                if (userFromToken.active){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã mở thành viên trước đó", null);
+                }
+                if (account.tienmat < 20000){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu tài khoản phải có đủ 20K", null);
+                }
+                txt = "Mở Thành Viên thành công !";
+                account.tienmat -= 20000;
+                userFromToken.active = true;
+                break;
+            case 2:
+                if (!userFromToken.active){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu mở thành viên trước", null);
+                }
+                if (userFromToken.diemdanhVIP){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã điểm danh VIP trong hôm nay,vui lòng chờ tới ngày mai", null);
+                }
+                if (account.tienmat < 5000){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu tài khoản phải có đủ 5K", null);
+                }
+                txt = "Điểm danh VIP thành công !";
+                account.tienmat -= 5000;
+                userFromToken.diemdanhVIP = true;
+                break;
+        }
+        userService.saveAccount(account);
+        userService.saveUser(userFromToken);
+        return Util.checkStatusRes(HttpStatus.OK, txt, account);
+    }
     @PutMapping("/user/edit/{token}")
     public ResponseEntity<ResponseOpject> editUser(@PathVariable String token,@RequestBody User user) {
         User userFromToken = tokenService.getUserFromToken(token);

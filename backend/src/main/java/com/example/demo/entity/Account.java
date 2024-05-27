@@ -26,6 +26,9 @@ public class Account {
     @Column(name = "coint")
     public double coint;
 
+    @Column(name = "tienmat")
+    public int tienmat;
+
     @Column(name = "role")
     public byte role;
 

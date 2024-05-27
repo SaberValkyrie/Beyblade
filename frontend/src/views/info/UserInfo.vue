@@ -61,15 +61,7 @@
 <div class="card">
 <div class="card-body">
 
-  <div class="row mb-3">
-  
-  <div class="col-sm-3">
-  <h6 class="mb-0">Tên Shopee</h6>
-  </div>
-  <div class="col-sm-9 text-secondary">
-  <input type="text" class="form-control" v-model="userInfo.shopeeName">
-  </div>
-  </div>
+ 
 
 <div class="row mb-3">
   
@@ -80,6 +72,7 @@
 <input type="text" class="form-control" v-model="userInfo.fullname">
 </div>
 </div>
+
 <div class="row mb-3">
 <div class="col-sm-3">
 <h6 class="mb-0">Email</h6>
@@ -88,6 +81,7 @@
   <input type="email" class="form-control" v-model="userInfo.email">
 </div>
 </div>
+
 <div class="row mb-3">
 <div class="col-sm-3">
 <h6 class="mb-0">Số Điện Thoại</h6>
@@ -96,6 +90,7 @@
 <input type="number" class="form-control" v-model="userInfo.phone">
 </div>
 </div>
+
 <div class="row mb-3">
 <div class="col-sm-3">
 <h6 class="mb-0">Ngày Sinh </h6>
@@ -103,10 +98,13 @@
 <div class="col-sm-9 text-secondary">
   <input type="date" class="form-control" :value="formatBirthDate(userInfo.date)" @input="updateDate">
 </div>
-</div><div class="row mb-3">
+</div>
+
+<div class="row mb-3">
   <div class="col-sm-3">
     <h6 class="mb-0">Giới Tính</h6>
   </div>
+
   <div class="col-sm-9 text-secondary">
     <select class="form-control" v-model="userInfo.gender">
       <option value="Nam">Nam</option>
@@ -114,7 +112,20 @@
       <option value="Khác">Khác</option>
     </select>
   </div>
+
+
+  
 </div>
+<div class="row mb-3">
+  
+  <div class="col-sm-3">
+  <h6 class="mb-0">Tên Shopee</h6>
+  </div>
+  <div class="col-sm-9 text-secondary">
+  <input type="text" class="form-control" v-model="userInfo.shopeeName">
+  </div>
+  </div>
+
 <div class="row">
 <div class="col-sm-3"></div>
 <div class="col-sm-9 text-secondary">

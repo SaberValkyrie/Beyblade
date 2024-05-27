@@ -458,14 +458,13 @@ public class GameController {
         // Kết hợp hai danh sách
         List<TOP> topAll = service.getTopAll(topBOT,topDB);
         int top = 0;
-        User kethu = null;
+
         for (TOP t : topAll){
             if (t.top == battle.topUser2){
                  topAnother = service.getTopByUserName(battle.user2);
 
                 top = topAnother != null ? topAnother.top : t.top;
 
-                kethu = t.user;
 
               if (topAnother != null){
                   topAnother.top = topMe.top;
