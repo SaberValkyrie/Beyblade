@@ -55,7 +55,9 @@ public class Util {
 
 
 
-
+public static String getNowString(){
+        return LocalTime.now().getHour() + " Giờ " + LocalTime.now().getMinute() +" Phút";
+}
 
 
 

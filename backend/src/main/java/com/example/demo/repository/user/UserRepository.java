@@ -22,14 +22,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Account getAccount(String username);
 
 
-
-    @Query("select v.voucher from MyVoucher v where v.user = :user order by v.voucher.percent desc ")
-    List<Voucher> getVoucher(User user);
-
-    @Query("select v from Voucher v where v.voucher_code = :code")
-    Voucher getVoucherByCode(String code);
-
-
     @Query("select i from Items i where i.user =:userToken order by i.create_time desc")
     ArrayList<Items> getItemByUser(User userToken);
     @Query("select i.beyBlade from Items i where i.user =:userToken and i.beyBlade.type.id =:type order by i.create_time desc")
@@ -38,4 +30,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select i from Items i")
     ArrayList<Items> getAllItems();
 
+    @Query("select i.beyBlade from Items i where i.user =:userToken order by i.create_time desc")
+    ArrayList<BeyBlade> getBeysByUser(User userToken);
 }

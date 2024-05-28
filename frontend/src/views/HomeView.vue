@@ -399,12 +399,8 @@
   },
   mounted() {
 
-setTimeout(() => {
- const header = document.querySelector('.container');
- if (header) {
-   header.classList.add('container--show');
- }
-}, 10); 
+
+
 
 
 

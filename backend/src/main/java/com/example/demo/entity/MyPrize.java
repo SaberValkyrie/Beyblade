@@ -7,8 +7,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Table(name = "vouchers_cua_toi")
-public class MyVoucher {
+@Table(name = "prize_cua_toi")
+public class MyPrize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "my_voucher_id")
@@ -20,7 +20,7 @@ public class MyVoucher {
 
     @ManyToOne
     @JoinColumn(name = "voucher_id")
-    public Voucher voucher;
+    public Prize prize;
 
     @Column(name = "status")
     public boolean status;

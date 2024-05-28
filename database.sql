@@ -23,17 +23,16 @@ CREATE TABLE IF NOT EXISTS `account` (
   `is_ban` bit(1) DEFAULT NULL,
   `coint` double DEFAULT NULL,
   `role` tinyint(4) DEFAULT NULL,
-  `vip_id` tinyint(4) DEFAULT NULL,
-  `items` varchar(255) DEFAULT NULL,
+  `tienmat` int(11) DEFAULT NULL,
   PRIMARY KEY (`account_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table beyblade.account: ~2 rows (approximately)
+-- Dumping data for table beyblade.account: ~3 rows (approximately)
 DELETE FROM `account`;
-INSERT INTO `account` (`account_id`, `username`, `password`, `created_at`, `is_ban`, `coint`, `role`, `vip_id`, `items`) VALUES
-	(30, 'admin', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-13 08:53:14.000000', b'0', 100000, 0, NULL, NULL),
-	(31, 'admin1', '$2a$10$kIgBZoeNWvm7ilIE6m3AWOYy1BiOuNA4mSu/HTn/D2HH53kEhnEkC', '2024-05-13 15:06:32.000000', b'0', 106843929, 0, NULL, NULL),
-	(32, 'haia', '$2a$10$S8bHvB4SSA7Q/dJFLIRQ8uIduuI4Fp63ykLWE03jhqBrInd/3mfFi', '2024-05-17 07:36:01.000000', b'0', 0, 0, NULL, NULL);
+INSERT INTO `account` (`account_id`, `username`, `password`, `created_at`, `is_ban`, `coint`, `role`, `tienmat`) VALUES
+	(30, 'admin', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-13 08:53:14.000000', b'0', 22200, 0, 0),
+	(31, 'admin1', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-13 15:06:32.000000', b'0', 1252963, 0, 19745000),
+	(32, 'haia', '$2a$10$UtnUX8HJG2UmKPQhzUfHNO5AyNS/n1KE9IhHtjlYMm8cz0bY38fs.', '2024-05-17 07:36:01.000000', b'0', 0, 0, 0);
 
 -- Dumping structure for table beyblade.address_info
 CREATE TABLE IF NOT EXISTS `address_info` (
@@ -100,23 +99,28 @@ DELETE FROM `images`;
 
 -- Dumping structure for table beyblade.items
 CREATE TABLE IF NOT EXISTS `items` (
-  `id` tinyint(4) NOT NULL DEFAULT 0,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) DEFAULT NULL,
   `beyblade` int(11) DEFAULT NULL,
   `hsd` timestamp NULL DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
+  `vv` bit(1) DEFAULT NULL,
+  `selected_bey` bit(1) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FKc2mjb6l1khi50ypvtkoepg9p0` (`user`),
   KEY `FK_items_list_bey` (`beyblade`),
   CONSTRAINT `FK_items_list_bey` FOREIGN KEY (`beyblade`) REFERENCES `list_bey` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FKc2mjb6l1khi50ypvtkoepg9p0` FOREIGN KEY (`user`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table beyblade.items: ~2 rows (approximately)
+-- Dumping data for table beyblade.items: ~4 rows (approximately)
 DELETE FROM `items`;
-INSERT INTO `items` (`id`, `user`, `beyblade`, `hsd`, `create_time`) VALUES
-	(1, 30, 185, '2024-05-19 02:02:10', '2024-05-19 09:02:12'),
-	(2, 30, 133, '2024-05-19 02:02:10', '2024-05-19 09:02:12');
+INSERT INTO `items` (`id`, `user`, `beyblade`, `hsd`, `create_time`, `vv`, `selected_bey`) VALUES
+	(116, 30, 1, '2024-05-28 03:14:48', '2024-05-28 10:14:48', b'1', b'0'),
+	(117, 30, 2, '2024-05-28 03:14:48', '2024-05-28 10:14:48', b'1', b'0'),
+	(118, 30, 3, '2024-05-28 03:14:48', '2024-05-28 10:14:48', b'1', b'0'),
+	(119, 30, 4, '2024-05-28 03:14:48', '2024-05-28 10:14:48', b'1', b'0'),
+	(120, 30, 121, '2024-05-28 14:01:28', '2024-05-28 21:01:28', b'1', b'0');
 
 -- Dumping structure for table beyblade.list_bey
 CREATE TABLE IF NOT EXISTS `list_bey` (
@@ -137,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `list_bey` (
   CONSTRAINT `FK_list_bey_type_bey` FOREIGN KEY (`type`) REFERENCES `type_bey` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table beyblade.list_bey: ~129 rows (approximately)
+-- Dumping data for table beyblade.list_bey: ~132 rows (approximately)
 DELETE FROM `list_bey`;
 INSERT INTO `list_bey` (`id`, `type`, `is_boss`, `price`, `name`, `images`, `power`, `hp`, `ti_le_ne_don`, `crit`, `season`, `spin`) VALUES
 	(1, 1, b'0', 800, 'Valkyrie Wing Accel ', 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg', 5000, 15000, 1, 30, 1, 'R'),
@@ -179,7 +183,7 @@ INSERT INTO `list_bey` (`id`, `type`, `is_boss`, `price`, `name`, `images`, `pow
 	(73, 1, b'0', 2800, 'God Valkyrie 6vortex Reboot', 'https://http2.mlstatic.com/D_NQ_NP_756942-CBT48177332458_112021-O.webp', 15000, 65000, 1, 6, 2, 'R'),
 	(74, 2, b'0', 2600, 'Kreis Satan 2glaive Loop', 'https://i.ebayimg.com/images/g/a74AAOSw32lkIkOb/s-l400.jpg', 6000, 100000, 1, 6, 2, 'R'),
 	(75, 3, b'0', 2400, 'Blaze Ragnaruk 4Cross Flugel', 'https://i.ebayimg.com/images/g/dlcAAOSwriBhsgTM/s-l1200.webp', 4000, 100000, 40, 6, 2, 'R'),
-	(79, 3, b'0', 6500, 'Drain Fafnir 8 Nothing', 'http://localhost:8080/files/fafnir.jpeg', 15000, 250000, 30, 30, 2, 'L'),
+	(79, 3, b'1', 6500, 'Drain Fafnir 8 Nothing', 'http://localhost:8080/files/fafnir.jpeg', 15000, 250000, 30, 30, 2, 'L'),
 	(80, 2, b'0', 2600, 'Tornado Wyvern 4Glaive Atomic ', 'https://i.pinimg.com/736x/6b/bc/65/6bbc651c76e3d46b671c73b467918e24.jpg', 6000, 100000, 1, 6, 2, 'R'),
 	(82, 4, b'0', 3000, 'Alter Chronos 6 Meteor Trans', 'https://salt.tikicdn.com/cache/w300/ts/product/3f/1f/c1/5154de6ded5fc338bc91f1212b354b78.jpg', 15000, 75000, 1, 6, 2, 'R'),
 	(85, 1, b'0', 2500, 'Killer Deathscyther 2vortex Hunter', 'https://i.ebayimg.com/images/g/HjMAAOSw2o1kJNWS/s-l1200.webp', 15000, 50000, 1, 20, 2, 'R'),
@@ -207,14 +211,14 @@ INSERT INTO `list_bey` (`id`, `type`, `is_boss`, `price`, `name`, `images`, `pow
 	(118, 1, b'0', 2200, 'Vise Leopard 12Lift Destroy', 'https://static.wikia.nocookie.net/beyblade/images/2/24/VL_.12L.Ds.png', 12000, 50000, 1, 9, 3, 'R'),
 	(120, 1, b'0', 3500, 'Buster Xcalibur 1\' Sword', 'http://localhost:8080/files/xca.png', 25000, 50000, 1, 90, 3, 'R'),
 	(121, 2, b'0', 2900, 'Hazard Kerbeus 7 Atomic ', 'https://www.premiumtoy.my/images/sell_products/interactive/459/ex48ykvlwxfh7.jpg', 9000, 100000, 20, 9, 3, 'R'),
-	(122, 3, b'0', 7600, 'Geist Fafnir 8\' Absorb', 'https://img.lazcdn.com/g/p/e22a1344b3cfa2a3cfd9f2c9c0ba8118.jpg_720x720q80.jpg', 26000, 250000, 25, 9, 3, 'L'),
-	(125, 4, b'0', 9000, 'Dead Hades 11Turn Zephyr\' ', 'https://static.wikia.nocookie.net/beyblade/images/0/08/DH_front.png', 45000, 225000, 10, 20, 3, 'R'),
+	(122, 3, b'1', 7600, 'Geist Fafnir 8\' Absorb', 'https://img.lazcdn.com/g/p/e22a1344b3cfa2a3cfd9f2c9c0ba8118.jpg_720x720q80.jpg', 26000, 450000, 25, 9, 3, 'L'),
+	(125, 4, b'1', 9000, 'Dead Hades 11Turn Zephyr\' ', 'https://static.wikia.nocookie.net/beyblade/images/0/08/DH_front.png', 45000, 325000, 10, 20, 3, 'R'),
 	(126, 4, b'0', 8500, 'Fusion Aether', 'https://i.redd.it/514ag4oi213b1.png', 40000, 225000, 10, 5, 3, 'R'),
-	(127, 1, b'0', 8500, 'Cho-Z Valkyrie Zenith Evolution', 'https://http2.mlstatic.com/D_NQ_NP_732183-MLB42007054422_052020-O.webp', 50000, 175000, 1, 50, 3, 'R'),
+	(127, 1, b'0', 8500, 'Cho-Z Valkyrie Zenith Evolution', 'https://http2.mlstatic.com/D_NQ_NP_732183-MLB42007054422_052020-O.webp', 150000, 175000, 1, 50, 3, 'R'),
 	(128, 4, b'0', 10000, 'Cho-Z Spriggan 0Wall Zeta\'\r\n', 'https://static.wikia.nocookie.net/beyblade/images/1/18/Cho-Z_Spriggan_0W_Zt%27_Pic_2.jpg', 30000, 350000, 20, 9, 3, 'LR'),
 	(129, 4, b'0', 9000, 'Cho-Z Achilles 00 Dimension\r\n', 'https://i.pinimg.com/736x/f5/91/95/f5919593e8cb9ff5fdfc26b624cc2648.jpg', 45000, 225000, 10, 20, 3, 'R'),
 	(130, 3, b'0', 8010, 'Air Knight 12Expand Eternal', 'http://localhost:8080/files/a.jpeg', 100, 400000, 10, 1, 3, 'R'),
-	(131, 2, b'1', 11000, 'Dead Phoenix 10 Friction', 'https://cdn.lojavirtuolpro.com/beyblader/produto//p/h/phoenix.jpg', 30000, 400000, 6, 20, 3, 'R'),
+	(131, 2, b'1', 11000, 'Dead Phoenix 10 Friction', 'https://cdn.lojavirtuolpro.com/beyblader/produto//p/h/phoenix.jpg', 30000, 500000, 6, 20, 3, 'R'),
 	(133, 1, b'0', 7000, 'Ace Dragon Sting Charge Zan', 'https://static.wikia.nocookie.net/beyblade/images/3/36/AD.St.Ch_1.jpg', 40000, 150000, 1, 19, 4, 'R'),
 	(134, 1, b'0', 9000, 'Slash Valkyrie Blitz Power Retsu', 'https://static.wikia.nocookie.net/beyblade/images/4/4c/SV.Bl.Pw_1.jpg', 60000, 150000, 1, 33, 4, 'R'),
 	(135, 2, b'0', 7200, 'Bushin Ashura Hurricane Keep Ten', 'https://static.wikia.nocookie.net/beyblade/images/c/c1/BA.Hr.Kp_1.jpg', 12000, 300000, 1, 6, 4, 'R'),
@@ -225,50 +229,53 @@ INSERT INTO `list_bey` (`id`, `type`, `is_boss`, `price`, `name`, `images`, `pow
 	(148, 3, b'0', 5300, 'Heaven Pegasus 10Proof Low Sen', 'https://static.wikia.nocookie.net/beyblade/images/0/0f/HP.10P.Lw_Sen_Pic_1.jpg', 8000, 225000, 33, 12, 4, 'R'),
 	(149, 2, b'0', 1210, 'Dread Bahamut 7Wall Orbit Metal Gen', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiGF6TuURyg243S9AILznVaKZO9j3IH3Gjn01SdsXzOi_8Xr1FpP_Kvmta3XqNAq0FqVw&usqp=CAU', 12000, 500, 50, 12, 4, 'L'),
 	(150, 4, b'0', 9000, 'Union Achilles Convert Xtend+ Retsu', 'https://static.wikia.nocookie.net/beyblade/images/c/cf/UA.Cn.Xt%2B_Retsu_1.jpg', 45000, 225000, 22, 22, 4, 'R'),
-	(153, 1, b'0', 14900, 'Prime Apocalypse 0Dagger Ultimate Reboot\'', 'https://ae01.alicdn.com/kf/H96bc5d0411cb4d44ae1f58a978f54214a.jpg_Q90.jpg_.webp', 75000, 370000, 1, 50, 4, 'R'),
+	(151, 2, b'1', 10000, 'Regalia Genesis.Hy', 'https://down-br.img.susercontent.com/file/c1ea2a268ea42aa0ed3be765a8075fe0', 66666, 500000, 10, 100, 4, 'R'),
+	(153, 1, b'0', 14900, 'Prime Apocalypse 0Dagger Ultimate Reboot\'', 'https://ae01.alicdn.com/kf/H96bc5d0411cb4d44ae1f58a978f54214a.jpg_Q90.jpg_.webp', 75000, 370000, 1, 100, 4, 'R'),
 	(154, 1, b'0', 10000, 'Imperial Dragon Ignition\'', 'http://localhost:8080/files/dragon.png', 60000, 200000, 22, 12, 4, 'R'),
 	(155, 4, b'0', 10000, 'Master Diabolos Generate', 'https://beybladesandmore.com/cdn/shop/products/17807_1200x1200.jpg?v=1655085430', 50000, 250000, 33, 33, 4, 'LR'),
-	(157, 2, b'0', 13300, 'Bigbang Genesis 0 Yard Metal', 'http://localhost:8080/files/bg.png', 33000, 500000, 22, 50, 4, 'R'),
+	(157, 2, b'1', 13300, 'Bigbang Genesis 0 Yard Metal', 'http://localhost:8080/files/bg.png', 111111, 520000, 22, 50, 4, 'R'),
 	(159, 1, b'0', 13000, 'Super Hyperion Xceed 1A', 'https://bglhobbies.com.au/cdn/shop/products/beyblade-burst-superking-b-159-booster-super-hyperionxc-1a-beyblade-takara-tomy-139236_grande.jpg?v=1658441617', 80000, 250000, 1, 33, 5, 'R'),
 	(160, 4, b'0', 10000, 'King Helios Zone 1B', 'https://www.mykingdom.com.vn/cdn/shop/products/b-160-157199-3_f36bb42b-36ae-4f76-aff4-5a7ac35ba7c5.jpg?v=1707002694&width=1445', 50000, 250000, 1, 15, 5, 'L'),
 	(161, 3, b'0', 11000, 'Glide Ragnaruk Wheel Revolve 1S', 'https://www.mykingdom.com.vn/cdn/shop/products/b-161-157205-3_80b6c96a-cddd-4469-8987-b7915a9ece15.jpg?v=1707002707&width=1445', 10000, 500000, 20, 15, 5, 'R'),
-	(163, 1, b'0', 14000, 'Brave Valkyrie .Ev\' 2A', 'https://bizweb.dktcdn.net/100/405/289/products/48f0384f2fcec1362864e00aabeef735.jpg?v=1660831144697', 123456, 300000, 20, 50, 5, 'R'),
+	(162, 1, b'1', 14000, 'RED Brave Valkyrie .Ev\' 2A', 'https://i.redd.it/egvkliymvlg71.jpg', 153456, 400000, 40, 22, 5, 'R'),
+	(163, 1, b'1', 14000, 'Brave Valkyrie .Ev\' 2A', 'https://bizweb.dktcdn.net/100/405/289/products/48f0384f2fcec1362864e00aabeef735.jpg?v=1660831144697', 153456, 400000, 20, 50, 5, 'R'),
 	(164, 2, b'0', 13000, 'Curse Satan Hurricane Universe 1D', 'http://localhost:8080/files/satan.png', 50000, 400000, 32, 15, 5, 'R'),
-	(167, 3, b'0', 12444, 'Mirage Fafnir Nothing 2S ', 'https://m.media-amazon.com/images/I/71KjSSncnWL._AC_UF1000,1000_QL80_.jpg', 44444, 400000, 23, 15, 5, 'L'),
-	(168, 1, b'0', 13000, 'Rage Longinus Destroy\' 3A', 'https://yeepvn.sgp1.digitaloceanspaces.com/2022/04/48806-dd903c10728dfe516f9c28b8ff596935.jpeg', 100000, 550000, 1, 60, 5, 'L'),
-	(169, 2, b'0', 23000, 'Variant Lucifer Mobius 2D', 'https://images-na.ssl-images-amazon.com/images/I/71usbdoq2lL.jpg', 30000, 1000000, 25, 15, 5, 'R'),
-	(170, 4, b'0', 15000, 'Death Diabolos 4Turn Merge\' 1D', 'https://www.beyburst.com/cdn/shop/products/Beyburst-B170-01-Death-Diabolos_2.jpg?v=1644494225', 75000, 375000, 12, 15, 5, 'LR'),
+	(167, 3, b'0', 12444, 'Mirage Fafnir Nothing 2S ', 'https://m.media-amazon.com/images/I/71KjSSncnWL._AC_UF1000,1000_QL80_.jpg', 44444, 500000, 23, 15, 5, 'L'),
+	(168, 1, b'1', 13000, 'Rage Longinus Destroy\' 3A', 'https://yeepvn.sgp1.digitaloceanspaces.com/2022/04/48806-dd903c10728dfe516f9c28b8ff596935.jpeg', 100000, 550000, 1, 60, 5, 'L'),
+	(169, 2, b'1', 23000, 'Variant Lucifer Mobius 2D', 'https://images-na.ssl-images-amazon.com/images/I/71usbdoq2lL.jpg', 30000, 1000000, 25, 15, 5, 'R'),
+	(170, 4, b'1', 15000, 'Death Diabolos 4Turn Merge\' 1D', 'https://www.beyburst.com/cdn/shop/products/Beyburst-B170-01-Death-Diabolos_2.jpg?v=1644494225', 75000, 775000, 12, 15, 5, 'LR'),
 	(171, 1, b'0', 17000, 'Tempest Dragon Charge Metal 1A', 'https://img.ws.mms.shopee.com.my/2ecd8d105522fb41e35d4ebef7346933', 75000, 475000, 23, 15, 5, 'R'),
 	(172, 4, b'0', 15000, 'World Spriggan Unite\' 2B', 'https://img.lazcdn.com/g/p/67dd71a4ca5de5a8c1d6cff5d255a028.jpg_960x960q80.jpg_.webp', 75000, 375000, 33, 15, 5, 'LR'),
-	(173, 4, b'0', 14000, 'Infinite Achilles Dimension\' 1B', 'https://cdn11.bigcommerce.com/s-iodt3qca/images/stencil/1280x1280/products/1104/3282/b-173-01__68458.1604535356.jpg?c=2', 85000, 275000, 1, 30, 5, 'R'),
-	(174, 1, b'0', 11000, 'Sức Mạnh Song Sinh ', 'http://localhost:8080/files/2h.png', 500000, 100000, 70, 70, 5, 'LR'),
-	(175, 2, b'1', 6500, 'Lucifer The End Kou Drift', 'https://down-vn.img.susercontent.com/file/ea98861ce3acb553246f118255b84b06', 15000, 250000, 50, 15, 5, 'R'),
-	(176, 1, b'0', 9000, 'Hollow Deathscyther 12Axe High Accel\' 4A', 'https://ae01.alicdn.com/kf/H26140a8c6dcb4eebacb6cde150803417a/B-X-TOUPIE-BURST-BEYBLADE-Spinning-Top-Limit-Break-DX-set-W-Box-B174-B-174.jpg', 80000, 50000, 50, 70, 5, 'R'),
+	(173, 4, b'1', 14000, 'Infinite Achilles Dimension\' 1B', 'https://cdn11.bigcommerce.com/s-iodt3qca/images/stencil/1280x1280/products/1104/3282/b-173-01__68458.1604535356.jpg?c=2', 85000, 775000, 1, 30, 5, 'R'),
+	(174, 1, b'1', 11000, 'Sức Mạnh Song Sinh ', 'http://localhost:8080/files/2h.png', 500000, 100000, 70, 70, 5, 'LR'),
+	(175, 2, b'1', 6500, 'Lucifer The End Kou Drift', 'https://down-vn.img.susercontent.com/file/ea98861ce3acb553246f118255b84b06', 15000, 1250000, 50, 15, 5, 'R'),
+	(176, 1, b'1', 9000, 'Hollow Deathscyther 12Axe High Accel\' 4A', 'https://ae01.alicdn.com/kf/H26140a8c6dcb4eebacb6cde150803417a/B-X-TOUPIE-BURST-BEYBLADE-Spinning-Top-Limit-Break-DX-set-W-Box-B174-B-174.jpg', 300000, 300000, 50, 70, 5, 'R'),
 	(177, 2, b'0', 9000, 'Jet Wyvern Around Just 1D', 'https://ae01.alicdn.com/kf/Hf7efbea5f33744e994d37594ebfd0635l/Genuine-TAKARA-TOMY-BEYBLADE-Burst-Gyro-Super-King-B177-Jet-Flying-Dragon-Battle-Toys.jpg', 15000, 375000, 50, 15, 5, 'R'),
 	(179, 4, b'0', 10000, 'Death Solomon MF 2B', 'https://i.ebayimg.com/images/g/twgAAOSw9KhjVP7v/s-l400.jpg', 50000, 250000, 25, 25, 5, 'R'),
 	(180, 1, b'0', 13000, 'Dynamite Belial Nexus Venture-2', 'https://i.ebayimg.com/images/g/3-AAAOSwF7BhIwNN/s-l1200.webp', 50000, 400000, 25, 33, 6, 'R'),
-	(181, 3, b'0', 16200, 'Cyclone Ragnaruk Giga Never-6', 'https://down-vn.img.susercontent.com/file/dae3bbfa75ec4e2b447d47cec60e4c37', 12000, 750000, 20, 18, 6, 'R'),
-	(185, 3, b'0', 15000, ' Vanish Fafnir.Tp.Kc-3', 'https://down-vn.img.susercontent.com/file/4ff89aed2884157260a1884a9b3433a0', 50000, 500000, 30, 20, 6, 'L'),
-	(186, 2, b'0', 17000, 'Roar Bahamut Giga Moment-10 ', 'https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg', 20000, 850000, 80, 10, 6, 'L'),
-	(187, 1, b'0', 22000, 'Savior Valkyrie Shot-7', 'https://i.ebayimg.com/images/g/gT0AAOSwcPNg7774/s-l1200.jpg', 200000, 600000, 50, 50, 6, 'R'),
-	(188, 4, b'0', 19800, 'Astral Spriggan Over Quattro-0', 'https://images-na.ssl-images-amazon.com/images/I/71H8Fq2w5XS.jpg', 299000, 495000, 1, 22, 6, 'LR'),
-	(189, 1, b'1', 22000, 'Guilty Longinus Karma Metal Destroy-2', 'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg', 250000, 550000, 30, 70, 6, 'L'),
+	(181, 3, b'1', 30000, 'Cyclone Ragnaruk Giga Never-6', 'https://down-vn.img.susercontent.com/file/dae3bbfa75ec4e2b447d47cec60e4c37', 12000, 750000, 20, 18, 6, 'R'),
+	(184, 1, b'1', 30000, 'RED Savior Valkyrie Shot-7', 'https://pbs.twimg.com/media/E39FKxVWYAY0a8q.jpg', 199000, 595000, 60, 33, 6, 'R'),
+	(185, 3, b'1', 30000, ' Vanish Fafnir.Tp.Kc-3', 'https://down-vn.img.susercontent.com/file/4ff89aed2884157260a1884a9b3433a0', 50000, 700000, 30, 20, 6, 'L'),
+	(186, 2, b'1', 30000, 'Roar Bahamut Giga Moment-10 ', 'https://ae01.alicdn.com/kf/Hbc0b1bc2b16344a68e94ab86f49a1430O/GENUINE-Takara-Tomy-Burst-Dynamite-Random-Booster-Vol-26-Beyblade-B-186-B-194-random-1.jpg', 30000, 850000, 80, 10, 6, 'L'),
+	(187, 1, b'1', 30000, 'Savior Valkyrie Shot-7', 'https://i.ebayimg.com/images/g/gT0AAOSwcPNg7774/s-l1200.jpg', 300000, 600000, 50, 50, 6, 'R'),
+	(188, 4, b'1', 30000, 'Astral Spriggan Over Quattro-0', 'https://images-na.ssl-images-amazon.com/images/I/71H8Fq2w5XS.jpg', 299000, 495000, 30, 30, 6, 'LR'),
+	(189, 1, b'1', 22000, 'Guilty Longinus Karma Metal Destroy-2', 'https://images-cdn.ubuy.co.in/635b867191f5134064149b62-beyblade-burst-b-189-booster-guilty.jpg', 250000, 650000, 30, 70, 6, 'L'),
 	(190, 2, b'0', 18000, 'Promience Phoneix.Tp.MU -10', 'https://laz-img-sg.alicdn.com/p/e7499132f71f83fe37d24f2b0ee05ca8.jpg', 50000, 650000, 33, 18, 6, 'R'),
-	(191, 1, b'0', 18000, 'Dangerous Belial Almight -2', 'https://http2.mlstatic.com/D_NQ_NP_858347-MLU73331820766_122023-O.webp', 200000, 250000, 1, 33, 6, 'R'),
+	(191, 1, b'0', 18000, 'Dangerous Belial Almight -2', 'https://http2.mlstatic.com/D_NQ_NP_858347-MLU73331820766_122023-O.webp', 200000, 450000, 1, 33, 6, 'R'),
 	(192, 4, b'1', 30000, 'Greatest Raphael.Ov.HXt+\' ', 'https://m.media-amazon.com/images/I/71tBIgCnzZL._AC_SL1100_.jpg', 50000, 1000000, 50, 50, 6, 'R'),
-	(193, 1, b'0', 29000, 'Ultimate Valkyrie.Lg.V’-9', 'https://beyblade-shop.com/cdn/shop/products/Ultimate-Valkyrie-Legacy-Variable-9-Beyblade-Shop_1200x1200.jpg?v=1636925530', 200000, 450000, 25, 33, 6, 'R'),
-	(194, 1, b'1', 1000, 'Dynamite Belial full gear Holy King Ver', 'https://i.ebayimg.com/images/g/3-AAAOSwF7BhIwNN/s-l1200.webp', 20000, 1000000, 1, 1, 6, 'R'),
-	(195, 2, b'0', 31111, 'Prominence Valkyrie.Ov.At’-0', 'https://i5.walmartimages.com/asr/c1aa5022-0eeb-4d06-8fee-1e90b0b2ac66.a0dd10e10e0063f0e76e49ac1fa16131.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF', 10000, 1200000, 1, 18, 6, 'R'),
+	(193, 1, b'1', 30000, 'Ultimate Valkyrie.Lg.V’-9', 'https://beyblade-shop.com/cdn/shop/products/Ultimate-Valkyrie-Legacy-Variable-9-Beyblade-Shop_1200x1200.jpg?v=1636925530', 200000, 650000, 25, 33, 6, 'R'),
+	(194, 1, b'1', 30000, 'Dynamite Belial full gear', 'http://localhost:8080/files/belial.png', 50000, 1000000, 1, 99, 6, 'R'),
+	(195, 2, b'1', 30000, 'Prominence Valkyrie.Ov.At’-0', 'https://i5.walmartimages.com/asr/c1aa5022-0eeb-4d06-8fee-1e90b0b2ac66.a0dd10e10e0063f0e76e49ac1fa16131.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF', 70000, 1200000, 1, 18, 6, 'R'),
 	(197, 1, b'0', 3800, 'Divine Belial Nexus Adventure-3', 'http://localhost:8080/files/bel.png', 28000, 50000, 1, 21, 7, 'R'),
-	(198, 2, b'0', 30000, 'Chain Kerbeus Fortress Yard\'-6', 'https://down-vn.img.susercontent.com/file/48be0fdd51d7d7c180f7ffe9ef2a2d78', 100000, 1000000, 1, 21, 7, 'R'),
-	(199, 1, b'0', 30000, 'Gatling Dragon Karma Charge Metal\'-10', 'http://localhost:8080/files/gld.png', 100000, 1000000, 22, 21, 7, 'R'),
+	(198, 2, b'1', 30000, 'Chain Kerbeus Fortress Yard\'-6', 'https://down-vn.img.susercontent.com/file/48be0fdd51d7d7c180f7ffe9ef2a2d78', 100000, 800000, 1, 21, 7, 'R'),
+	(199, 1, b'1', 30000, 'Gatling Dragon Karma Charge Metal\'-10', 'http://localhost:8080/files/gld.png', 10000, 1000000, 22, 21, 7, 'R'),
 	(200, 1, b'0', 21000, 'Xiphoid Xcalibur Xanthus Sword\'-1 ', 'http://localhost:8080/files/xiphoid.png', 200000, 50000, 33, 50, 7, 'R'),
 	(201, 4, b'0', 28000, 'Zest Achilles Illegal Quattro\'-4', 'https://i.ebayimg.com/images/g/wpUAAOSwxXxi9H8P/s-l1200.webp', 140000, 700000, 1, 21, 7, 'R'),
-	(202, 3, b'0', 31400, 'Wind Knight Moon Bounce-6', 'https://i.ebayimg.com/images/g/DD4AAOSwHVNjIwi2/s-l1200.webp', 14000, 1500000, 22, 21, 7, 'R'),
+	(202, 3, b'1', 35000, 'Wind Knight Moon Bounce-6', 'https://i.ebayimg.com/images/g/DD4AAOSwHVNjIwi2/s-l1200.webp', 14000, 1500000, 22, 21, 7, 'R'),
 	(203, 1, b'0', 24000, 'Super Hyperion MR', 'https://wafuu.com/cdn/shop/products/takara-tomy-beyblade-burst-b-203-ultimate-combine-dx-set-111634_1200x1200.jpg?v=1695256821', 140000, 500000, 1, 21, 7, 'R'),
 	(204, 4, b'0', 18000, 'King Helios MR', 'https://wafuu.com/cdn/shop/products/takara-tomy-beyblade-burst-b-203-ultimate-combine-dx-set-606832_540x.jpg?v=1695256822', 90000, 450000, 1, 21, 7, 'L'),
-	(205, 4, b'0', 24000, 'Burst Spriggan Spread\' Fusion\'-8', 'https://i.ebayimg.com/images/g/W8gAAOSwf-pjdFSh/s-l1200.jpg', 120000, 600000, 1, 21, 7, 'LR'),
-	(206, 2, b'1', 32100, 'Badicade Lucifer.Il.BMb-10', 'https://m.media-amazon.com/images/I/71WgKP-cPSL._AC_UF1000,1000_QL80_DpWeblab_.jpg', 21000, 1500000, 22, 21, 7, 'R');
+	(205, 4, b'1', 30000, 'Burst Spriggan Spread\' Fusion\'-8', 'https://i.ebayimg.com/images/g/W8gAAOSwf-pjdFSh/s-l1200.jpg', 120000, 600000, 1, 21, 7, 'LR'),
+	(206, 2, b'1', 40000, 'Badicade Lucifer.Il.BMb-10', 'https://m.media-amazon.com/images/I/71WgKP-cPSL._AC_UF1000,1000_QL80_DpWeblab_.jpg', 21000, 1500000, 22, 21, 7, 'R');
 
 -- Dumping structure for table beyblade.list_boss
 CREATE TABLE IF NOT EXISTS `list_boss` (
@@ -389,6 +396,43 @@ CREATE TABLE IF NOT EXISTS `order_status` (
 -- Dumping data for table beyblade.order_status: ~0 rows (approximately)
 DELETE FROM `order_status`;
 
+-- Dumping structure for table beyblade.prize
+CREATE TABLE IF NOT EXISTS `prize` (
+  `voucher_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`voucher_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table beyblade.prize: ~3 rows (approximately)
+DELETE FROM `prize`;
+INSERT INTO `prize` (`voucher_id`, `name`) VALUES
+	(1, '1 Driver Ngẫu Nhiên 2hand'),
+	(2, '1 Layer Ngẫu Nhiên 2hand'),
+	(3, '1 Beyblade Ngẫu Nhiên 2hand');
+
+-- Dumping structure for table beyblade.prize_cua_toi
+CREATE TABLE IF NOT EXISTS `prize_cua_toi` (
+  `my_voucher_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `voucher_id` int(11) DEFAULT NULL,
+  `status` bit(1) DEFAULT NULL,
+  `time_save` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`my_voucher_id`),
+  KEY `user_id` (`user_id`),
+  KEY `voucher_id` (`voucher_id`),
+  CONSTRAINT `prize_cua_toi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `prize_cua_toi_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `prize` (`voucher_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table beyblade.prize_cua_toi: ~5 rows (approximately)
+DELETE FROM `prize_cua_toi`;
+INSERT INTO `prize_cua_toi` (`my_voucher_id`, `user_id`, `voucher_id`, `status`, `time_save`) VALUES
+	(41, 30, 1, b'0', '2024-05-28 14:22:50'),
+	(42, 30, 1, b'0', '2024-05-28 14:33:43'),
+	(43, 30, 2, b'0', '2024-05-28 14:40:19'),
+	(44, 30, 1, b'0', '2024-05-28 14:45:50'),
+	(45, 30, 1, b'0', '2024-05-28 15:22:00');
+
 -- Dumping structure for table beyblade.products
 CREATE TABLE IF NOT EXISTS `products` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -461,14 +505,38 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_1l8br3dq53yfan1deqeb246os` (`account_id`),
   CONSTRAINT `FKlcffqvs57obcjd6a6rt2m07ka` FOREIGN KEY (`account_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
--- Dumping data for table beyblade.token: ~3 rows (approximately)
+-- Dumping data for table beyblade.token: ~2 rows (approximately)
 DELETE FROM `token`;
 INSERT INTO `token` (`id`, `create_time`, `update_time`, `code`, `expiry`, `account_id`) VALUES
-	(140, '2024-05-13 15:06:32.000000', '2024-05-13 15:06:32.000000', '3bce3d30-2a0c-44a6-b493-c1d4ef4cfe44', '2024-05-14 15:06:32.000000', 30),
-	(141, '2024-05-17 07:35:05.000000', '2024-05-17 07:35:05.000000', 'dd07e07e-44e0-4422-a721-fb6ac699db8a', '2024-05-18 07:35:05.000000', 29),
-	(142, '2024-05-17 07:36:01.000000', '2024-05-17 07:36:01.000000', 'b945103f-b783-4cdf-9ff1-1e8ed56e57b1', '2024-05-18 07:36:01.000000', 31);
+	(155, '2024-05-24 15:26:16.000000', '2024-05-24 15:26:16.000000', '97b7e6dc-806e-4e91-b1de-51081057d29a', '2024-05-25 15:26:16.000000', 29),
+	(156, '2024-05-28 10:14:48.000000', '2024-05-28 10:14:48.000000', '3e47c090-cd69-4444-8b0c-c4a1853bc101', '2024-05-29 10:14:48.000000', 30);
+
+-- Dumping structure for table beyblade.top
+CREATE TABLE IF NOT EXISTS `top` (
+  `rank` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) DEFAULT NULL,
+  `select_bey` int(11) DEFAULT NULL,
+  `buff` tinyint(4) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `end_buff` datetime DEFAULT NULL,
+  `win` smallint(6) DEFAULT NULL,
+  `lost` smallint(6) DEFAULT NULL,
+  `top` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`rank`) USING BTREE,
+  KEY `FKr6fqgo0wrfkbhlvd7rkn81jq7` (`user`),
+  KEY `FK_top_list_bey` (`select_bey`),
+  CONSTRAINT `FK_top_list_bey` FOREIGN KEY (`select_bey`) REFERENCES `list_bey` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FKr6fqgo0wrfkbhlvd7rkn81jq7` FOREIGN KEY (`user`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table beyblade.top: ~3 rows (approximately)
+DELETE FROM `top`;
+INSERT INTO `top` (`rank`, `user`, `select_bey`, `buff`, `created_at`, `end_buff`, `win`, `lost`, `top`) VALUES
+	(2, 30, 199, 0, '2024-05-22 21:36:33', '2024-05-22 21:36:33', 42, 35, 46),
+	(3, 29, 63, 5, '2024-05-22 21:41:30', '2024-05-22 21:41:30', 2, -1, 44),
+	(4, 31, 185, 2, '2024-05-22 21:41:58', '2024-05-22 21:41:58', 3, -1, 3);
 
 -- Dumping structure for table beyblade.transactions
 CREATE TABLE IF NOT EXISTS `transactions` (
@@ -510,7 +578,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` datetime DEFAULT NULL,
   `rank` tinyint(4) DEFAULT 0,
   `ma_xac_nhan` varchar(255) DEFAULT NULL,
-  `items` varchar(255) DEFAULT NULL,
+  `diem` int(11) DEFAULT NULL,
+  `active` bit(1) DEFAULT NULL,
+  `diemdanh` bit(1) DEFAULT NULL,
+  `diemdanhvip` bit(1) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `FK_users_account` (`account_id`),
   CONSTRAINT `FK_users_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -518,10 +589,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping data for table beyblade.users: ~3 rows (approximately)
 DELETE FROM `users`;
-INSERT INTO `users` (`user_id`, `username`, `account_id`, `avatar`, `created_at`, `rank`, `ma_xac_nhan`, `items`) VALUES
-	(29, 'admin', 30, '71a7fdb526584426b8bdfdc8e77100ef.jpg', '2024-05-13 08:53:14', 0, 'c4b7112c-185a-430c-9d1f-bb75bfdac0da', ''),
-	(30, 'admin1', 31, 'user_avatar.png', '2024-05-13 15:06:32', 0, '4e6905dc-59db-4411-ad86-855846e1553c', '{"bey":"Victory Valkyrie","ngayhethan":30}\r\n'),
-	(31, 'haia', 32, 'user_avatar.png', '2024-05-17 07:36:01', 0, '07d5746f-c152-420c-a7c1-afd39908d063', NULL);
+INSERT INTO `users` (`user_id`, `username`, `account_id`, `avatar`, `created_at`, `rank`, `ma_xac_nhan`, `diem`, `active`, `diemdanh`, `diemdanhvip`) VALUES
+	(29, 'admin', 30, 'bau.jpeg', '2024-05-13 08:53:14', 0, '94947588-d885-401d-82e0-7f1545ce82d9', 0, b'1', b'0', b'0'),
+	(30, 'admin1', 31, '646c083786a04be2b16ec1028ee8b3e3.png', '2024-05-13 15:06:32', 0, 'fe985ee1-ff37-4833-b65e-789f1bf48551', 0, b'1', b'1', b'1'),
+	(31, 'haia', 32, 'user_avatar.png', '2024-05-17 07:36:01', 0, '71512816-2bc4-4e59-995b-0d81ca6f6c70', 0, b'0', b'0', b'0');
 
 -- Dumping structure for table beyblade.users_info
 CREATE TABLE IF NOT EXISTS `users_info` (
@@ -542,7 +613,7 @@ CREATE TABLE IF NOT EXISTS `users_info` (
 DELETE FROM `users_info`;
 INSERT INTO `users_info` (`id`, `user_id`, `fullname`, `email`, `phone`, `gender`, `date`, `updated_time`, `shopee_name`) VALUES
 	(312, 29, 'Nguyễn Đình Hải', 'beyblade@cc.cc', '201212121', 'Nam', '2024-05-16 00:00:00', '2024-05-13 08:00:55', 'shopee'),
-	(313, 30, 'Họ Và Tên', 'beyblade@gmail.com', '01234556789', 'Khác', '2024-05-13 08:07:04', '2024-05-13 08:07:04', 'Nhập Tên Shopee của bạn (nếu có)');
+	(313, 30, 'Bảo Đẹp Trai', 'thebao2004@gmail.com', '808444534', 'Nam', '2004-01-13 00:00:00', '2024-05-27 13:38:46', 'concac');
 
 -- Dumping structure for table beyblade.vip_by_user
 CREATE TABLE IF NOT EXISTS `vip_by_user` (
@@ -575,40 +646,6 @@ CREATE TABLE IF NOT EXISTS `vip_package` (
 
 -- Dumping data for table beyblade.vip_package: ~0 rows (approximately)
 DELETE FROM `vip_package`;
-
--- Dumping structure for table beyblade.vouchers
-CREATE TABLE IF NOT EXISTS `vouchers` (
-  `voucher_id` int(11) NOT NULL AUTO_INCREMENT,
-  `voucher_code` varchar(50) DEFAULT NULL,
-  `percent` double DEFAULT NULL,
-  `gia_toi_thieu` double NOT NULL,
-  `count_left` int(11) DEFAULT NULL,
-  `start_time` varchar(255) DEFAULT NULL,
-  `end_time` varchar(255) DEFAULT NULL,
-  `apply_shop` int(11) DEFAULT NULL,
-  `type` tinyint(4) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`voucher_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table beyblade.vouchers: ~0 rows (approximately)
-DELETE FROM `vouchers`;
-
--- Dumping structure for table beyblade.vouchers_cua_toi
-CREATE TABLE IF NOT EXISTS `vouchers_cua_toi` (
-  `my_voucher_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `voucher_id` int(11) DEFAULT NULL,
-  `status` bit(1) DEFAULT NULL,
-  `time_save` datetime DEFAULT NULL,
-  PRIMARY KEY (`my_voucher_id`),
-  KEY `user_id` (`user_id`),
-  KEY `voucher_id` (`voucher_id`),
-  CONSTRAINT `vouchers_cua_toi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `vouchers_cua_toi_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`voucher_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table beyblade.vouchers_cua_toi: ~0 rows (approximately)
-DELETE FROM `vouchers_cua_toi`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

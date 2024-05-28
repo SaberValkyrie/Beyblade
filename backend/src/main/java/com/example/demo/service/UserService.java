@@ -5,6 +5,7 @@ import com.example.demo.repository.ItemsRepository;
 import com.example.demo.repository.product.MyVoucherRepository;
 import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.repository.user.*;
+import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,31 @@ public class UserService {
 
 
 
+    public void addPrize(User user){
+        byte id = 1;
+        if (Util.isTrue(20,100)){
+            id = 2;
+        }
+        if (Util.isTrue(5,100)){
+            id = 3;
+        }
+        Prize prize = voucherRepository.getPrizeByID(id);
+        MyPrize myPrize = new MyPrize();
+        myPrize.user = user;
+        myPrize.status = false;
+        myPrize.prize = prize;
+        myPrize.timeSave = new Timestamp(System.currentTimeMillis());
+        saveMyPrize(myPrize);
+
+    }
+
+
+
+
+
+
+
+
     public User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
         return user;
@@ -92,43 +118,10 @@ public class UserService {
         return addressRepository.getAddressInfoByAddressId(addressId);
     }
 
-    public List<Voucher> getVoucherByUser(User user) {
-        return userRepository.getVoucher(user);
-    }
-
-    public Voucher getVoucherByCode(String code) {
-        return userRepository.getVoucherByCode(code);
-    }
-    public MyVoucher getMyVoucherByVoucher(Voucher voucher,User user) {
-        return myVoucherRepository.getMyVoucherByCode(voucher,user);
-    }
-
-
-    public Voucher findVoucherByID(long id){
-        return  myVoucherRepository.findById(id);
-    }
-    public List<Voucher> getVoucherHetHan(User userToken) {
-        List<Voucher> all =  myVoucherRepository.findByUser(userToken);
-        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-
-        List<Voucher> res = new ArrayList<>();
-        for (Voucher voucher :all){
-            if (voucher.endTime.before(currentTime)){
-                res.add(voucher);
-            };
-        }
-        return res;
-    }
-
-    public List<Voucher> getvoucherUsed(User userToken) {
-
-        return myVoucherRepository.getVoucherUsed(userToken);
-    }
-
-    public void saveVoucher(Voucher voucher) {
+    public void saveVoucher(Prize voucher) {
          voucherRepository.save(voucher);
     }
-    public void saveMyVoucher(MyVoucher myVc) {
+    public void saveMyPrize(MyPrize myVc) {
         myVoucherRepository.save(myVc);
     }
 
@@ -140,6 +133,9 @@ public class UserService {
 
     public ArrayList<Items> getItemsByUser(User userToken) {
         return userRepository.getItemByUser(userToken);
+    }
+    public ArrayList<BeyBlade> getBeysByUser(User userToken) {
+        return userRepository.getBeysByUser(userToken);
     }
     public ArrayList<BeyBlade> getItemsByUserAndType(User userToken,byte type) {
         return userRepository.getItemsByUserAndType(userToken, type);
@@ -154,5 +150,9 @@ public class UserService {
 
     public void deteleItem(Items items) {
         itemsRepository.delete(items);
+    }
+
+    public List<User> getAllUser() {
+        return userRepository.findAll();
     }
 }

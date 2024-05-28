@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +55,7 @@ public class GameController {
         player.user = userToken.username;
         player.avatar = userToken.avatar;
         player.items = userService.getItemsByUser(userToken);
+
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +player.items.size() + " items",  player);
     }
     @PostMapping("/addItemsBag/{token}")
@@ -118,23 +117,22 @@ public class GameController {
         if (item == null){
             return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Beyblade đã hết hạn",  item);
         }
+        if (item.beyBlade.isBoss && !userToken.active){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Beyblade ưu tiên chỉ bán cho những người đã mở thành viên,vui lòng chọn beyblade khác!",  null);
+        }
 
-
-        // Tìm đối tượng ItemShop trong danh
-        // sách item_shop
-
-
-
-        Items items = new Items();
-        Account accountToken = userService.getAccountByUser(userToken.username);
-
-        if (item.price > accountToken.coint){
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn còn thiếu " + Util.numberToMoney((long) (item.price - accountToken.coint)) + " Beypoint",  null);
+        List<BeyBlade> myItem = userService.getBeysByUser(userToken);
+        if (myItem.contains(item.beyBlade)){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã có beyblade này trước đó",  null);
         }
         if (item.quantity <= 0) {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Sản Phẩm Đã Hết Hàng", null);
         }
-
+        Items items = new Items();
+        Account accountToken = userService.getAccountByUser(userToken.username);
+        if (item.price > accountToken.coint){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn còn thiếu " + Util.numberToMoney((long) (item.price - accountToken.coint)) + " Beypoint",  null);
+        }
         accountToken.coint -= item.price;
         items.user = userToken;
         items.beyBlade = item.beyBlade;
@@ -158,6 +156,9 @@ public class GameController {
 
         return Util.checkStatusRes(HttpStatus.OK, "Mua Thành Công " + items.beyBlade.name,  items);
     }
+
+
+
 
     @GetMapping("/getBey/{type}")
     public ResponseEntity<ResponseOpject> getBey(@PathVariable byte type) {

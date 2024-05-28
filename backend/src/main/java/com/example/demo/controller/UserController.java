@@ -70,6 +70,20 @@ public class UserController {
             beyService.addTOP(user);
         }
 
+        List<Items> items = userService.getItemsByUser(user);
+        if (items.size() <= 0){
+         for (int i = 1;i <= 4;i++){
+             Items item = new Items();
+             item.vinhvien = true;
+             item.user = user;
+             item.selectedBey = false;
+             item.beyBlade = beyService.getBeyByID(i);
+             item.create_time = new Timestamp(System.currentTimeMillis());
+             item.ngayhethan = item.create_time;
+             userService.saveItem(item);
+         }
+        }
+
         return Util.checkStatusRes(HttpStatus.OK, "Xác Minh Thành Công : " + user.username, accountResponse);
     }
 
@@ -161,16 +175,19 @@ public class UserController {
         Account account = userService.getAccountByUser(userFromToken.username);
 
         String txt = "";
+        int coint = Util.nextInt(1,5);
         switch (type){
             case 0:
                 if (userFromToken.diemdanh){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã điểm danh rồi,vui lòng chờ tới ngày mai", null);
                 }
-                double coint = Util.nextInt(1,5) * 1000;
-                txt = "Điểm Danh thành công,bạn nhận được " + coint + " Beypoint";
-                account.coint += coint;
+                txt = "Điểm Danh thành công,bạn nhận được " + coint + "K Beypoint";
+
                 userFromToken.diemdanh = true;
                 break;
+
+
+
             case 1:
                 if (userFromToken.active){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã mở thành viên trước đó", null);
@@ -178,10 +195,20 @@ public class UserController {
                 if (account.tienmat < 20000){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu tài khoản phải có đủ 20K", null);
                 }
-                txt = "Mở Thành Viên thành công !";
+                coint *= 4;
+                txt = "Mở Thành Viên thành công! Bạn được nhận thêm " + coint +"K Beypoint";
                 account.tienmat -= 20000;
+               if (Util.isTrue(70,100)){
+                   userService.addPrize(userFromToken);
+                   txt = "Mở Thành Viên thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
+               }
+
                 userFromToken.active = true;
                 break;
+
+
+
+
             case 2:
                 if (!userFromToken.active){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu mở thành viên trước", null);
@@ -192,11 +219,20 @@ public class UserController {
                 if (account.tienmat < 5000){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu tài khoản phải có đủ 5K", null);
                 }
-                txt = "Điểm danh VIP thành công !";
+                coint *= 2;
+
+                txt = "Điểm danh VIP thành công ! Bạn nhận được " + coint + "K Beypoint";
+
+                if (Util.isTrue(20,100)){
+                    userService.addPrize(userFromToken);
+                    txt = "Điểm danh VIP thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
+                }
+
                 account.tienmat -= 5000;
                 userFromToken.diemdanhVIP = true;
                 break;
         }
+        account.coint += coint * 1000;
         userService.saveAccount(account);
         userService.saveUser(userFromToken);
         return Util.checkStatusRes(HttpStatus.OK, txt, account);

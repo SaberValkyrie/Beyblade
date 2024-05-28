@@ -118,7 +118,10 @@
         };
       },
       created() {
-        this.getItemShop()
+  
+        setInterval(() => {
+          this.getItemShop()
+}, 1000);
 
       },
       methods: {
