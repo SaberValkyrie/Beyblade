@@ -2,16 +2,20 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BeyBoss;
 import com.example.demo.dto.ItemShop;
+import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.*;
 import com.example.demo.repository.TopRepository;
 import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * CartService.
@@ -30,6 +34,9 @@ public class BeyService {
         }
         return i;
     }
+
+    @Autowired
+    public UserService userService;
 
     public List<ItemShop> item_shop = new ArrayList<>();
     public List<TOP> topList = new ArrayList<>();
@@ -86,7 +93,7 @@ public class BeyService {
         top.win = 0;
         top.buff = 0;
         top.lost = 0;
-        top.top = 0;
+        top.top = 101;
         top.createdAt = new Timestamp(System.currentTimeMillis());
         top.endBuff = top.createdAt;
         saveTop(top);
@@ -234,6 +241,59 @@ public class BeyService {
         return null;
     }
 
+
+    public ResponseEntity<ResponseOpject> useItem(User user, MyPrize myPrize){
+        Prize item = myPrize.prize;
+        if (myPrize.soluong <= 0){
+            return Util.checkStatus(HttpStatus.BAD_REQUEST,"Đã hết Lượt Mở",null);
+        }
+        switch (item.id){
+            case 4://hộp dd
+                Items itemAdd = addNewBey(user,getRandomBey());
+                itemAdd.vinhvien = false;
+                userService.saveItem(itemAdd);
+
+                myPrize.soluong -= 1;
+                userService.saveMyPrize(myPrize);
+
+                String t = "Chúc mừng bạn vừa nhận được beyblade " + itemAdd.beyBlade.name + (itemAdd.vinhvien ? " Vĩnh Viễn " : " Hạn Sử Dụng");
+
+                return Util.checkStatus(HttpStatus.OK, t ,itemAdd);
+            case 5://hộp dd vip
+
+                BeyBlade b = getRandomBey();
+                if (Util.isTrue(10,100)){
+                    b= getRandomBeyBoss();
+                }
+                Items itemVIP = addNewBey(user,b);
+                itemVIP.vinhvien = true;
+                userService.saveItem(itemVIP);
+
+                myPrize.soluong -= 1;
+                userService.saveMyPrize(myPrize);
+
+                String v = "Chúc mừng bạn vừa nhận được beyblade " + itemVIP.beyBlade.name + (itemVIP.vinhvien ? " Vĩnh Viễn " : " Hạn Sử Dụng");
+
+                return Util.checkStatus(HttpStatus.OK,v,itemVIP);
+            default:
+                if (item.id > 0 && item.id <= 3 || item.id > 5){
+                    return Util.checkStatus(HttpStatus.BAD_REQUEST,"Sản Phẩm này dùng để đổi Beyblade thật,vui lòng liên hệ admin để đổi nhé!",null);
+                }
+                return Util.checkStatus(HttpStatus.NOT_FOUND,"Item này chưa có chức năng",null);
+        }
+    }
+
+    public Items addNewBey(User user,BeyBlade beyBlade){
+
+        Items items = new Items();
+        items.beyBlade = beyBlade;
+        items.user = user;
+        items.selectedBey = false;
+        items.create_time = new Timestamp(System.currentTimeMillis());
+        long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
+        items.ngayhethan = new Timestamp(items.create_time.getTime() + millisecondsInADay);
+        return items;
+    }
     public TOP getTopByUser(User user) {
         return topRepository.getTopByUser(user);
     }

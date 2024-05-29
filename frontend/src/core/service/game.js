@@ -81,6 +81,11 @@ setPK(kethu) {
     return response;
 }
 
+async getBeyDefault(token) {
+    const response = await axios.get(`${baseURL}/game/getBeyDefault/${token}`);
+    return response;
+}
+
 async getBeyByType(type) {
     const response = await axios.get(`${baseURL}/game/getBey/${type}`);
     return response;

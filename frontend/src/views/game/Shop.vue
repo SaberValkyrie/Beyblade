@@ -14,7 +14,7 @@
       <div class="row sm-gutter">
         <!-- Product item -->
         <div v-for="(product, index) in products" :key="index" class="product-item">
-          <a class="home-product-item" @click="go('/shop/item/' + product.code)">
+          <a  :class="product.beyBlade.isBoss ? 'boss home-product-item' : 'home-product-item'" @click="go('/shop/item/' + product.code)">
             <div class="home-product-item__img" 
      :style="{ backgroundImage: 'url(' + product.beyBlade.images + ')' }">
 </div>
@@ -35,19 +35,16 @@
               </span>
   
               <div class="home-product-item__rating">
-                <i  :class="product.beyBlade.power + product.beyBlade.hp > 50000 ?
-                'home-product-item__star--gold fas fa-star': 'fas fa-star'"></i>
-                     <i  :class="product.beyBlade.power + product.beyBlade.hp > 150000 ?
-                'home-product-item__star--gold fas fa-star': 'fas fa-star'"></i>
-                    <i  :class="product.beyBlade.power + product.beyBlade.hp > 250000 ?
-                'home-product-item__star--gold fas fa-star': 'fas fa-star'"></i>
-                    <i  :class="product.beyBlade.power + product.beyBlade.hp > 350000 ?
-                'home-product-item__star--gold fas fa-star': 'fas fa-star'"></i>
-                    <i  :class="product.beyBlade.power + product.beyBlade.hp >= 450000 ?
-                'home-product-item__star--gold fas fa-star': 'fas fa-star'"></i>
-                            </div>
+             
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 50000">⭐</i>
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 150000">⭐</i>
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 350000">⭐</i>
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 450000">⭐</i>
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 650000">⭐</i>
+                <i v-if="(product.beyBlade.power + product.beyBlade.hp) >= 1000000">⭐</i>
   
-  
+                </div>
+              
             </div>
             <div class="home-product-item__origin">
                             <span class="home-product-item__brand"></span>
@@ -250,6 +247,28 @@ span {
   font-size: 1vw;
 }
 
+
+
+@keyframes glowing-border {
+  1% {
+    border-color: #ac2a02;
+    box-shadow: 0 0 5px #8f1100;
+  }
+  50% {
+    border-color: #3400c4;
+    box-shadow: 0 0 20px #242c02;
+  }
+  100% {
+    border-color: #6b6035;
+    box-shadow: 0 0 5px #31018b;
+  }
+}
+.boss {
+    padding: 0vw;
+    border: 3px solid;
+    /* border-radius: 50%; */
+    animation: glowing-border 3s infinite;
+}
   </style>
   
   

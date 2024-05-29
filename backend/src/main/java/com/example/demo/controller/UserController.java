@@ -176,13 +176,26 @@ public class UserController {
 
         String txt = "";
         int coint = Util.nextInt(1,5);
+        int id = 1;
+        if (Util.isTrue(20,100)){
+            id = 2;
+        }
+        if (Util.isTrue(5,100)){
+            id = 3;
+        }
+        if (Util.isTrue(3,100)){
+            id = Util.nextInt(6,9);
+        }
+        if (Util.isTrue(1,100)){
+            id = 10;
+        }
         switch (type){
             case 0:
                 if (userFromToken.diemdanh){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã điểm danh rồi,vui lòng chờ tới ngày mai", null);
                 }
                 txt = "Điểm Danh thành công,bạn nhận được " + coint + "K Beypoint";
-
+                userService.addPrize(userFromToken,4);
                 userFromToken.diemdanh = true;
                 break;
 
@@ -199,10 +212,9 @@ public class UserController {
                 txt = "Mở Thành Viên thành công! Bạn được nhận thêm " + coint +"K Beypoint";
                 account.tienmat -= 20000;
                if (Util.isTrue(70,100)){
-                   userService.addPrize(userFromToken);
+                   userService.addPrize(userFromToken,id);
                    txt = "Mở Thành Viên thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
                }
-
                 userFromToken.active = true;
                 break;
 
@@ -219,15 +231,16 @@ public class UserController {
                 if (account.tienmat < 5000){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu tài khoản phải có đủ 5K", null);
                 }
-                coint *= 2;
+                coint *= 2 + 5;
 
                 txt = "Điểm danh VIP thành công ! Bạn nhận được " + coint + "K Beypoint";
 
                 if (Util.isTrue(20,100)){
-                    userService.addPrize(userFromToken);
+                    userService.addPrize(userFromToken,id);
                     txt = "Điểm danh VIP thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
                 }
 
+                userService.addPrize(userFromToken,5);
                 account.tienmat -= 5000;
                 userFromToken.diemdanhVIP = true;
                 break;

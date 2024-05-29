@@ -1,6 +1,5 @@
 package com.example.demo.repository.user;
 
-import com.example.demo.entity.Product;
 import com.example.demo.entity.Token;
 import com.example.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

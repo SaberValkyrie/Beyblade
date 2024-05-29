@@ -55,7 +55,7 @@
                                         </th>
                                         <td>
                                             <div class="event-img">
-                                                <img :src="player.user && player.user.userId != 0 ? baseUrl + '/files/' + player.user.avatar : 'https://i.pinimg.com/originals/4b/32/f7/4b32f753e28ef8f590e3c9356c16f117.jpg'" alt="" />
+                                                <img :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.user && player.user.userId != 0 ? baseUrl + '/files/' + player.user.avatar : 'https://i.pinimg.com/originals/4b/32/f7/4b32f753e28ef8f590e3c9356c16f117.jpg'" alt="" />
                                                 <h3><a href="#">{{ player.user.username }}</a></h3>
 
                                             </div>
@@ -87,12 +87,15 @@
                                         </td>
                                         <td>
                                             <div class="r-no">
+                                                
                                                 <div class="event-img">
-                                                <img :src="player.selectBey ? player.selectBey.images : 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg'" alt="" />
+                                                <img :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.selectBey ? player.selectBey.images : 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg'" alt="" />
                                                 <h3><a href="#">{{ player.selectBey ? truncated(player.selectBey.name) : 'Valkyrie Wing Accel' }}</a></h3>
-
+                                       
                                             </div>
+                           
                                             </div>
+                             
                                         </td>
                                         <td>
                                             <div class="primary-btn" >
@@ -871,6 +874,26 @@ button:hover {
 
 
 
+@keyframes glowing-border {
+  1% {
+    border-color: #ac2a02;
+    box-shadow: 0 0 5px #8f1100;
+  }
+  50% {
+    border-color: #3400c4;
+    box-shadow: 0 0 20px #242c02;
+  }
+  100% {
+    border-color: #6b6035;
+    box-shadow: 0 0 5px #31018b;
+  }
+}
+.boss {
+    padding: 0vw;
+    border: 3px solid;
+    /* border-radius: 50%; */
+    animation: glowing-border 3s infinite;
+}
 
 
 

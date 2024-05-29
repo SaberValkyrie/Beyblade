@@ -1,10 +1,7 @@
 package com.example.demo.support;
 
 import com.example.demo.dto.ResponseOpject;
-import com.example.demo.entity.BeyBlade;
-import com.example.demo.entity.Order;
-import com.example.demo.service.BeyService;
-import com.example.demo.service.UserService;
+import com.example.demo.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,6 +21,9 @@ public class Util {
     static {
         rand = new Random();
     }
+
+
+
 
 
 
@@ -196,22 +196,22 @@ public static String getNowString(){
 //    }
 
 
-    public static boolean nay(Order order){
-        // Chuyển timestamp của đơn hàng thành LocalDate
-        LocalDate orderDate = order.date.toLocalDateTime().toLocalDate();
-        // Lấy timestamp cho ngày hôm nay
-        LocalDate homNayDate = LocalDate.now();
-
-        return orderDate.equals(homNayDate);
-    }
-
-    public static boolean qua(Order order){
-        // Chuyển timestamp của đơn hàng thành LocalDate
-        LocalDate orderDate = order.date.toLocalDateTime().toLocalDate();
-        // Lấy timestamp cho ngày hôm qua
-        LocalDate homQuaDate = LocalDate.now().minusDays(1);
-
-        return orderDate.equals(homQuaDate);
-    }
+//    public static boolean nay(Order order){
+//        // Chuyển timestamp của đơn hàng thành LocalDate
+//        LocalDate orderDate = order.date.toLocalDateTime().toLocalDate();
+//        // Lấy timestamp cho ngày hôm nay
+//        LocalDate homNayDate = LocalDate.now();
+//
+//        return orderDate.equals(homNayDate);
+//    }
+//
+//    public static boolean qua(Order order){
+//        // Chuyển timestamp của đơn hàng thành LocalDate
+//        LocalDate orderDate = order.date.toLocalDateTime().toLocalDate();
+//        // Lấy timestamp cho ngày hôm qua
+//        LocalDate homQuaDate = LocalDate.now().minusDays(1);
+//
+//        return orderDate.equals(homQuaDate);
+//    }
 
 }

@@ -9,10 +9,12 @@ import lombok.Data;
 public class Prize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "voucher_id")
-    public byte id;
+    @Column(name = "id")
+    public int id;
 
     @Column(name = "name")
     public String name;
 
+    @Column(name = "type")
+    public byte type;
 }

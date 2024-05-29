@@ -1151,8 +1151,8 @@ font-weight: normal;
   transform: translateY(-1px);
 }
 .home-product-item__img {
-  width: 16vw;
-  height: 16vw;
+  width: 15vw;
+  height: 15vw;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -1212,7 +1212,7 @@ i.home-product-item__like-icon-fill {
 }
 
 .home-product-item__rating {
-  font-size: 1rem;
+  font-size: 1.5vw;
   transform: scale(0.8);
   transform-origin: right;
   color: #d5d5d5;

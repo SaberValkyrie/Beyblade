@@ -13,19 +13,8 @@
     </head>
     <body>
     
-    <div class="lucky-wheel" v-if="buoc == 0">
-    
-    
-    <div class="select">
-    
-    <img v-if="!selectedBey.images" src ="https://i.pinimg.com/236x/4b/d2/3a/4bd23affc771182ef9569c87eeb2c1bd.jpg">
-    
-    <button v-if="buoc == 0 && !selectedBey.images" @click="select()">Chọn Bey</button>
-    
-    </div>
-    
-    
-    
+    <div class="lucky-wheel">
+
     <div class="wheel-container" v-if="selectedBey.images">
     <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
       <img v-if="MeBurst" :src="img" class="effect">
@@ -134,115 +123,7 @@
     
     
     </div>
-    <div class="lucky-wheel">
-      <section id="team" class="section bg-gray-100" v-if="buoc == 1">
-  <h3> Vui Lòng Chọn Hệ Quay Bạn Muốn </h3>
-  <div class="container">
-    <div class="row section-heading justify-content-center text-center wow fadeInUp"
-         data-wow-duration="0.3s" data-wow-delay="0.3s"
-         style="visibility: visible; animation-duration: 0.3s; animation-delay: 0.3s; animation-name: fadeInUp;">
-    </div>
-    <div class="row">
-      <div class="col-6 col-md-3 my-3 wow fadeInUp"
-           v-for="type in types"
-           :key="type.id"
-           data-wow-duration="0.3s" data-wow-delay="0.3s"
-           style="visibility: visible; animation-duration: 0.3s; animation-delay: 0.3s; animation-name: fadeInUp;">
-        <div class="hover-top-in text-center">
-          <div class="overflow-hidden z-index-1 position-relative px-5" @click="setTypeBey(type)">
-            <img class="rounded-circle border border-5 border-white shadow" :src="type.images" alt="Image">
-            <br>
-            <a style="font-size: 1rem;">{{ type.name }}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-    
-    <div v-if="buoc == 2">
-
-    <div class="team-area sp">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-6 col-md-4 col-lg-3 single-team" v-for="bey in listBeyType">
-            <div class="inner">
-              <div class="team-img" @click="chonbey(bey.id)">
-                  <img class="demo" :src="bey.images" alt="Member Photo">
-              </div>
-              <div class="team-content">
-                  <h4>{{bey.name}}</h4>
-              
-              </div>
-            </div>
-        </div>
-      </div>
-    </div>
-    </div>
-    
-    
-    
-    
-    
-    </div>
-    <div v-if="buoc == 3"> 
-    <div class="container">
-      <div class="main-body">
-        <div class="row">
-          <div class="column">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex flex-column align-items-center text-center">
-                  <img :src="selectedBey.images" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
-                  <div class="mt-3">
-                    <h4>{{ selectedBey.name }}</h4>
-                    <p class="text-secondary mb-1">LV: {{ selectedBey.season }}</p>
-                    <p class="text-muted success">Giá :{{ selectedBey.price }} BeyPoint</p>
-                  </div>
-                  <div style="display:flex;zoom: 70%">
-                    <button style="background-color: brown;margin-left: 1rem;margin-right: 1rem" @click="setTypeBey(selectedType)">Hủy</button>
-                    <button @click="accept()">Chọn</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="d-flex align-items-center mb-3">Chỉ Số</h5>
-                <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
-                <div class="progress mb-3" style="height: 5px">
-                  <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p>Sức Bền:{{ convert(selectedBey.hp) }}</p>
-                <div class="progress mb-3" style="height: 5px">
-                  <div class="progress-bar bg-danger" role="progressbar" :style="{ width: (selectedBey.hp / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p>Tỉ Lệ Né Đòn : {{ convert(selectedBey.tiLeNeDon) }}%</p>
-                <div class="progress mb-3" style="height: 5px">
-                  <div class="progress-bar bg-success" role="progressbar" :style="{ width: (selectedBey.tiLeNeDon) + '%' }" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p>Tỉ Lệ Chí Mạng :{{ convert(selectedBey.crit) }}%</p>
-                <div class="progress mb-3" style="height: 5px">
-                  <div class="progress-bar bg-warning" role="progressbar" :style="{ width: (selectedBey.crit) + '%' }" aria-valuemax="100"></div>
-                </div>
-                <p>Tỉ Lệ Gây Burst :{{ ((5 - selectedBey.type.id )* 3) }}%</p>
-                <div class="progress" style="height: 5px">
-                  <div class="progress-bar bg-info" role="progressbar" :style="{ width: ((5 - selectedBey.type.id )* 3) + '%' }" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-    
-    <button v-if="buoc == 1" @click="cancel()">Hủy Chọn</button>
-    
-    </div>
+ 
     
     </body>
     
@@ -314,7 +195,7 @@
     this.getType()
     this.getBoss()
     this.stop()
-    
+    this.setBey()
     setInterval(() => {
     this.checkKQ();
   }, 1000);
@@ -338,13 +219,11 @@
     }
     },
     
-    setBey(id){
-    this.gameService.getBeyByID(id).then(res => {
+    setBey(){
+    this.gameService.getBeyDefault(this.token).then(res => {
       this.selectedBey = res.data.data ;
       this.hpMe = this.selectedBey.hp;
       this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
-    
-    
     }).catch(error => {
     toast.warning(error.response.data.message)
     });
@@ -412,11 +291,7 @@
     
     },
     
-    chonbey(id){
-    this.buoc = 3;
-    this.setBey(id)
-    },
-    
+ 
     accept(){
     this.cancel()
     toast('Chọn Bey Thành Công')

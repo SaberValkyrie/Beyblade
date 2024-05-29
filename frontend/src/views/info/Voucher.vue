@@ -1,323 +1,219 @@
 <template>
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="utf-8">
-  
-  
-  <title>Mã Giảm Giá</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
     <app-header></app-header>
-    <br>    <br>    <br>    <br>    <br>
-  <section class="container">
-    
-  <h1>Mã Giảm Giá</h1>
-  <div class="menu">
-    <select class="form-select"  
-          data-trigger="true" 
-          name="choices-single-filter-orderby"
-          id="choices-single-filter-orderby"
-          aria-label="Default select example"
-          @change="setStatus($event.target.value)"
-  >
-  <option>Lọc Trạng Thái</option>
-      <option value="khadung"> Khả Dụng</option>
-      <option value="hethan">Hết Hạn</option>
-      <option value="used">Đã Sử Dụng</option>
-  </select>
-  
-  </div>
-  
-  <div v-for="(voucher, index) in Vouchers" :key="index" class="col-md-6">
-   
-  <article class="card1 fl-left"  >
-  <section class="date" >
-  <time datetime="23th feb">
-  <span>Giảm {{ voucher.percent }}%</span>
-  </time>
-  </section>
-  <section class="card1-cont">
-  <h3>#{{ voucher.voucher_code }}</h3>
-  <div class="even-date">
-  <i class="fa fa-calendar"></i>
-  <time>
-  <span>  Ngày Hết Hạn: {{ formatCreatedAt(voucher.endTime) }}</span>
-  </time>
-  </div>
-  <br>
-  <div class="even-info">
-  <i class="fa fa-map-marker"></i>
+<div class="container mt-5 pt-4">
+    <div class="row align-items-end mb-4 pb-2">
+    </div><!--end row-->
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-12 mt-4 pt-2" v-for="voucher in Ruong">
+            <div class="card border-0 bg-light rounded shadow">
+                <div class="card-body p-4">
+                    <br>
+                    <img :class="voucher.prize.id == 5 ? 'boss img' : 'img'" :src="voucher.prize.id == 5 ? 'https://www.happyfruits.vn/themes/efruit/assets/img/gift.gif' : 'https://gifdb.com/images/high/bouncing-gift-box-o19ltvr8ldanpz66.gif'">
 
-  <h5>
-  Áp dụng cho đơn từ {{ voucher.giaToiThieu }}₫
-  </h5>
-  </div>
-  <a href="#">Cạnh Tranh: {{ (voucher.countLeft) }}</a>
-  </section>
-  </article>
-  
-  </div>
-  
-  </section>
-  
-  </body>
-  </html>
-  
-  </template>
-  <script>
-  import Header from '@/views/support/Header.vue';
-  import Footer from '@/views/support/Footer.vue';
-  import axios from 'axios';
-  import { baseWeb,baseURL } from '@/router/index';
-  import { mapGetters } from 'vuex';
-  import moment from 'moment';
-  import { toast } from 'vue3-toastify';
-  import 'vue3-toastify/dist/index.css';
-  import { AccountService } from '@/core/service/accountservice';
-  
-  export default {
-    name: 'Profile',
-    computed: {
-      ...mapGetters(['loggedInUser']),
-   },
+                    <h5 style="font-weight:bold">{{ voucher.prize.name }}</h5>
+                    <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">x{{voucher.soluong }}</span>
+
+                    <div class="mt-3">
+                        <span class="text-muted d-block"><i class="fa fa-home" aria-hidden="true">
+
+                        </i> <a href="#" target="_blank" class="text-success">{{voucher.prize.type == 1 ? 'Quà sẽ trao vào cuối sự kiện' : 'Sử dụng ngay để nhận quà' }}
+                        </a></span>
+                        <span class="text-muted d-block"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a @click="useItem(voucher)" class="btn btn-primary">Dùng Ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div><!--end col-->
+
+
+        <div class="col-lg-4 col-md-6 col-12 mt-4 pt-2" v-for="voucher in Vouchers">
+            <div class="card border-0 bg-light rounded shadow">
+                <div class="card-body p-4">
+                    <br>
+                    <img class="img" src="https://i.pinimg.com/originals/a4/b1/cc/a4b1ccc515ff9547ae0260167c7f0797.gif">
+
+                    <h5 style="font-weight:bold">{{ voucher.prize.name }}</h5>
+                    <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">x{{voucher.soluong }}</span>
+
+                    <div class="mt-3">
+                        <span class="text-muted d-block"><i class="fa fa-home" aria-hidden="true">
+
+                        </i> <a href="#" target="_blank" class="text-success">{{voucher.prize.type == 1 ? 'Quà sẽ trao vào cuối sự kiện' : 'Sử dụng ngay nào!!!' }}
+                        </a></span>
+                        <span class="text-muted d-block"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a @click="useItem(voucher)" class="btn btn-primary">Dùng Ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div><!--end col-->
+
+
+
+    </div><!--end row-->
+</div>
+</template>
+
+<script>
+import Header from '@/views/support/Header.vue';
+import Footer from '@/views/support/Footer.vue';
+import axios from 'axios';
+import { baseWeb, baseURL } from '@/router/index';
+import { mapGetters } from 'vuex';
+import moment from 'moment';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { AccountService } from '@/core/service/accountservice';
+
+export default {
+  name: 'Profile',
+  computed: {
+    ...mapGetters(['loggedInUser']),
+  },
   created() {
-    this.status = 'khadung';
-    this.getListVoucher();  
-   },
-   data() {
-     return {
-       baseUrl : baseURL,
-       userInfo : {},
-       defaultA:{},//mac dinh
-       basicA: {}, //thuong
-       service: new AccountService(),
-       token: localStorage.getItem('token'),
-       Vouchers:[],
-       status: '',
-     };
-   },
-   methods: {
-    setStatus(status){
-      this.status = status;
-      this.getListVoucher();
+    this.getListVoucher();
+  },
+  data() {
+    return {
+      baseUrl: baseURL,
+      userInfo: {},
+      defaultA: {}, //mac dinh
+      basicA: {}, //thuong
+      service: new AccountService(),
+      token: localStorage.getItem('token'),
+      Vouchers: [],
+      Ruong: [],
+      status: 1,
+    };
+  },
+  methods: {
+    useItem(item){
+        this.service.useItem(this.token, item).then(response => {
+            toast.success(response.data.message);
+            this.getListVoucher()
+      }).catch(error => {
+        toast.error(error.response.data.message);
+      });
     },
-  
-  
+    
     getListVoucher() {
-    this.service.getAllVoucher(this.token,this.status).then(response => {
-       this.Vouchers = response; 
-  
-      }).catch(error => { 
-        toast.error(error.response.data.message)
-        this.Vouchers = []
-      }); 
-       },
-  
-     formatCreatedAt(timestamp) {
-       return moment(timestamp).format('DD/MM/YYYY HH:mm'); // Định dạng ngày tháng giờ phút theo ý muốn
-   },
-  
+      this.service.getAllVoucher(this.token, 1).then(response => {
+        this.Vouchers = response.data.data;
+      }).catch(error => {
+        toast.error(error.response.data.message);
+        this.Vouchers = [];
+      });
+      this.service.getAllVoucher(this.token, 2).then(response => {
+        this.Ruong = response.data.data;
+      }).catch(error => {
+        toast.error(error.response.data.message);
+        this.Ruong = [];
+      });
     },
-    components: {
-      'app-header': Header,
-      'app-footer': Footer,
-    }
-   
-  }
-  </script>
-  <style type="text/css">
-        @import url('https://fonts.googleapis.com/css?family=Oswald');
-  * {
-      margin: 0;
-      padding: 0;
-      border: 0;
-      box-sizing: border-box
-  }
-  
-  body {
-      font-family: arial
-  }
-  
-  .fl-left {
-      float: left
-  }
-  
-  .fl-right {
-      float: right
-  }
-  
-  h1 {
-      text-transform: uppercase;
-      font-weight: 900;
-      border-left: 10px solid #fec500;
-      padding-left: 10px;
-      margin-bottom: 30px
-  }
-  
-  .row {
-      overflow: hidden
-  }
-  
-  .card1 {
-    zoom: 130%;
-    display: inline-flex;
-    width: 100%;
-    background-color: #f5f5f5;
-    color: #000000;
-    margin-bottom: 38px;
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-    border-radius: 4px;
-    position: relative;
-}
-  
-  .card1+.card1 {
-      margin-left: 2%
-  }
-  
-  .date {
-      display: table-cell;
-      width: 25%;
-      position: relative;
-      text-align: center;
-      border-right: 2px dashed #dadde6
-  }
 
-  .date:before,
-  .date:after {
-      content: "";
-      display: block;
-      width: 30px;
-      height: 30px;
-      background-color: #DADDE6;
-      position: absolute;
-      top: -15px;
-      right: -15px;
-      z-index: 1;
-      border-radius: 50%
-  }
-  
-  .date:after {
-      top: auto;
-      bottom: -15px
-  }
-  
-  .date time {
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%)
-  }
-  
-  .date time span {
-      display: block
-  }
-  
-  .date time span:first-child {
-      color: #2b2b2b;
-      font-weight: 600;
-      font-size: 250%
-  }
-  
-  .date time span:last-child {
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-top: -10px
-  }
-  
-  .card1-cont {
-      display: table-cell;
-      width: 75%;
-      font-size: 85%;
-      padding: 10px 10px 30px 50px
-  }
-  
-  .card1-cont h3 {
-      color: #3C3C3C;
-      font-size: 130%
-  }
-  
-  
-  
-  .card1-cont>div {
-      display: table-row
-  }
-  
-  .card1-cont .even-date i,
-  .card1-cont .even-info i,
-  .card1-cont .even-date time,
-  .card1-cont .even-info p {
-      display: table-cell
-  }
-  
-  .card1-cont .even-date i,
-  .card1-cont .even-info i {
-      padding: 5% 5% 0 0
-  }
-  
-  .card1-cont .even-info p {
-      padding: 30px 50px 0 0
-  }
-  
-  .card1-cont .even-date time span {
-      display: block
-  }
-  
-  .card1-cont a {
-      display: block;
-      text-decoration: none;
-      width: 80px;
-      height: 30px;
-      background-color: #F8504C;
-      color: #fff;
-      text-align: center;
-      line-height: 30px;
-      border-radius: 2px;
-      position: absolute;
-      right: 10px;
-      bottom: 10px
-  }
-  
-  .row:last-child .card1:first-child .card1-cont a {
-      background-color: #037FDD
-  }
-  
-  .row:last-child .card1:last-child .card1-cont a {
-      background-color: #F8504C
-  }
-  
-  @media screen and (max-width: 860px) {
-      .card1 {
-          display: block;
-          float: none;
-          width: 100%;
-          margin-bottom: 10px
-      }
-      .card1+.card1 {
-          margin-left: 0
-      }
-      .card1-cont .even-date,
-      .card1-cont .even-info {
-          font-size: 75%
-      }
-  }
-  .menu {
-      padding: 2rem;
-      zoom: 150%;
-      width: 30%;
-  }
-  section.container {
-    background-color: #DADDE6;
-    border-radius: 1rem;
-    box-shadow: 0 0px 38px #999;
+    formatCreatedAt(timestamp) {
+      return moment(timestamp).format('DD/MM/YYYY HH:mm'); // Định dạng ngày tháng giờ phút theo ý muốn
+    },
+  },
+  components: {
+    'app-header': Header,
+    'app-footer': Footer,
+  },
 }
-      </style>
-  
-  
-  
+</script>
+<style scoped>
+esult that you can see in the preview selection
+
+body{margin-top:20px;}
+.shadow {
+    box-shadow: 0 0 3px rgb(53 64 78 / 20%) !important;
+}
+.rounded {
+    border-radius: 5px !important;
+}
+.bg-light {
+    zoom: 150%;
+    background-color: #f7f8fa !important;
+}
+.bg-primary, .btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, .btn-outline-primary:not(:disabled):not(.disabled):active, .badge-primary, .nav-pills .nav-link.active, .pagination .active a, .custom-control-input:checked ~ .custom-control-label:before, #preloader #status .spinner > div, .social-icon li a:hover, .back-to-top:hover, .back-to-home a, ::selection, #topnav .navbar-toggle.open span:hover, .owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots.clickable .owl-dot:hover span, .watch-video a .play-icon-circle, .sidebar .widget .tagcloud > a:hover, .flatpickr-day.selected, .flatpickr-day.selected:hover, .tns-nav button.tns-nav-active, .form-check-input.form-check-input:checked {
+    background-color: #6dc77a !important;
+}
+
+.badge {
+    padding: 5px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+
+.btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, .btn-outline-primary:not(:disabled):not(.disabled):active {
+    box-shadow: 0 3px 7px rgba(110, 0, 0, 0.5) !important;
+}
+.btn-primary, .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, .btn-outline-primary:not(:disabled):not(.disabled):active, .bg-soft-primary .border, .alert-primary, .alert-outline-primary, .badge-outline-primary, .nav-pills .nav-link.active, .pagination .active a, .form-group .form-control:focus, .form-group .form-control.active, .custom-control-input:checked ~ .custom-control-label:before, .custom-control-input:focus ~ .custom-control-label::before, .form-control:focus, .social-icon li a:hover, #topnav .has-submenu.active.active .menu-arrow, #topnav.scroll .navigation-menu > li:hover > .menu-arrow, #topnav.scroll .navigation-menu > li.active > .menu-arrow, #topnav .navigation-menu > li:hover > .menu-arrow, .flatpickr-day.selected, .flatpickr-day.selected:hover, .form-check-input:focus, .form-check-input.form-check-input:checked, .container-filter li.active, .container-filter li:hover {
+    border-color: #471700 !important;
+}
+.bg-primary, .btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, .btn-outline-primary:not(:disabled):not(.disabled):active, .badge-primary, .nav-pills .nav-link.active, .pagination .active a, .custom-control-input:checked ~ .custom-control-label:before, #preloader #status .spinner > div, .social-icon li a:hover, .back-to-top:hover, .back-to-home a, ::selection, #topnav .navbar-toggle.open span:hover, .owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots.clickable .owl-dot:hover span, .watch-video a .play-icon-circle, .sidebar .widget .tagcloud > a:hover, .flatpickr-day.selected, .flatpickr-day.selected:hover, .tns-nav button.tns-nav-active, .form-check-input.form-check-input:checked {
+    background-color: #8b0000 !important;
+}
+.p-4 {
+    padding: 0.5rem !important;
+}
+.btn {
+    padding: 8px 20px;
+    outline: none;
+    text-decoration: none;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    font-weight: 600;
+    border-radius: 5px;
+}
+.btn-primary {
+    background-color: #910000 !important;
+    border: 1px solid #771800 !important;
+    color: #fff !important;
+    box-shadow: 0 3px 7px rgba(78, 0, 0, 0.5);
+}
+
+a {
+text-decoration:none;    
+}
+img.img {
+    width: 10vw;
+    height: 10vw;
+    border-radius:50%;
+
+}
+@keyframes glowing-border {
+  1% {
+    border-color: #ac2a02;
+    box-shadow: 0 0 5px #8f1100;
+  }
+  50% {
+    border-color: #3400c4;
+    box-shadow: 0 0 20px #242c02;
+  }
+  100% {
+    border-color: #6b6035;
+    box-shadow: 0 0 5px #31018b;
+  }
+}
+.boss {
+    padding: 0vw;
+    border: 3px solid;
+    /* border-radius: 50%; */
+    animation: glowing-border 3s infinite;
+}
+
+</style>
+
+
+
+
+
+

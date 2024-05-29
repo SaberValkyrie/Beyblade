@@ -20,43 +20,54 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade  active show" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
                         <div class="row">
-                            <div class="col-md-4 col-sm-6 mb-4 pb-2" v-for="item in ListItems">
-                                <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
-                                    <div class="list-card-image">
-                                        <div class="favourite-heart text-danger position-absolute"><a href="#"><i class="icofont-heart"></i></a></div>
-                                        <div v-if="item.vinhvien" class="member-plan position-absolute"><span class="badge badge-dark">Vĩnh Viễn</span></div>
-                                        <a href="#">
-                                            <img :src="item.beyBlade.images" class="img-fluid item-img">
-                                        </a>
-                                 
-                                    </div>
-                                    <div class="p-3 position-relative">
-                                        <div class="list-card-body">
-                                          
-                                            <p class="text-gray mb-3">{{ truncated(item.beyBlade.name) }}</p>
-                                            <p v-if="!item.vinhvien" class="text-gray mb-3">Ngày Hết Hạn:{{ formatCreatedAt(item.ngayhethan) }}</p>
-                                            <p v-else class="text-gray mb-3">Unlimited </p>
-                                            
-                                           <div v-if="!item.selectedBey">
-                                            <button @click="setBey(item)" class="btn btn-primary"  type="button" > Chọn
-                                      <span class="spinner-grow spinner-green-sm" role="status" aria-hidden="true">
+                            <div class="col-md-4 col-sm-6 mb-4 pb-2" v-for="item in ListItems" :key="item.id">
+    <div :class="item.beyBlade.isBoss && item.vinhvien? 'boss list-card bg-white h-100 rounded overflow-hidden position-relative' :'list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm'">
+      <div class="list-card-image">
+        <div class="favourite-heart text-danger position-absolute">
+          <a href="#"><i class="icofont-heart"></i></a>
+        </div>
+        
+        <div class="member-plan position-absolute">
+            <div class="home-product-item__rating">
+             
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 50000">⭐</i>
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 150000">⭐</i>
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 350000">⭐</i>
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 450000">⭐</i>
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 650000">⭐</i>
+             <i v-if="(item.beyBlade.power + item.beyBlade.hp) >= 1000000">⭐</i>
 
-                                      </span>
-                                     
-                                </button>
-                             
-                                           </div>
-                                                <div v-else >
-                                <button class="btn btn-primary" type="button" disabled="">
-                                    Đang Sử Dụng
-                                </button>
-                            </div>
-                                                 
-                                        </div>
-                                      
-                                    </div>
-                                </div>
-                            </div>
+             </div>
+          
+        </div>
+        
+        <a href="#">
+          <img :src="item.beyBlade.images" :class="item.beyBlade.isBoss ? 'img-fluid item-img' : 'img-fluid item-img'">
+        </a>
+      </div>
+      <div class="p-3 position-relative">
+        <div class="list-card-body">
+          <p class="text-gray mb-3">{{ truncated(item.beyBlade.name) }}</p>
+          
+          <p v-if="!item.vinhvien" class="text-danger mb-3">
+            Ngày Hết Hạn:{{ formatCreatedAt(item.ngayhethan) }}
+          </p>
+          <p v-else class="text-success mb-3">Vĩnh Viễn</p>
+        
+          <div v-if="!item.selectedBey">
+            <button @click="setBey(item)" class="btn btn-primary" type="button">
+              Chọn
+              <span class="spinner-grow spinner-green-sm" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div v-else>
+            <button class="btn btn-primary" type="button" disabled="">Đang Sử Dụng</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
                            
                         </div>
                     </div>
@@ -340,9 +351,6 @@ p {
 }
 
 
-.list-card-image {
-    height: 20vw;
-}
 
 
 .img-fluid {
@@ -403,6 +411,35 @@ p {
 
 .apdung:hover {
   background-color: #0056b3;
+}
+@keyframes glowing-border {
+  1% {
+    border-color: #ac2a02;
+    box-shadow: 0 0 5px #8f1100;
+  }
+  50% {
+    border-color: #3400c4;
+    box-shadow: 0 0 20px #242c02;
+  }
+  100% {
+    border-color: #6b6035;
+    box-shadow: 0 0 5px #31018b;
+  }
+}
+.boss {
+    padding: 0vw;
+    border: 3px solid;
+    /* border-radius: 50%; */
+    animation: glowing-border 3s infinite;
+}
+
+.list-card-image {
+  position: relative;
+  height: 20vw;
+}
+
+.member-plan.position-absolute {
+    width: 2px;
 }
 
 </style>

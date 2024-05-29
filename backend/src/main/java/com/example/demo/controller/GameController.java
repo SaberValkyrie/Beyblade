@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +46,16 @@ public class GameController {
     }
 
 
+    @GetMapping("/getBeyDefault/{token}")
+    public ResponseEntity<ResponseOpject> getBeyDefault(@PathVariable String token) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+       Items item = userService.getItemMacDinhByUser(userToken);
+      return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +item.beyBlade.name + "",  item.beyBlade);
+    }
+
     @GetMapping("/getItemsBag/{token}")
     public ResponseEntity<ResponseOpject> getItems(@PathVariable String token) {
         User userToken = tokenService.getUserFromToken(token);
@@ -58,29 +69,29 @@ public class GameController {
 
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +player.items.size() + " items",  player);
     }
-    @PostMapping("/addItemsBag/{token}")
-    public ResponseEntity<ResponseOpject> addItem(@PathVariable String token,
-                                                  @RequestBody Items item) {
-        User userToken = tokenService.getUserFromToken(token);
-        if (userToken == null){
-            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
-        }
-        long cu = System.currentTimeMillis();
-        long st = 3 * 24 * 60 * 60 * 1000;
-
-        Items newItem = new Items();
-        newItem.user = userToken;
-        newItem.beyBlade = item.beyBlade;
-        newItem.create_time = new Timestamp(cu);
-        newItem.ngayhethan = new Timestamp(cu + st);
-
-        if (Util.isTrue(10,100)){
-            newItem.vinhvien = true;
-        }
-        newItem.selectedBey = false;
-
-        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +newItem + " ",  newItem);
-    }
+//    @PostMapping("/addItemsBag/{token}")
+//    public ResponseEntity<ResponseOpject> addItem(@PathVariable String token,
+//                                                  @RequestBody Items item) {
+//        User userToken = tokenService.getUserFromToken(token);
+//        if (userToken == null){
+//            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+//        }
+//        long cu = System.currentTimeMillis();
+//        long st = 3 * 24 * 60 * 60 * 1000;
+//
+//        Items newItem = new Items();
+//        newItem.user = userToken;
+//        newItem.beyBlade = item.beyBlade;
+//        newItem.create_time = new Timestamp(cu);
+//        newItem.ngayhethan = new Timestamp(cu + st);
+//
+//        if (Util.isTrue(10,100)){
+//            newItem.vinhvien = true;
+//        }
+//        newItem.selectedBey = false;
+//
+//        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +newItem + " ",  newItem);
+//    }
 
 
     @PutMapping("/setItem/{token}")
@@ -104,6 +115,9 @@ public class GameController {
             userService.saveItem(edit);
             userService.saveItem(item);
         }
+        TOP top = service.getTopByUser(userToken);
+        top.selectBey = item.beyBlade;
+        service.saveTop(top);
         return Util.checkStatusRes(HttpStatus.OK, "Chọn thành công " + item.beyBlade.name,  item);
     }
 
@@ -183,6 +197,31 @@ public class GameController {
         }
         return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + " beyblade với hệ " + he,  list);
     }
+
+
+
+
+    @GetMapping("/getVoucher/{token}/{status}")
+    public ResponseEntity<ResponseOpject> getBeyByToken(@PathVariable String token,@PathVariable byte status) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        List<MyPrize> myPrizes  = userService.getPrizeByStatus(userToken.username,status);
+        return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được "  + " beyblade với hệ ",  myPrizes);
+    }
+
+
+    @PostMapping("/useItem/{token}")
+    public ResponseEntity<ResponseOpject> useItem(@PathVariable String token
+            ,@RequestBody MyPrize myPrize) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        return service.useItem(userToken,myPrize);
+    }
+
 
     @GetMapping("/getBey/{type}/{token}")
     public ResponseEntity<ResponseOpject> getBeyByToken(@PathVariable byte type,@PathVariable String token) {
@@ -344,7 +383,9 @@ public class GameController {
 
 
         int maxHangPK;
-        if (topme.top >= 51 && topme.top <= 100) { //top 51-100 thách đấu tối đa 5 bậc
+        if (topme.top == 101) { //top 51-100 thách đấu tối đa 5 bậc
+            maxHangPK = 6;
+        } else if (topme.top >= 51 && topme.top <= 100) { //top 51-100 thách đấu tối đa 5 bậc
             maxHangPK = 5;
         } else if (topme.top >= 31 && topme.top <= 50) { //top 31-50 chỉ thách đấu tối đa 4 bậc
             maxHangPK = 4;
@@ -357,7 +398,6 @@ public class GameController {
         } else {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Thứ hạng của bạn không nằm trong khoảng cho phép thách đấu", null);
         }
-
         if (topme.top - topdich.top > maxHangPK) {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, maxHangPK > 1? "Hạng của bạn chỉ có thể thách đấu từ hạng " + (topme.top -maxHangPK )  + " tới " + (topme.top - 1)
                     : "Hạng của bạn chỉ có thể thách đấu với hạng " + (topme.top -1 ), null);

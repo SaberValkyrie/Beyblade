@@ -74,8 +74,8 @@ async setDefaultAdress(id,token) {
   }
   //-----------------------------------------------------------------------------------------------------------------
 async getAllVoucher(token,loc) {
-  const response =  axios.get(`${baseURL}/voucher/${token}/${loc}`);
-  return (await response).data.data;
+  const response =  axios.get(`${baseURL}/game/getVoucher/${token}/${loc}`);
+  return response;
 }
   
 async getAllUserChat(token) {
@@ -94,6 +94,10 @@ async getAllUserChat(token) {
     return  response;
   }
   //-----------------------------------------------------------------------------------------------------------------
+  useItem(token,item) {
+    const response =  axios.post(`${baseURL}/game/useItem/${token}`,item);
+    return  response;
+  }
     //-----------------------------------------------------------------------------------------------------------------
 
 }

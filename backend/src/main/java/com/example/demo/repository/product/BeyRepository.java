@@ -14,7 +14,7 @@ import java.util.List;
  * Created 09/03/2024
  */
 @Repository
-public interface BeyRepository extends JpaRepository<Cart,Long> {
+public interface BeyRepository extends JpaRepository<BeyBlade,Long> {
 
 
     @Query("select t from TypeBey t")

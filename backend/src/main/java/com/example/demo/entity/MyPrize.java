@@ -11,19 +11,23 @@ import java.sql.Timestamp;
 public class MyPrize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "my_voucher_id")
-    public int myVoucherId;
+    @Column(name = "id")
+    public int id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     public User user;
 
     @ManyToOne
-    @JoinColumn(name = "voucher_id")
+    @JoinColumn(name = "prize_id")
     public Prize prize;
 
     @Column(name = "status")
     public boolean status;
+
+
+    @Column(name = "soluong")
+    public int soluong;
 
     @Column(name = "time_save")
     public Timestamp timeSave;

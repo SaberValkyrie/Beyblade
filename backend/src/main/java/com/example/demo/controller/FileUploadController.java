@@ -47,7 +47,7 @@ public class FileUploadController {
         }
     }
 
-    @GetMapping("/files/")
+    @GetMapping("/getAll/")
     public ResponseEntity<List<ResponseOpject>> getAllFilesUpload(){
         try {
 

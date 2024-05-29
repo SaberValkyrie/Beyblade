@@ -30,18 +30,24 @@
         <div id="main-nav" class="collapse navbar-collapse">
           <ul class="navbar-nav ml-auto">
             <li><a href="/shop" class="nav-item nav-link">Cửa Hàng</a></li>
-            <li><a href="/user/bag" class="nav-item nav-link">Kho Đồ</a></li>
             <li class="dropdown" v-if="loggedInUser">
-              <a href="#" class="nav-item nav-link" data-toggle="dropdown">Tài Khoản</a>
+              <a  class="nav-item nav-link" data-toggle="dropdown">Kho Đồ</a>
+              <div class="dropdown-menu">
+                <a href="/user/bag" class="dropdown-item">Beyblade của tôi</a>
+                <a   href="/voucher" class="dropdown-item">Voucher của tôi</a>
+              </div>
+            </li>
+            <li class="dropdown" v-if="loggedInUser">
+              <a  class="nav-item nav-link" data-toggle="dropdown">Tài Khoản</a>
               <div class="dropdown-menu">
                 <a href="/profile" class="dropdown-item">Thông Tin Cá Nhân</a>
                 <a  @click="logout()" class="dropdown-item">Đăng Xuất</a>
               </div>
-
             </li>
-            <li v-else ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
 
-            <li><a  v-if="loggedInUser"  class="nav-item nav-link">Số Dư :{{account.coint}}</a></li>
+            <li v-else ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
+            <li><a  v-if="loggedInUser"  class="nav-item nav-link">Số Dư :{{account.tienmat}}</a></li>
+            <li><a  v-if="loggedInUser"  class="nav-item nav-link">BeyPoint :{{account.coint}}</a></li>
           </ul>
         </div>
       </div>

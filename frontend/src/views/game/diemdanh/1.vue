@@ -26,7 +26,7 @@
                         <p> Nhận GIFTCODE: <span style="color: red"  class="font-weight-bold">Bey Hạn Sử Dụng</span><i class="mdi mdi-close"></i></p>
 </div>
         			<div class="text-center mt-5">
-        				<a @click="diemdanh(0)" class="btn btn-custom">Điểm Danh</a>
+        				<a @click="diemdanh(0)" class="btn btn-custom">{{ loggedInUser.diemdanh ? 'Đã Điểm Danh' : 'Điểm Danh' }}</a>
         			</div>
         		</div>
         	</div>
@@ -47,7 +47,7 @@
                         <p> Nhận GIFTCODE: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
 </div>
         			<div class="text-center mt-5">
-        				<a  @click="diemdanh(1)" class="btn btn-custom">Mở Ngay</a>
+        				<a  @click="diemdanh(1)" class="btn btn-custom">{{ loggedInUser.active ? 'Đã Mở Thành Viên' : 'Mở Ngay' }}</a>
         			</div>
         		</div>
         	</div>
@@ -62,13 +62,13 @@
                     <div class="price-features mt-5">
         				<p> Mức Giá: <span class="font-weight-bold">5K VNĐ</span><i class="mdi mdi-check"></i></p>
         				<p>Reset: <span class="font-weight-bold">Mỗi Ngày</span><i class="mdi mdi-check"></i></p>
-        				<p style="color: green;" >Yêu Cầu: <span class="font-weight-bold">Mở Thành Viên</span><i class="mdi mdi-check"></i></p>
+        				<p style="color: green;" >Yêu Cầu: <span class="font-weight-bold">Phải Mở Thành Viên Trước</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận BeyPoint: <span class="font-weight-bold">Ngẫu Nhiên</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận Voucher: <span class="font-weight-bold">Tỉ lệ 25%</span><i class="mdi mdi-check"></i></p>
                         <p> Nhận GIFTCODE: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
 	</div>
         			<div class="text-center mt-5">
-        				<a  @click="diemdanh(2)" class="btn btn-custom">Điểm Danh VIP</a>
+        				<a  @click="diemdanh(2)" class="btn btn-custom">{{ loggedInUser.diemdanh ? 'Đã Điểm Danh' : 'Điểm Danh VIP' }}</a>
         			</div>
         		</div>
         	</div>
@@ -100,21 +100,28 @@ import 'vue3-toastify/dist/index.css';
 import { baseURL } from '@/router/index';
 import axios from 'axios';
 import { GameService } from '@/core/service/game';
+import { AccountService } from '@/core/service/accountservice';
+import { mapGetters } from 'vuex';
 import Chart from 'chart.js/auto';
 import moment from 'moment';
 
 export default {
   name: 'App1',
+  computed: {
+    ...mapGetters(['loggedInUser']),
+  },
   data(){
     return {
  token : localStorage.getItem('token'),
- loggedInUser : localStorage.getItem('loggedInUser'),
  gameService: new GameService(),
+ accountService: new AccountService(),
 };
   },
+  created() {
+	this.getLogin()
+},
   methods:{
     diemdanh(type){
-
     this.gameService.diemdanh(this.token,type).then(res => {
 		toast.success(res.data.message)
 	}).catch(error => {
@@ -122,6 +129,12 @@ export default {
 });
 
     },
+	getLogin(){
+		this.accountService.getUserLogin(this.token).then(res => {
+		}).catch(error => {
+ toast.warning(error.response.data.message)
+});
+	},
 
 
     go(link){

@@ -28,7 +28,7 @@ public class UserService {
     private AddressRepository addressRepository;
 
     @Autowired
-    private MyVoucherRepository myVoucherRepository;
+    private MyVoucherRepository myPrizeRepository;
     @Autowired
     private ItemsRepository itemsRepository;
     @Autowired
@@ -54,24 +54,28 @@ public class UserService {
 
 
 
-    public void addPrize(User user){
-        byte id = 1;
-        if (Util.isTrue(20,100)){
-            id = 2;
-        }
-        if (Util.isTrue(5,100)){
-            id = 3;
-        }
+    public void addPrize(User user,int id){
         Prize prize = voucherRepository.getPrizeByID(id);
-        MyPrize myPrize = new MyPrize();
-        myPrize.user = user;
-        myPrize.status = false;
-        myPrize.prize = prize;
+
+        MyPrize myPrize = voucherRepository.getMYPrizeByID(id);
+
+        if (myPrize == null){
+             myPrize = new MyPrize();
+            myPrize.soluong = 1;
+            myPrize.user = user;
+            myPrize.prize = prize;
+            myPrize.status = false;
+        }else{
+            myPrize.soluong += 1;
+        }
         myPrize.timeSave = new Timestamp(System.currentTimeMillis());
         saveMyPrize(myPrize);
 
     }
 
+    public List<Prize> getAllPrize(User user){
+        return userRepository.getAllPrize(user);
+    }
 
 
 
@@ -122,7 +126,7 @@ public class UserService {
          voucherRepository.save(voucher);
     }
     public void saveMyPrize(MyPrize myVc) {
-        myVoucherRepository.save(myVc);
+        myPrizeRepository.save(myVc);
     }
 
 
@@ -133,6 +137,11 @@ public class UserService {
 
     public ArrayList<Items> getItemsByUser(User userToken) {
         return userRepository.getItemByUser(userToken);
+    }
+
+
+    public Items getItemMacDinhByUser(User userToken) {
+        return userRepository.getItemMacDinhByUser(userToken);
     }
     public ArrayList<BeyBlade> getBeysByUser(User userToken) {
         return userRepository.getBeysByUser(userToken);
@@ -154,5 +163,9 @@ public class UserService {
 
     public List<User> getAllUser() {
         return userRepository.findAll();
+    }
+
+    public List<MyPrize> getPrizeByStatus(String username, byte i) {
+        return myPrizeRepository.getMyPrizeByStatus(username,i);
     }
 }
