@@ -72,21 +72,32 @@ public class UserController {
 
         List<Items> items = userService.getItemsByUser(user);
         if (items.size() <= 0){
-         for (int i = 1;i <= 4;i++){
-             Items item = new Items();
-             item.vinhvien = true;
-             item.user = user;
-             item.selectedBey = false;
-             item.beyBlade = beyService.getBeyByID(i);
-             item.create_time = new Timestamp(System.currentTimeMillis());
-             item.ngayhethan = item.create_time;
-             userService.saveItem(item);
-         }
+            Items item = new Items();
+            item.vinhvien = true;
+            item.user = user;
+            item.selectedBey = true;
+            item.beyBlade = beyService.getBeyByID(1);
+            item.create_time = new Timestamp(System.currentTimeMillis());
+            item.ngayhethan = item.create_time;
+            userService.saveItem(item);
+            add(user);
         }
 
         return Util.checkStatusRes(HttpStatus.OK, "Xác Minh Thành Công : " + user.username, accountResponse);
     }
 
+    private void add(User user){
+        for (int i = 2;i <= 4;i++){
+            Items item = new Items();
+            item.vinhvien = true;
+            item.user = user;
+            item.selectedBey = false;
+            item.beyBlade = beyService.getBeyByID(i);
+            item.create_time = new Timestamp(System.currentTimeMillis());
+            item.ngayhethan = item.create_time;
+            userService.saveItem(item);
+        }
+    }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

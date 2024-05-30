@@ -2,6 +2,7 @@ package com.example.demo.support;
 
 import com.example.demo.entity.BeyBlade;
 import com.example.demo.entity.Items;
+import com.example.demo.entity.TOP;
 import com.example.demo.entity.User;
 import com.example.demo.service.BeyService;
 import com.example.demo.service.UserService;
@@ -27,17 +28,17 @@ public class Auto {
 // @Scheduled(cron = "* * * * * *")//MỖI S
     public void checkVipExpiration() {
             Timestamp cur = new Timestamp(System.currentTimeMillis());
+            for (TOP top : beyService.getTop()){
+                if (top.endBuff.before(new Timestamp(System.currentTimeMillis()))){
+                    top.buff = 0;
+                    beyService.saveTop(top);
+                }
+            }
             for (Items items : userService.getAllItems()){
                 if (!items.vinhvien && items.ngayhethan.before(cur)){//item hsd và tới ngày hết hạn
-                    if (items.selectedBey){ //bey đang sử dụng
-                        items.beyBlade = beyService.getBeyByID(Util.nextInt(1,4));//set bey đang dùng thành 1-4
-                      items.vinhvien = true;
-                        userService.saveItem(items);
-                        return;
-                    }else {
                         System.out.println("delete item hsd");
                         userService.deteleItem(items);//bey chưa sử dụng thì xóa
-                    }
+
                 }
             }
     }
@@ -53,7 +54,17 @@ public class Auto {
                }
                System.out.println("Reset Điểm Danh: " + Util.getNowString());
            }
-
+           for (TOP top : beyService.getTop()){
+               if (top.endBuff.before(new Timestamp(System.currentTimeMillis()))){
+                   top.buff = 0;
+                   beyService.saveTop(top);
+               }
+           }
+        for (User user : userService.getAllUser()){
+            if(user.diem > 0){
+                user.diem = 0;
+            }
+        }
         beyService.loadShop = true;
         beyService.loadBoss = true;
         beyService.loadTop = true;

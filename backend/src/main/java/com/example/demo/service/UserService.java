@@ -168,4 +168,8 @@ public class UserService {
     public List<MyPrize> getPrizeByStatus(String username, byte i) {
         return myPrizeRepository.getMyPrizeByStatus(username,i);
     }
+
+    public Items getItemIDByUser(User user, BeyBlade beyBlade) {
+        return myPrizeRepository.getItemIDByUser(user,beyBlade);
+    }
 }

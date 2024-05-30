@@ -5,6 +5,7 @@ import com.example.demo.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -120,6 +121,26 @@ public static String getNowString(){
             return num.format(power);
         }
     }
+    public static String getRandomImageName(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new IllegalArgumentException("Directory does not exist or is not a directory");
+        }
+
+        File[] files = directory.listFiles((dir, name) -> {
+            String lowerCaseName = name.toLowerCase();
+            return lowerCaseName.endsWith(".jpg") || lowerCaseName.endsWith(".jpeg") || lowerCaseName.endsWith(".png") || lowerCaseName.endsWith(".gif");
+        });
+
+        if (files == null || files.length == 0) {
+            throw new IllegalStateException("No image files found in the directory");
+        }
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(files.length);
+        return files[randomIndex].getName(); // Chỉ trả về tên tệp tin
+    }
+
 
     public static int timeLeft(int militime,long st){
         return (int) ((militime - (System.currentTimeMillis() - st) ) / 1000);

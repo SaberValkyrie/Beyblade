@@ -1,64 +1,29 @@
 <template>
-    <!-- Jumbotron -->
+  <!-- Jumbotron -->
   <app-header></app-header>
   <br>
   <br>
   <br>
-    <!-- Jumbotron -->
+  <!-- Jumbotron -->
   
-   
-   
   <section class="bg-light py-5">
-    
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-8 col-lg-8 mb-4">
-      
-
-          <!-- Checkout -->
+      <div class="container">
           <div class="card shadow-0 border">
-            <div class="p-4">
-        
-  
-  <div>
-    Thanh Toán Trực Tiếp
-    <a @click="payment" >Tại Đây</a>
-  </div>
-  <br>  
-   <img class="qr" :src="getQr()" v-if="urlTT == ''">
-   <div v-else>
+              <div class="p-4">
+            
+                  <br>  
+                  <img class="qr" :src="getQr()" v-if="urlTT == ''">
 
-    <a :href="urlTT"> Đi tới trang thanh toán  </a>
-   </div>
-<!-- {{ order }} -->
-            </div>
-          </div>
-          <!-- Checkout -->
-        </div>
-        <div class="col-xl-4 col-lg-4 d-flex justify-content-center justify-content-lg-end">
-      
-          <div class="ms-lg-4 mt-4 mt-lg-0">
-  
-            <div class="concac">
-                    <input type="checkbox" @click="setCK()">
-                    <br>
-                    <span>Xác Nhận Đã Chuyển Khoản theo mã QR đang có </span>
-                   </div>
-                   <div class="float">
-                    <button v-if="!ck" class="btn btn-success shadow-0 border" @click="mes('Vui Lòng Xác Nhận Đã Chuyển Khoản')" style="background-color: darkgray;">Xác Nhận Thanh Toán</button>
-              <button v-else class="btn btn-success shadow-0 border" @click="ok()" >Xác Nhận Thanh Toán</button>
-
+              
               </div>
+            
+              <input type="number" v-model="amount">
           </div>
-
-        </div>
+    
       </div>
-    </div>
   </section>
-  
-  <!-- Footer -->
-      </template>
-      
+</template>
+
       <script>
       // @ is an alias to /src
       import Header from '@/views/support/Header.vue';
@@ -83,55 +48,34 @@
         },
          data(){
         return{
-          orderService : new OrderService(),
           service: new AccountService(),
           order:{},
           totalPrice: 0,
-      
-           orderKey : this.$route.params.order_key,
-           id: this.$route.params.id,
-           
           token: localStorage.getItem('token'),
-          orders: localStorage.getItem('orders'),
           baseUrl : baseURL,
-          accountName: 'Shop Plaza',
+          accountName: 'Beyblade',
         addInfo: '',
         stk: '0383087656',
         urlTT:'',
-
+        amount:20000,
+        noidung:'',
         ck:false
         }
        
       },
       created(){
-        this.getOrder();
+
       },
       methods :{
-        getOrder(){
-            this.orderService.getOrderByKey(this.orderKey,this.id,this.token).then(res =>{
-                this.order = res.data.data;
-                if(this.order.status != 1){
-                    window.location.href = "/order";
-                }
-            }).catch(error => {
-          toast.warning(error.response.data.message)
-
-          setTimeout(() => {
-          window.location.href = "/order";
-				}, 1500);
-
-
-         }); 
-        },
-  
+        
         getQr(){
-          this.addInfo = this.orderKey;
-
-          if (this.order.details && this.order.details.total !== undefined) {
-    const link = `https://api.vietqr.io/image/MBbank-${this.stk}-SUKDJlE.jpg?accountName=${this.accountName}&amount=${this.order.details.total}&addInfo=${this.addInfo}`;
+          this.addInfo = 'dđ';
+  
+    const link = `https://api.vietqr.io/image/MBbank-${this.stk}-SUKDJlE.jpg?accountName=${this.accountName}&amount=${this.amount}&addInfo=${this.addInfo}`;
     // Trả về đường link
+    // const link='https://api.vietqr.io/image/MBbank-0383087656-SUKDJlE.jpg?addInfo=tra%20tien%20trinh%20dit&accountName=H%E1%BA%A3i%20%C4%90%E1%BA%B9p%20Trai'
     return link;
-  }
+  
       },
    ok(){
     toast.success('Xác Nhận Thành Công!,Vui lòng chờ hệ thống duyệt đơn hàng của bạn');
@@ -174,6 +118,48 @@ payment(){
 
 
       <style scoped>
+      .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2vw;
+}
+
+.card {
+    flex: 1;
+    margin-right: 2vw;
+}
+
+.qr {
+    width: 50vw; /* Điều chỉnh kích thước QR theo đơn vị vw */
+    height: auto;
+}
+
+.col-xl-8.col-lg-8.mb-4, 
+.col-xl-4.col-lg-4.d-flex.justify-content-center.justify-content-lg-end {
+    padding: 2vw;
+    box-sizing: border-box;
+}
+
+.col-xl-4.col-lg-4.d-flex.justify-content-center.justify-content-lg-end {
+    flex: 0 0 30vw; /* Điều chỉnh phần bên phải có kích thước cố định theo đơn vị vw */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: white;
+    padding: 2vw;
+    border: 1px solid darkorange;
+}
+
+.concac, .float {
+    margin-bottom: 2vw;
+}
+
+
+
+
+
   .badge-brown {
       background-color: #8B4513; /* Màu đỏ đậm dạng brown */
       color: white; /* Màu chữ là trắng để tương phản */
@@ -181,12 +167,7 @@ payment(){
   .form-check.h-100.border.rounded-3 {
       background-color: floralwhite;
   }
-  
-    .container {
-  
-      zoom: 149%;
-      text-align: center;
-  }
+
   .chat{
     border: none;
       background-color: #ffffff;
@@ -203,10 +184,7 @@ payment(){
       display: flex;
       /* padding: 2px; */
   }
-  .qr {
-      zoom:50%;
-      left: 50%;
-  }
+
   .mb-4, .my-4 {
       margin-bottom: 1.5rem!important;
       margin-right: 99px;

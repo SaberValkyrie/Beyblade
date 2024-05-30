@@ -60,6 +60,11 @@ setItem(token,item) {
     const response =  axios.put(`${baseURL}/game/setItem/${token}`,item);
     return response;
 }
+buyBUFF(token,x,type) {
+    const response =  axios.put(`${baseURL}/game/buffHP/${token}/${x}/${type}`);
+    return response;
+}
+
 
 buyItem(token,item) {
     const response =  axios.post(`${baseURL}/game/buyItem/${token}`,item);

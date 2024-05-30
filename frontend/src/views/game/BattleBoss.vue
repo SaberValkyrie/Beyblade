@@ -48,7 +48,7 @@
 
 
 <div class="concac" v-if="selectedBey.images">
-
+  <button v-if="End" @click="resetGame" :disabled="spinning">Chơi Lại</button>
   <button  style="font-size: 2vw;"  v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End" @click="spinWheel" :disabled="spinning">Đánh 1 cú</button>
   <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Trận Chiến Kết Thúc</button>
 
@@ -267,13 +267,16 @@ import axios from 'axios';
 import { GameService } from '@/core/service/game';
 import Chart from 'chart.js/auto';
 import moment from 'moment';
+import { mapGetters } from 'vuex';
 
 export default {
 components: {
 'app-header': Header,
 'app-footer': Footer,
 },
-
+computed: {
+    ...mapGetters(['loggedInUser']),
+  },
 data() {
 
 return {
@@ -326,12 +329,12 @@ this.stop()
 
     // toast('sdfghj')
       this.getBoss();
-      if(this.End){
+      // if(this.End && !this.loggedInUser.active){
       
-        setTimeout(() => {
-          window.location.href = "/";
-				}, 2000);
-      }
+      //   setTimeout(() => {
+      //     window.location.href = "/";
+			// 	}, 2000);
+      // }
     }, 100);
 
 },
@@ -538,7 +541,7 @@ truHPMe() {
   if (this.hpMe <= 0) {
     this.hpMe = 0;
 this.End = true;
-toast('Bạn đã thua,hệ thống sẽ đưa bạn về trang chủ')
+toast('Bạn đã thua')
 
   }
 

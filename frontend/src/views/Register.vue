@@ -4,30 +4,28 @@
     <head>
     <meta charset="utf-8">
     
-    
     <title>Đăng Ký</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-    <div class="section bg-theme-color-light overlay-dark overlay-opacity-8 bg-cover lazy" data-loaded="true">
-    <div class="container">
-    <div class="row text-center-md text-center-xs d-middle justify-content-start">
-    <div class="col-12 col-lg-6 mb-5 text-white aos-init aos-animate" data-aos="fade-in" data-aos-delay="0" data-aos-offset="0">
-    
-    <h1 class="display-4 fw-bold mb-0">
-    <span class="d-inline-block">
-    <span class="h6 fw-normal d-block text-align-end text-center-xs">
-    Đã có hơn 1.000.000 người
-    </span>Sử Dụng
-    <span class="text-danger">Shop Plaza</span> 
-    </span>
-    </h1>
-    
-    <p class="h3 fw-normal mb-0">
-    trong suốt 50 năm qua
-    </p>
-    </div>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="section bg-theme-color-light overlay-dark overlay-opacity-8 bg-cover lazy" data-loaded="true">
+<div class="container">
+<div class="row text-center-md text-center-xs d-middle justify-content-start">
+<div class="col-12 col-lg-6 mb-5 text-white aos-init aos-animate" data-aos="fade-in" data-aos-delay="0" data-aos-offset="0">
+
+<h1 class="display-4 fw-bold mb-0">
+<span class="d-inline-block">
+<span class="h6 fw-normal d-block text-align-end text-center-xs">
+Đã có hơn 100 người
+</span>Chơi
+<span class="text-danger">Beyblade Game</span> 
+</span>
+</h1>
+<p class="h3 fw-normal mb-0">
+trong suốt 1 năm qua
+</p>
+</div>
     <div class="col-12 col-lg-6 text-align-end text-center-md text-center-xs aos-init aos-animate" data-aos="fade-in" data-aos-delay="50" data-aos-offset="0">
     <div class="d-inline-block bg-white shadow-primary-xs rounded p-4 p-md-5 w-100 max-w-450 text-align-start">
     <h2 class="h5 mb-5">

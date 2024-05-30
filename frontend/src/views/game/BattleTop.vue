@@ -1,8 +1,12 @@
 
 <template>
-<div class="event-schedule-area-two bg-color pad100" v-if="!info && !thachdau">
+  
+  <div v-if="menuBuff">
+    <menu_buff></menu_buff>
+    </div>
+<div class="event-schedule-area-two bg-color pad100" v-if="!info && !thachdau && !menuBuff">
     <app-header></app-header>
-
+   
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
     <div class="container">
@@ -55,7 +59,7 @@
                                         </th>
                                         <td>
                                             <div class="event-img">
-                                                <img :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.user && player.user.userId != 0 ? baseUrl + '/files/' + player.user.avatar : 'https://i.pinimg.com/originals/4b/32/f7/4b32f753e28ef8f590e3c9356c16f117.jpg'" alt="" />
+                                                <img :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.user && player.user.userId != 0 ? baseUrl + '/files/' + player.user.avatar : player.user.avatar" alt="" />
                                                 <h3><a href="#">{{ player.user.username }}</a></h3>
 
                                             </div>
@@ -178,77 +182,7 @@
     
 </div>
 <div class="thachdau" v-if="thachdau">
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <app-top></app-top>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
 </template>
@@ -258,7 +192,7 @@ import { baseURL } from '@/router/index';
 import Header from '/src/views/support/Header.vue'
 import Foooter from '/src/views/support/Footer.vue'
 import TOP from '/src/views/game/battle/top.vue'
-
+import BUFF from '/src/views/game/battle/menubuff.vue'
 import { toast } from 'vue3-toastify';
 import {GameService} from '@/core/service/game';
 
@@ -272,6 +206,7 @@ export default {
     'app-header': Header,
     'app-footer': Foooter,
     'app-top': TOP,
+    'menu_buff': BUFF,
   },
   computed: {
     ...mapGetters(['loggedInUser']),

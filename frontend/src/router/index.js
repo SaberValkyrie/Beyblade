@@ -106,7 +106,7 @@ const routes = [
     props: true
   },
   {
-    path: '/payment/:id/:order_key/',
+    path: '/naptien/',
     name: 'order.payment',
     component: () => import('../views/order/Payment.vue')
   },

@@ -53,6 +53,9 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
         }
        Items item = userService.getItemMacDinhByUser(userToken);
+        if (item == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Vào Kho Đồ Chọn 1 Beyblade",  null);
+        }
       return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +item.beyBlade.name + "",  item.beyBlade);
     }
 
@@ -120,6 +123,63 @@ public class GameController {
         service.saveTop(top);
         return Util.checkStatusRes(HttpStatus.OK, "Chọn thành công " + item.beyBlade.name,  item);
     }
+
+
+
+    @PutMapping("/buffHP/{token}/{x}/{type}")
+    public ResponseEntity<ResponseOpject> buffHP(@PathVariable String token,
+                                                 @PathVariable int x,@PathVariable int type
+    ) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        TOP top = service.getTopByUser(userToken);
+        if (top.buff > 0){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Không thể mua vì Buff x" + top.buff + " của bạn đang còn hiệu lực,vui lòng chờ tới " + top.endBuff, null);
+        }
+
+        int price = 0;
+        switch (x){
+            case 2:
+                price = 3000;
+                break;
+            case 3:
+                price = 4000;
+                break;
+            case 5:
+                price = 5000;
+                break;
+            default:
+                return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Không có dạng buff này ", null);
+        }
+
+        Account accountToken = userService.getAccountByUser(userToken.username);
+        switch (type) {
+            case 1 :
+                price *= 20;
+                if (accountToken.coint < price){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint",  null);
+                }
+                accountToken.coint -= price;
+                break;
+            default:
+                if (accountToken.tienmat < price){
+                    return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ số dư",  null);
+                }
+                accountToken.tienmat -= price;
+        }
+        userService.saveAccount(accountToken);
+
+        top.buff = (byte) x;
+
+        long millisecondsInADay = TimeUnit.DAYS.toMillis(1);
+        top.endBuff = new Timestamp(System.currentTimeMillis() + millisecondsInADay);
+
+        service.saveTop(top);
+        return Util.checkStatusRes(HttpStatus.OK, "Bạn đã buff x" + x + " HP trên TOP thành công" ,  null);
+    }
+
 
     @PostMapping("/buyItem/{token}")
     public ResponseEntity<ResponseOpject> buyItem(@PathVariable String token,
@@ -302,24 +362,17 @@ public class GameController {
         if (userFromToken == null) {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
-        BeyBlade beyBlade = service.getBeyByID(bey);
-        Account accountToken = userService.getAccountByUser(userFromToken.username);
         short time = 500;
-        int dongia = 100;
 
         switch (type){
             case 0: //đấu boss
                if(!userFromToken.active){
-                   if (accountToken.coint < dongia) {
-                       return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn không đủ BeyPoint,vui lòng nạp thêm để tiếp tục", null);
+                   if (userFromToken.diem > 100) {
+                       return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn chỉ được đánh 100 cú mỗi giờ,vui lòng mở thành viên để đánh vô hạn", null);
                    }
+                   userFromToken.diem += 1;
+                   userService.saveUser(userFromToken);
                }
-                break;
-            case 1:// luyện tập
-                break;
-            case 2:// đấu tranh top
-                break;
-            case 3://đấu từng loại
                 break;
         }
 
@@ -352,6 +405,7 @@ public class GameController {
             service.boss.playerKill = userFromToken;
             service.boss.die = true;
             //boss TG die
+            service.addPrize(service.boss.playerKill);
         }
 
         return Util.checkStatusRes(HttpStatus.OK,  "update thành công", service.boss.hp);
@@ -376,10 +430,10 @@ public class GameController {
         if (topme.top < topdich.top){
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Top của bạn đã cao hơn đối thủ rồi", null);
         }
-
-        if (!userFromToken.active && userFromToken.diem >= 10){
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Ngày hôm nay bạn đã thách đấu đủ 10 lần,vui lòng mở thành viên để tăng hạn mức thách đấu!", null);
-        }
+//
+//        if (!userFromToken.active && userFromToken.diem >= 10){
+//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Ngày hôm nay bạn đã thách đấu đủ 10 lần,vui lòng mở thành viên để tăng hạn mức thách đấu!", null);
+//        }
 
 
         int maxHangPK;
@@ -441,6 +495,17 @@ public class GameController {
         List<TOP> topBOT = service.topList;
         // Kết hợp hai danh sách
         List<TOP> topAll = service.getTopAll(topBOT,topDB);
+        for (TOP top : topAll){
+            User user = top.user;
+            if (user.userId != 0){
+                Items itemIDByUser = userService.getItemIDByUser(user,top.selectBey);
+                boolean case2 = itemIDByUser != null && itemIDByUser.beyBlade.equals(top.selectBey) && itemIDByUser.selectedBey;
+                if (!case2){
+                    top.selectBey = service.getBeyByID(1);
+                    service.saveTop(top);
+                }
+            }
+        }
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", topAll);
     }
 

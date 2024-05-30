@@ -23,7 +23,7 @@
         				<p>Loại Ưu Đãi: <span style="color: green" class="font-weight-bold">Điểm Danh</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận BeyPoint: <span class="font-weight-bold">Ngẫu Nhiên</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận Voucher: <span class="font-weight-bold">No</span><i class="mdi mdi-close"></i></p>
-                        <p> Nhận GIFTCODE: <span style="color: red"  class="font-weight-bold">Bey Hạn Sử Dụng</span><i class="mdi mdi-close"></i></p>
+                        <p> Nhận Hộp Quà: <span style="color: red"  class="font-weight-bold">Bey Hạn Sử Dụng</span><i class="mdi mdi-check"></i></p>
 </div>
         			<div class="text-center mt-5">
         				<a @click="diemdanh(0)" class="btn btn-custom">{{ loggedInUser.diemdanh ? 'Đã Điểm Danh' : 'Điểm Danh' }}</a>
@@ -44,7 +44,7 @@
         				<p>Loại Ưu Đãi: <span style="color: green" class="font-weight-bold">Mở Thành Viên</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận BeyPoint: <span class="font-weight-bold">Ngẫu Nhiên</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận Voucher: <span style="color: red"  class="font-weight-bold">Tỉ Lệ 80%</span><i class="mdi mdi-check"></i></p>
-                        <p> Nhận GIFTCODE: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
+                        <p> Nhận Hộp Quà: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
 </div>
         			<div class="text-center mt-5">
         				<a  @click="diemdanh(1)" class="btn btn-custom">{{ loggedInUser.active ? 'Đã Mở Thành Viên' : 'Mở Ngay' }}</a>
@@ -65,7 +65,7 @@
         				<p style="color: green;" >Yêu Cầu: <span class="font-weight-bold">Phải Mở Thành Viên Trước</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận BeyPoint: <span class="font-weight-bold">Ngẫu Nhiên</span><i class="mdi mdi-check"></i></p>
         				<p> Nhận Voucher: <span class="font-weight-bold">Tỉ lệ 25%</span><i class="mdi mdi-check"></i></p>
-                        <p> Nhận GIFTCODE: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
+                        <p> Nhận Hộp Quà: <span style="color: green"  class="font-weight-bold">Bey Vĩnh Viễn</span><i class="mdi mdi-check"></i></p>
 	</div>
         			<div class="text-center mt-5">
         				<a  @click="diemdanh(2)" class="btn btn-custom">{{ loggedInUser.diemdanh ? 'Đã Điểm Danh' : 'Điểm Danh VIP' }}</a>
