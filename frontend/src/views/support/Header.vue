@@ -44,10 +44,17 @@
                 <a  @click="logout()" class="dropdown-item">Đăng Xuất</a>
               </div>
             </li>
-
-            <li v-else ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
-            <li><a  v-if="loggedInUser"  class="nav-item nav-link">Số Dư :{{account.tienmat}}</a></li>
-            <li><a  v-if="loggedInUser"  class="nav-item nav-link">BeyPoint :{{account.coint}}</a></li>
+            <li class="dropdown" v-if="loggedInUser">
+              <a  class="nav-item nav-link" data-toggle="dropdown">Số Dư</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item">Số Dư Nạp:{{account.tienmat}}</a>
+                <a class="dropdown-item">BeyPoint :{{account.coint}}</a>
+              </div>
+            </li>
+            <li v-else 
+            ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
+            <li v-if="loggedInUser" 
+            ><a href="/naptien" class="nav-item nav-link">{{ account.coint == 0 ? 'Nạp Lần Đầu' : 'Nạp Tiền' }}</a></li>
           </ul>
         </div>
       </div>
@@ -62,8 +69,10 @@
       <div class="tb">
   <span class="header__cart-notice">X</span>
   <h1 class="notification-title">Thông Báo</h1>
+  <h1 class="text-danger">HÃY BẬT MÀN HÌNH NGANG ĐỂ CHƠI GAME !!!!!</h1>
   <p class="notification-content">
-    Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 22/6/2024.
+
+    Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 1/6/2024.
   </p>
 </div>
 

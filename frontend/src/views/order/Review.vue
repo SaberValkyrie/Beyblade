@@ -1,191 +1,200 @@
 <template>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Gửi Đánh Giá</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-
-</head>
-<body>
-
-<div class="container1">
-  <h2>Đánh Giá</h2>
-  <div>
-    <div class="form-group">
-      <div class="rating" id="raiting" @change="setStar($event.target.value)">
-        <input type="radio" id="star5" name="rating" value="5" required>
-        <label for="star5"></label>
-        <input type="radio" id="star4" name="rating" value="4" required>
-        <label for="star4"></label>
-        <input type="radio" id="star3" name="rating" value="3" required>
-        <label for="star3"></label>
-        <input type="radio" id="star2" name="rating" value="2" required>
-        <label for="star2"></label>
-        <input type="radio" id="star1" name="rating" value="1" required>
-        <label for="star1"></label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="comment">Bình Luận Về Sản Phẩm:</label>
-      <textarea class="form-control" id="comment" name="comment" rows="4" required v-model="comment"></textarea>
-    </div>
-    <br>
-    <div class="form-group">
-      <input type="file" class="form-control-file" id="imageReview" name="imageReview" @change="upload" required>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary" @click="submitReview">Gửi Đánh Giá</button>
-  </div>
-</div>
-</body>
-</html>
-
-
-</template>
-<script>
-import HeaderDashboard from '@/views/support/HeaderDashboard.vue';
-import Footer from '@/views/support/Footer.vue';
-import { mapGetters } from 'vuex';
-import { baseURL } from '@/router/index';
-import { toast } from 'vue3-toastify';
-import axios from 'axios';
-import 'vue3-toastify/dist/index.css';
-import { AccountService } from '@/core/service/accountservice';
-import { OrderService } from '@/core/service/orderservice';
-import Chart from 'chart.js/auto';
-import moment from 'moment';
-
-
-export default {
-  data() {
-    return {
-      comment: '',
-      imageReview: null,
-      orderService: new OrderService(),
-      accountService: new AccountService(),
-      token: localStorage.getItem('token'),
-      loggedInUser: localStorage.getItem('loggedInUser'),
-      order:{},
-      orderKey : this.$route.params.order_key,
-     id: this.$route.params.id,
-      baseUrl: baseURL,
-      star:0,
-      comment:'',
-      imageName:'',
-      danhgia:false,
-
-
-    };
-  },
-  methods: {
-    setStar(sao){
-      this.star = sao;
-    },
-
-    getOrder(){
-            this.orderService.getOrderByKey(this.orderKey,this.id,this.token).then(res =>{
-                this.order = res.data.data;
-                this.getStatus(this.order.status);
-                if(this.order.isRate){
-                  toast('cc')
-                }
-            }).catch(error => {
-          toast.warning(error.response.data.message)
-         }); 
-        },
-
-    
-        upload(file){
-          this.accountService.upload(file).then(response => {
-      this.imageName = response
-    console.log(response)
-    })
-        },
-
-
-  submitReview() {
-   
-    if(this.danhgia){
-      toast.success('Không thể đánh giá lần 2')
-    return
-    }
-
-    const data = {
-      comment: this.comment,
-      imagesReview: this.imageName,
-      rating: this.star
-      };
-    this.orderService.createReviews(this.token,this.id,this.orderKey, data).then(res =>{
+  <!-- Jumbotron -->
+  <app-header></app-header>
+  <br>
+  <br>
+  <br>
+  <!-- Jumbotron -->
   
-      toast.success(res.data.message)
+  <section class="bg-light py-5">
+      <div class="container">
+          <div class="card shadow-0 border">
+              <div class="p-4">
+            
+                  <br>  
+                  <img class="qr" :src="getQr()" v-if="urlTT == ''">
 
-      this.danhgia = true;
+              
+              </div>
+            
+              <input type="number" v-model="amount">
+          </div>
+    
+      </div>
+  </section>
+</template>
 
-      setTimeout(() => {
-        window.location.href ='/order/all';
-      }, 1000);
+      <script>
+      // @ is an alias to /src
+      import Header from '@/views/support/Header.vue';
+      import Footer from '@/views/support/Footer.vue';
+      import { toast } from 'vue3-toastify';
+      import { mapGetters } from 'vuex';
+  import 'vue3-toastify/dist/index.css';
+  import { AccountService } from '@/core/service/accountservice';
+  import { baseWeb,baseURL } from '@/router/index';
+  import {OrderService} from '@/core/service/orderservice.js';
+  import axios from 'axios';
+  
+      
+      export default {
+        computed: {
+   ...mapGetters(['loggedInUser']),
+  },
+        name: 'Payment',
+        components: {
+          'app-header': Header,
+          'app-footer': Footer,
+        },
+         data(){
+        return{
+          service: new AccountService(),
+          order:{},
+          totalPrice: 0,
+          token: localStorage.getItem('token'),
+          baseUrl : baseURL,
+          accountName: 'Beyblade',
+        addInfo: '',
+        stk: '0383087656',
+        urlTT:'',
+        amount:20000,
+        noidung:'',
+        ck:false
+        }
+       
+      },
+      created(){
 
-            }).catch(error => {
-          toast.warning(error.response.data.message)
-          console.log(error)
-         }); 
-  }
-}
+      },
+      methods :{
+        
+        getQr(){
+          this.addInfo = 'dđ';
+  
+    const link = `https://api.vietqr.io/image/MBbank-${this.stk}-SUKDJlE.jpg?accountName=${this.accountName}&amount=${this.amount}&addInfo=${this.addInfo}`;
+    // Trả về đường link
+    // const link='https://api.vietqr.io/image/MBbank-0383087656-SUKDJlE.jpg?addInfo=tra%20tien%20trinh%20dit&accountName=H%E1%BA%A3i%20%C4%90%E1%BA%B9p%20Trai'
+    return link;
+  
+      },
+   ok(){
+    toast.success('Xác Nhận Thành Công!,Vui lòng chờ hệ thống duyệt đơn hàng của bạn');
+    setTimeout(() => {
+          window.location.href = "/order/details/" + this.orderKey;
+				}, 3000);
+   },
+  setCK(){
+        this.ck = true;
+  },
+  mes(m){
+toast.info(m);
+  },
 
-};
+payment(){
+
+  this.orderService.getPay(`${this.order.details.total}`).then(res =>{
+    this.urlTT = res.data.data.url;
+  })
+},
+        goto(ad){
+  
+          window.location.href = "/" + ad;
+        },
+  
+        truncatedProductName(name) {
+      const max = 70;
+            if (name.length > max) {
+                return name.substring(0, max) + '...';
+            }
+            return name;
+        },
+
+      }
+      }
+     
+      </script>
 
 
 
-</script>
-<style>
-/* Thêm CSS tùy chỉnh cho biểu tượng ngôi sao */
-.rating {
+
+      <style scoped>
+      .container {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
+    padding: 2vw;
 }
 
-.rating input {
-  display: none; /* Ẩn input số sao mặc định */
+.card {
+    flex: 1;
+    margin-right: 2vw;
+}
+
+.qr {
+    width: 50vw; /* Điều chỉnh kích thước QR theo đơn vị vw */
+    height: auto;
+}
+
+.col-xl-8.col-lg-8.mb-4, 
+.col-xl-4.col-lg-4.d-flex.justify-content-center.justify-content-lg-end {
+    padding: 2vw;
+    box-sizing: border-box;
+}
+
+.col-xl-4.col-lg-4.d-flex.justify-content-center.justify-content-lg-end {
+    flex: 0 0 30vw; /* Điều chỉnh phần bên phải có kích thước cố định theo đơn vị vw */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: white;
+    padding: 2vw;
+    border: 1px solid darkorange;
+}
+
+.concac, .float {
+    margin-bottom: 2vw;
 }
 
 
-.rating label {
-  cursor: pointer;
-  font-size: 24px;
-}
-.container1 {
-    zoom: 130%;
-    margin-left: 30%;
-    padding: 6rem;
-    width: 400px;
-    background-color: #f9f9f9;
-    border-radius: 20px;
-    /* height: 600px; */
-    margin-top: 5rem;
-    line-height: 3;
-}
-.rating label::before {
-  content: "\2605"; /* Biểu tượng ngôi sao */
-  color: #ccc; /* Màu mặc định cho ngôi sao trống */
-}
 
 
-.rating input:checked ~ label::before {
-  color: #919100; /* Màu khi người dùng chọn */
-}
-button.btn.btn-primary {
-  background-color: #b62323;
-  color: white;
-  border-radius: 10px;
-}
-button.btn.btn-primary:hover {
-  background-color: red;
-  color: white;
-}
-.container {
-    max-width: 390px;
-}
-</style>
+
+  .badge-brown {
+      background-color: #8B4513; /* Màu đỏ đậm dạng brown */
+      color: white; /* Màu chữ là trắng để tương phản */
+  }
+  .form-check.h-100.border.rounded-3 {
+      background-color: floralwhite;
+  }
+
+  .chat{
+    border: none;
+      background-color: #ffffff;
+      color: #f30000;
+      font-size: 12px;
+  }
+  button.btn.btn-success.shadow-0.border {
+      background-color: brown;
+  }
+  button.btn.btn-success.shadow-0.border:hover {
+      background-color: rgb(209, 0, 0);
+  }
+  .col-sm-8.text-secondary {
+      display: flex;
+      /* padding: 2px; */
+  }
+
+  .mb-4, .my-4 {
+      margin-bottom: 1.5rem!important;
+      margin-right: 99px;
+  }
+  .col-xl-4.col-lg-4.d-flex.justify-content-center.justify-content-lg-end {
+      background-color: white;
+      padding: 30px;
+      border: 1px solid darkorange;
+      position: fixed;
+      right:0;
+  }
+    </style>
+  

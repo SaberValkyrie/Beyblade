@@ -8,7 +8,7 @@
             <div class="card border-0 bg-light rounded shadow">
                 <div class="card-body p-4">
                     <br>
-                    <img :class="voucher.prize.id == 5 ? 'boss img' : 'img'" :src="voucher.prize.id == 5 ? 'https://www.happyfruits.vn/themes/efruit/assets/img/gift.gif' : 'https://gifdb.com/images/high/bouncing-gift-box-o19ltvr8ldanpz66.gif'">
+                    <img :class="voucher.prize.id == 5 ? 'boss img' : 'img'" :src="voucher.prize.img">
 
                     <h5 style="font-weight:bold">{{ voucher.prize.name }}</h5>
                     <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">x{{voucher.soluong }}</span>
@@ -33,7 +33,7 @@
             <div class="card border-0 bg-light rounded shadow">
                 <div class="card-body p-4">
                     <br>
-                    <img class="img" src="https://i.pinimg.com/originals/a4/b1/cc/a4b1ccc515ff9547ae0260167c7f0797.gif">
+                    <img class="img" :src="voucher.prize.img">
 
                     <h5 style="font-weight:bold">{{ voucher.prize.name }}</h5>
                     <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">x{{voucher.soluong }}</span>

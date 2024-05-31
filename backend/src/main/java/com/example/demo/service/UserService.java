@@ -5,7 +5,6 @@ import com.example.demo.repository.ItemsRepository;
 import com.example.demo.repository.product.MyVoucherRepository;
 import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.repository.user.*;
-import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,11 +53,9 @@ public class UserService {
 
 
 
-    public void addPrize(User user,int id){
+    public void addVoucherInBag(User user, int id){
         Prize prize = voucherRepository.getPrizeByID(id);
-
         MyPrize myPrize = voucherRepository.getMYPrizeByID(id);
-
         if (myPrize == null){
              myPrize = new MyPrize();
             myPrize.soluong = 1;
@@ -136,8 +133,34 @@ public class UserService {
     }
 
     public ArrayList<Items> getItemsByUser(User userToken) {
-        return userRepository.getItemByUser(userToken);
+        ArrayList<Items> items = new ArrayList<>();
+        ArrayList<Items> bossPermanentItems = new ArrayList<>();
+        ArrayList<Items> nonBossPermanentItems = new ArrayList<>();
+        ArrayList<Items> nonPermanentItems = new ArrayList<>();
+        ArrayList<Items> allItems = userRepository.getItemByUser(userToken);
+        // Phân loại items
+        for (Items i : allItems) {
+            if (i.vinhvien) {
+                if (i.beyBlade.isBoss) {
+                    bossPermanentItems.add(i);
+                } else {
+                    nonBossPermanentItems.add(i);
+                }
+            } else {
+                nonPermanentItems.add(i);
+            }
+        }
+
+        // Thêm các item vĩnh viễn và là boss vào trước
+        items.addAll(bossPermanentItems);
+        // Thêm các item vĩnh viễn nhưng không phải là boss
+        items.addAll(nonBossPermanentItems);
+        // Thêm các item không vĩnh viễn vào sau
+        items.addAll(nonPermanentItems);
+
+        return items;
     }
+
 
 
     public Items getItemMacDinhByUser(User userToken) {
@@ -160,7 +183,9 @@ public class UserService {
     public void deteleItem(Items items) {
         itemsRepository.delete(items);
     }
-
+    public void deteleMyPrize(MyPrize items) {
+        myPrizeRepository.delete(items);
+    }
     public List<User> getAllUser() {
         return userRepository.findAll();
     }

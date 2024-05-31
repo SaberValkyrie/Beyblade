@@ -22,13 +22,19 @@ import java.util.stream.Stream;
 @Service
 public class ImageService implements IStorageService{
 
-    public final Path storageFolder = Paths.get("uploads");
+    public final Path storageFolder;
 
     public ImageService(){
+        Path projectDir = Paths.get("").toAbsolutePath().getParent(); // Lấy thư mục cha của thư mục dự án
+        storageFolder = projectDir.resolve("uploads"); // Thiết lập đường dẫn cho thư mục uploads
+
         try {
-            Files.createDirectories(storageFolder);
-        }catch (Exception e){
+            Files.createDirectories(storageFolder); // Tạo thư mục nếu chưa tồn tại
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
 

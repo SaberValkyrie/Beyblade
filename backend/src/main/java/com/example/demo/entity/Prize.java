@@ -15,6 +15,9 @@ public class Prize {
     @Column(name = "name")
     public String name;
 
+    @Column(name = "img")
+    public String img;
+
     @Column(name = "type")
     public byte type;
 }

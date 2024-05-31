@@ -425,6 +425,8 @@
   });
   this.isWin = false;
   setTimeout(() => {
+
+    this.reset();
             window.location.href = "/game/top";
           }, 4000);
       }

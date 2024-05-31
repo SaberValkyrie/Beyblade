@@ -71,6 +71,10 @@ buyItem(token,item) {
     return response;
 }
 
+checkGC(token,code) {
+    const response =  axios.post(`${baseURL}/game/checkCode/${token}/${code}`);
+    return response;
+}
 
 diemdanh(token,item) {
     const response =  axios.post(`${baseURL}/checkIn/${token}/${item}`);

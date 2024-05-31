@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
+import com.example.demo.repository.giftcode.GiftcodeRepo;
+import com.example.demo.repository.giftcode.HistoryRepo;
 import com.example.demo.service.BeyService;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
@@ -35,6 +37,10 @@ public class GameController {
 
     @Autowired
     private BeyService service;
+
+
+
+
     private long st;
 
 
@@ -72,29 +78,30 @@ public class GameController {
 
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +player.items.size() + " items",  player);
     }
-//    @PostMapping("/addItemsBag/{token}")
-//    public ResponseEntity<ResponseOpject> addItem(@PathVariable String token,
-//                                                  @RequestBody Items item) {
-//        User userToken = tokenService.getUserFromToken(token);
-//        if (userToken == null){
-//            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
-//        }
-//        long cu = System.currentTimeMillis();
-//        long st = 3 * 24 * 60 * 60 * 1000;
-//
-//        Items newItem = new Items();
-//        newItem.user = userToken;
-//        newItem.beyBlade = item.beyBlade;
-//        newItem.create_time = new Timestamp(cu);
-//        newItem.ngayhethan = new Timestamp(cu + st);
-//
-//        if (Util.isTrue(10,100)){
-//            newItem.vinhvien = true;
-//        }
-//        newItem.selectedBey = false;
-//
-//        return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " +newItem + " ",  newItem);
-//    }
+    @PostMapping("/checkCode/{token}/{code}")
+    public ResponseEntity<ResponseOpject> checkGiftCode(@PathVariable String token,
+                                                        @PathVariable String code  ) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        GIFTCODE giftcode = service.findGiftCodeByCode(code);
+
+        if (giftcode == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Mã Quà Tặng Không Tồn Tại",  null);
+        }
+        GiftcodeHistory mycode = service.getHistory(code);
+        if (mycode != null){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Giftcode đã được sử dụng",  null);
+        }
+        GiftcodeHistory history = new GiftcodeHistory();
+        history.giftcode = giftcode;
+        history.user = userToken;
+        service.saveHistory(history);
+
+
+        return service.useItemCode(userToken,giftcode);
+    }
 
 
     @PutMapping("/setItem/{token}")
@@ -268,6 +275,11 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
         }
         List<MyPrize> myPrizes  = userService.getPrizeByStatus(userToken.username,status);
+        for (MyPrize myPrize : myPrizes){
+            if (myPrize.soluong <= 0){
+                userService.deteleMyPrize(myPrize);
+            }
+        }
         return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được "  + " beyblade với hệ ",  myPrizes);
     }
 
@@ -409,6 +421,33 @@ public class GameController {
         }
 
         return Util.checkStatusRes(HttpStatus.OK,  "update thành công", service.boss.hp);
+    }
+    @PostMapping("/naptien/{token}/{amount}")
+    public ResponseEntity<ResponseOpject> naptien(
+            @PathVariable String token,
+            @PathVariable int amount
+    ) {
+        User userFromToken = tokenService.getUserFromToken(token);
+        if (userFromToken == null) {
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Vui Lòng Đăng Nhập Lại", null);
+        }
+        Account accountToken = userService.getAccountByUser(userFromToken.username);
+
+        if (accountToken.tienmat < amount){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Tài khoản của bạn không đủ " + Util.numberToMoney(amount) + " Số Dư,vui lòng kiểm tra lại", null);
+        }
+        accountToken.tienmat -= amount;
+        accountToken.coint += amount * 2;
+        userService.saveAccount(accountToken);
+        String t = "Đổi thành công "+ Util.numberToMoney(amount) + " số dư sang " + Util.numberToMoney(amount * 2) + " BeyPoint";
+
+        if (amount >= 20000 && Util.isTrue(70,100)){
+            userService.addVoucherInBag(userFromToken,5);
+            t += "\n Và nhận được 1 Hộp Quà VIP";
+        }
+        return Util.checkStatusRes(HttpStatus.OK, t, null);
+
+
     }
 
     @PostMapping("/thachdau/{token}")

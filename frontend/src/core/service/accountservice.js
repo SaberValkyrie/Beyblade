@@ -99,5 +99,8 @@ async getAllUserChat(token) {
     return  response;
   }
     //-----------------------------------------------------------------------------------------------------------------
-
+    checkNapTien(token,item) {
+      const response =  axios.post(`${baseURL}/game/naptien/${token}/${item}`);
+      return  response;
+    }
 }

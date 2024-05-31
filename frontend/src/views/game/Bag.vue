@@ -12,14 +12,16 @@
 
 
 
-
     <div class="row">
-    
+
         <div class="col-md-9">
             <div class="osahan-account-page-right shadow-sm bg-white p-4 h-100">
                 <div class="tab-content" id="myTabContent">
+
                     <div class="tab-pane fade  active show" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
                         <div class="row">
+                          <h1 class="text-danger" v-if="ListItems.length == 0">Bạn không có Beyblade nào trong kho</h1>
+
                             <div class="col-md-4 col-sm-6 mb-4 pb-2" v-for="item in ListItems" :key="item.id">
     <div :class="item.beyBlade.isBoss && item.vinhvien? 'boss list-card bg-white h-100 rounded overflow-hidden position-relative' :'list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm'">
       <div class="list-card-image">
@@ -127,7 +129,12 @@ created() {
 
  methods: {
     apdung(){
-        toast(this.code)
+        this.gameService.checkGC(this.token,this.code).then(res => {
+        toast.success(res.data.message)
+        this.getItemBag()
+        }).catch(error => {
+ toast.warning(error.response.data.message)
+});
     },
  
 

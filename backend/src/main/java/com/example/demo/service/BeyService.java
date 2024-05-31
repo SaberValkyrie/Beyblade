@@ -5,18 +5,15 @@ import com.example.demo.dto.ItemShop;
 import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.*;
 import com.example.demo.repository.TopRepository;
+import com.example.demo.repository.giftcode.GiftcodeRepo;
+import com.example.demo.repository.giftcode.HistoryRepo;
 import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.support.Util;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
@@ -42,7 +39,12 @@ public class BeyService {
 
     @Autowired
     public UserService userService;
+    @Autowired
+    private GiftcodeRepo giftcodeRepository;
 
+
+    @Autowired
+    private HistoryRepo historyRepository;
     public List<ItemShop> item_shop = new ArrayList<>();
     public List<TOP> topList = new ArrayList<>();
 
@@ -229,7 +231,9 @@ public class BeyService {
         "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/332567096_882978019471732_8825746545881267309_n.jpg?stp=dst-jpg_p200x200&_nc_cat=111&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFot3a7-hMevbWAyWL1FxXA_0XV7Eh0biD_RdXsSHRuIOYEjEvpR9JfYkOD1dgSn9wtWtO0HJNe8tul8fwQnMaY&_nc_ohc=u-4pCehiOykQ7kNvgHVGaTa&_nc_ht=scontent.fhan18-1.fna&oh=00_AYB9yDtzwjJkRnS8Oz0w3xcywgfLIBE-3hY497ACLfVQQA&oe=665E77D3",
         "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/426490600_422005150251236_4944607599550719846_n.jpg?stp=c0.0.200.200a_dst-jpg_p200x200&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeENXZx3pN4as0E20lq5-knNrRCx0RdyGMutELHRF3IYyzsRfEVkcUz3XnsfxyifkDEbmEy5ynF06XEX2QLr1nf9&_nc_ohc=0fQeWUgG82cQ7kNvgHTHaGb&_nc_ht=scontent.fhan18-1.fna&oh=00_AYDa9ioQW-JhPSCLWbuXPBLyfYy-xrbZ7VLlRzxdhC7dGw&oe=665E57E3",
         "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/429568660_434963615622056_2385596529137594954_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFnGSylFdUeFjgoqnZtEEDx3Lb0UcXorM_ctvRRxeiszwSH4GL8HPOwk-382eUrH1dsNYW4g0CjikICuvgPDa2E&_nc_ohc=PxXPiieD3iMQ7kNvgE_qtSO&_nc_ht=scontent.fhan18-1.fna&oh=00_AYCd5mpQYm0vE0IwEEzGY7MHaP5uW_494lg2A-Vf_E6Cyg&oe=665E5919",
-        "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/340848093_1385617858905641_7738230222358588710_n.jpg?stp=dst-jpg_s200x200&_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeG_Fxxke0RErb3g1877vn8zFj4Gw2R3AQEWPgbDZHcBAdGQHx0WBTjZPML-TMfjLQEpgGjZ5SNB9Ym2n-rW0KX2&_nc_ohc=Ra8rnv363jAQ7kNvgG7nmYO&_nc_ht=scontent.fhan18-1.fna&oh=00_AYBQ70cKHnEGvMoQM2ec_Yjcx74UEFJIclOqAm1Hgoyk-g&oe=665E75C3"
+        "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/340848093_1385617858905641_7738230222358588710_n.jpg?stp=dst-jpg_s200x200&_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeG_Fxxke0RErb3g1877vn8zFj4Gw2R3AQEWPgbDZHcBAdGQHx0WBTjZPML-TMfjLQEpgGjZ5SNB9Ym2n-rW0KX2&_nc_ohc=Ra8rnv363jAQ7kNvgG7nmYO&_nc_ht=scontent.fhan18-1.fna&oh=00_AYBQ70cKHnEGvMoQM2ec_Yjcx74UEFJIclOqAm1Hgoyk-g&oe=665E75C3",
+
+                "https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/441077331_410701771930884_6741066087439713870_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeELXgSRcTkuarYMODG5ooXM-YkGEogdVC35iQYSiB1ULZ2DKBdxSjh6ltzqIZIcaWScmd72rSlX4ZP6LNPAkFXF&_nc_ohc=S7Y4C38SaWkQ7kNvgEs_pAX&_nc_ht=scontent.fhan18-1.fna&oh=00_AYDwZSRnlIZ5SRmeWhO8Y8kmqlHkPv8HbYn5zwsQBPjMbA&oe=665EF45B",
 
         };
 
@@ -238,12 +242,17 @@ public class BeyService {
         return chats[index];
     }
 
-
+@Autowired
+private ImageService imageService;
     public String getAnhRand() {
-        String directoryPath = "uploads"; // Đường dẫn đến thư mục chứa ảnh
+        String directoryPath = imageService.storageFolder.toString(); // Sử dụng đường dẫn từ storageFolder
         String randomImageName = Util.getRandomImageName(directoryPath);
-        return "http://localhost:8080/files/" + randomImageName;
+        return "http://"+host +":8080/files/" + randomImageName;
     }
+
+
+//    private static String host = "beybladegame.online";
+    private static String host = "localhost";
 
     public List<TOP> getTopAll(List<TOP> topBOT,List<TOP> topDB){
         List<TOP> topAll = new ArrayList<>(topBOT);
@@ -317,9 +326,12 @@ public class BeyService {
         topRepository.save(top);
     }
 
+    public void saveHistory(GiftcodeHistory top){
+        historyRepository.save(top);
+    }
 
     public void addPrize(User user){
-
+        userService.addVoucherInBag(user,11);
     }
     @Autowired
     private BeyRepository beyRepository;
@@ -443,4 +455,69 @@ public class BeyService {
     }
 
 
+    public GIFTCODE findGiftCodeByCode(String code) {
+        return giftcodeRepository.findCode(code);
+    }
+
+    public List<GiftcodeHistory> getAllHistory() {
+        return historyRepository.findAll();
+    }
+
+    public GiftcodeHistory getHistory(String code) {
+        return historyRepository.getHistoryByCodeAndUser(code);
+    }
+
+    public ResponseEntity<ResponseOpject> useItemCode(User userToken, GIFTCODE giftcode) {
+        String txt ="Chúc mừng bạn nhận được :";
+        Account accountToken = userService.getAccountByUser(userToken.username);
+
+        switch (giftcode.type){
+            case 1:        //type 1: code beta cho ng mới :20k BP
+                accountToken.coint += 20000;
+                txt += "20K BeyPoint";
+                break;
+            case 2:        //type 2:code bey random hsd-vv
+                BeyBlade beyBlade = getRandomBey();
+                Items item = createBey(userToken, (int) beyBlade.id);
+                if (Util.isTrue(10,100)){
+                    item.vinhvien = true;
+                }
+                userService.saveItem(item);
+                txt += beyBlade.name + (item.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
+                break;
+            case 3: //type 3: code chào mừng
+                BeyBlade beyBlade1 = getRandomBey();
+                Items it = createBey(userToken, (int) beyBlade1.id);
+                if (Util.isTrue(10,100)){
+                    it.vinhvien = true;
+                }
+                userService.saveItem(it);
+                txt += beyBlade1.name + (it.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
+                int random = Util.nextInt(1,10);
+                txt+= " và " + random + "K Beypoint";
+                accountToken.coint += random * 1000;
+                break;
+
+            case 4: //code mua trên shopee
+                txt+= " và " + 20 + "K Beypoint";
+                accountToken.coint += 20 * 1000;
+                userService.addVoucherInBag(userToken,12);
+                txt += " kèm thêm Hộp Quà Shopee";
+                break;
+        }
+        userService.saveAccount(accountToken);
+        return Util.checkStatusRes(HttpStatus.OK, txt,  giftcode);
+    }
+
+    public Items createBey(User user,int id){
+        Items items = new Items();
+        items.beyBlade = getBeyByID(id);
+        items.user = user;
+        items.selectedBey = false;
+        items.vinhvien = false;
+        items.create_time = new Timestamp(System.currentTimeMillis());
+        long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
+        items.ngayhethan = new Timestamp(items.create_time.getTime() + millisecondsInADay);
+        return items;
+    }
 }

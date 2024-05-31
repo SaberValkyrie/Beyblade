@@ -44,7 +44,7 @@
                                     <tr 
     class="inner-box" 
     v-for="player in players"
-    :style="{ backgroundColor: player.user.username == loggedInUser.username ? 'blanchedalmond' : 'white' }"
+    :style="{ backgroundColor: loggedInUser && loggedInUser.username && player.user.username == loggedInUser.username ? 'blanchedalmond' : 'white' }"
     >
                              <th scope="row">
                                             <div v-if="player.top > 6" class="event" > 
@@ -102,8 +102,11 @@
                              
                                         </td>
                                         <td>
-                                            <div class="primary-btn" >
+                                            <div class="primary-btn" v-if="loggedInUser">
                                                 <a class="btn" @click="setThachDau(player)">{{ loggedInUser.username != player.user.username ? 'Thách Đấu' : 'Buff Chỉ Số'}}</a>
+                                            </div>
+                                            <div class="primary-btn" v-else>
+                                                <a class="btn">Không Có Hành Động</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -137,7 +140,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="about-avatar">
-                            <img  class="avatar" :src="kethu.user.userId == 0 ? 'https://i.pinimg.com/originals/4b/32/f7/4b32f753e28ef8f590e3c9356c16f117.jpg' : baseUrl + '/files/' + kethu.user.avatar" title="" alt="">
+                            <img  class="avatar" :src="kethu.user.userId == 0 ? kethu.user.avatar : baseUrl + '/files/' + kethu.user.avatar" title="" alt="">
                         </div>
                         
                     </div>

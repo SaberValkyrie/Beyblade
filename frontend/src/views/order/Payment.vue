@@ -1,23 +1,53 @@
 <template>
   <!-- Jumbotron -->
   <app-header></app-header>
-  <br>
-  <br>
-  <br>
-  <!-- Jumbotron -->
-  
+
+
+
   <section class="bg-light py-5">
-      <div class="container">
+
+<div class="cc">
+  <div v-if="phuongthuc == 0" >
+    <a > Bạn Muốn Đổi {{convert(account.tienmat)}} Số Dư Ví Đang Có Sang BeyPoint? </a> <span class="cm" @click="setPhuongThuc(1)"> Đổi ngay</span>
+  </div>
+  <div v-else>
+    <a  >Bạn muốn nạp bằng TKNH?  </a> <span class="cm" @click="setPhuongThuc(0)"> Dùng ngay</span>
+  </div>
+
+<br>
+<a>Bạn Không Có Tài Khoản Ngân Hàng? </a> <a href="https://shopee.vn/product/347108613/28951422476/" class="cm">Bấm Vào Đây!</a>
+
+</div>
+
+      <div class="container" v-if="phuongthuc != 1">
           <div class="card shadow-0 border">
               <div class="p-4">
-            
+              <div class="cc">  Nhập Số Tiền Cần Nạp: <input type="number" v-model="amount"></div>
                   <br>  
                   <img class="qr" :src="getQr()" v-if="urlTT == ''">
 
               
               </div>
             
-              <input type="number" v-model="amount">
+          
+          </div>
+    
+      </div>
+
+      <div class="container" v-else>
+          <div class="card shadow-0 border">
+              <div class="p-4">
+              <div class="cc">  Nhập Số Dư Cần Tiêu Hao: <input type="number" v-model="amountLeft"></div>
+                  <br>  
+                <h2 class="text-danger">Bạn sẽ nhận được {{ amountLeft * 2 }} BeyPoint </h2> 
+                <br>
+                <h2 class="text-success">Ưu Đãi: Mỗi khi tiêu trên 20K Số Dư lấy BeyPoint,bạn sẽ có cơ hội nhận được phần quà đặc biệt </h2> 
+
+                <br>
+                <button @click="naptien()">Đổi Ngay</button>
+              </div>
+            
+          
           </div>
     
       </div>
@@ -35,8 +65,6 @@
   import { baseWeb,baseURL } from '@/router/index';
   import {OrderService} from '@/core/service/orderservice.js';
   import axios from 'axios';
-  
-      
       export default {
         computed: {
    ...mapGetters(['loggedInUser']),
@@ -53,27 +81,55 @@
           totalPrice: 0,
           token: localStorage.getItem('token'),
           baseUrl : baseURL,
-          accountName: 'Beyblade',
+          accountName: 'NGUYEN DINH HAI',
         addInfo: '',
         stk: '0383087656',
         urlTT:'',
         amount:20000,
         noidung:'',
-        ck:false
+        ck:false,
+        account: {},
+        phuongthuc:0,
+        amountLeft:20000,
         }
        
       },
       created(){
+        this.getAcc()
 
       },
       methods :{
-        
+
+        naptien(){
+
+         this.service.checkNapTien(this.token,this.amount)
+                  .then(response => {
+                    toast.success(response.data.message);
+         })
+         .catch(error => {    
+            toast.error(error.response.data.message);
+      
+         });
+        },
+        setPhuongThuc(s){
+
+          this.phuongthuc = s;
+        },
+        getAcc() {
+      this.service.getAccountLogin(this.token).then(res => {
+        this.account = res;
+      })
+    },
+    truncatedProductName(name) {
+    const max = 5;
+          if (name.length > max) {
+              return name.substring(0, max) + '...';
+          }
+          return name;
+      },
         getQr(){
-          this.addInfo = 'dđ';
-  
+          this.addInfo = 'naptk ' + this.account.username;
     const link = `https://api.vietqr.io/image/MBbank-${this.stk}-SUKDJlE.jpg?accountName=${this.accountName}&amount=${this.amount}&addInfo=${this.addInfo}`;
-    // Trả về đường link
-    // const link='https://api.vietqr.io/image/MBbank-0383087656-SUKDJlE.jpg?addInfo=tra%20tien%20trinh%20dit&accountName=H%E1%BA%A3i%20%C4%90%E1%BA%B9p%20Trai'
     return link;
   
       },
@@ -96,8 +152,20 @@ payment(){
     this.urlTT = res.data.data.url;
   })
 },
+convert(power) {
+    const formatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
+
+    if (power >= 1e9) {
+        return formatter.format(power / 1e9) + ' Tỷ';
+    } else if (power >= 1e6) {
+        return formatter.format(power / 1e6) + ' Tr';
+    } else if (power >= 1e3) {
+        return formatter.format(power / 1e3) + ' K';
+    } else {
+        return formatter.format(power);
+    }
+},
         goto(ad){
-  
           window.location.href = "/" + ad;
         },
   
@@ -196,5 +264,25 @@ payment(){
       position: fixed;
       right:0;
   }
+  .cc {
+    zoom: 200%;
+}
+.cm {
+   color: blue;
+}
+button {
+    zoom: 200%;
+    border-radius: 10px;
+    border: 1px solid #580000;
+    background-color: white;
+    color: black;
+}
+button:hover {
+    zoom: 200%;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    background-color: rgb(77, 0, 0);
+    color: rgb(255, 255, 255);
+}
     </style>
   

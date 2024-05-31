@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AccountResponse;
-import com.example.demo.dto.MessageRespone;
 import com.example.demo.dto.UserResponse;
 import com.example.demo.service.BeyService;
 import com.example.demo.support.Util;
@@ -9,7 +8,6 @@ import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.Account;
 import com.example.demo.entity.*;
 //import com.example.demo.service.CartService;
-import com.example.demo.service.NotifyService;
 import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,12 +204,9 @@ public class UserController {
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã điểm danh rồi,vui lòng chờ tới ngày mai", null);
                 }
                 txt = "Điểm Danh thành công,bạn nhận được " + coint + "K Beypoint";
-                userService.addPrize(userFromToken,4);
+                userService.addVoucherInBag(userFromToken,4);
                 userFromToken.diemdanh = true;
                 break;
-
-
-
             case 1:
                 if (userFromToken.active){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã mở thành viên trước đó", null);
@@ -223,7 +218,7 @@ public class UserController {
                 txt = "Mở Thành Viên thành công! Bạn được nhận thêm " + coint +"K Beypoint";
                 account.tienmat -= 20000;
                if (Util.isTrue(70,100)){
-                   userService.addPrize(userFromToken,id);
+                   userService.addVoucherInBag(userFromToken,id);
                    txt = "Mở Thành Viên thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
                }
                 userFromToken.active = true;
@@ -247,11 +242,11 @@ public class UserController {
                 txt = "Điểm danh VIP thành công ! Bạn nhận được " + coint + "K Beypoint";
 
                 if (Util.isTrue(20,100)){
-                    userService.addPrize(userFromToken,id);
+                    userService.addVoucherInBag(userFromToken,id);
                     txt = "Điểm danh VIP thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
                 }
 
-                userService.addPrize(userFromToken,5);
+                userService.addVoucherInBag(userFromToken,5);
                 account.tienmat -= 5000;
                 userFromToken.diemdanhVIP = true;
                 break;
