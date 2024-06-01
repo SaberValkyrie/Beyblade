@@ -209,6 +209,11 @@ const routes = [
     path: '/header',
     name: 'product.header',
     component: () => import('../views/support/Header.vue')
+  },
+  {
+    path: '/admin',
+    name: 'product.nap',
+    component: () => import('../views/support/NapTien.vue')
   }
 ]
 // index.js

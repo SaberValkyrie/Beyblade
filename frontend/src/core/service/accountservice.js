@@ -82,7 +82,10 @@ async getAllUserChat(token) {
   const response =  axios.get(`${baseURL}/chat/${token}`);
   return  response;
 }
-  
+async loadGC(token,t) {
+  const response =  axios.get(`${baseURL}/game/getcode/${token}/${t}`);
+  return  response;
+}
    //-----------------------------------------------------------------------------------------------------------------
     checkAuthenticate(token,code) {
     const response =  axios.get(`${baseURL}/checkAuthen/${token}/${code}`);
@@ -101,6 +104,10 @@ async getAllUserChat(token) {
     //-----------------------------------------------------------------------------------------------------------------
     checkNapTien(token,item) {
       const response =  axios.post(`${baseURL}/game/naptien/${token}/${item}`);
+      return  response;
+    }
+    setNapTien(token,user,item) {
+      const response =  axios.post(`${baseURL}/game/setNap/${token}/${user}/${item}`);
       return  response;
     }
 }

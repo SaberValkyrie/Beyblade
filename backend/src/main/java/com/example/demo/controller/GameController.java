@@ -51,6 +51,26 @@ public class GameController {
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + " hệ",  list);
     }
 
+    @PostMapping("/setNap/{token}/{name}/{amount}")
+    public ResponseEntity<ResponseOpject> setNap(@PathVariable String token,@PathVariable String name,@PathVariable int amount) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        Account accountToken = userService.getAccountByUser(userToken.username);
+
+        if (accountToken.role != 1){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Mày ko phải admin",  null);
+        }
+        Account accnhan = userService.getAccountByUser(name);
+        if (accnhan == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "ko tồn tại "+ name,  null);
+        }
+        accnhan.tienmat += amount;
+        userService.saveAccount(accnhan);
+
+        return Util.checkStatusRes(HttpStatus.OK, "Nạp thành công", accnhan );
+    }
 
     @GetMapping("/getBeyDefault/{token}")
     public ResponseEntity<ResponseOpject> getBeyDefault(@PathVariable String token) {
@@ -90,20 +110,46 @@ public class GameController {
         if (giftcode == null){
             return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Mã Quà Tặng Không Tồn Tại",  null);
         }
-        GiftcodeHistory mycode = service.getHistory(code);
-        if (mycode != null){
+//        GiftcodeHistory mycode = service.getHistory(code);
+        if (giftcode.used){
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Giftcode đã được sử dụng",  null);
         }
         GiftcodeHistory history = new GiftcodeHistory();
         history.giftcode = giftcode;
         history.user = userToken;
+
         service.saveHistory(history);
+        giftcode.used = true;
+        service.saveCode(giftcode);
 
 
         return service.useItemCode(userToken,giftcode);
     }
 
+    @GetMapping("/getcode/{token}/{type}")
+    public ResponseEntity<ResponseOpject> getcode(
+            @PathVariable String token,
+            @PathVariable int type
 
+    ) {
+        User userFromToken = tokenService.getUserFromToken(token);
+        if (userFromToken == null) {
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Vui Lòng Đăng Nhập Lại", null);
+        }
+        Account accountToken = userService.getAccountByUser(userFromToken.username);
+
+
+        if (accountToken.role != 1){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "cút", null);
+        }
+
+        List<GIFTCODE> giftcodes = userService.getCodeKhaDung(type);
+
+
+        return Util.checkStatusRes(HttpStatus.OK, "d", giftcodes);
+
+
+    }
     @PutMapping("/setItem/{token}")
     public ResponseEntity<ResponseOpject> setItem(@PathVariable String token,
                                                   @RequestBody Items item) {
@@ -293,6 +339,7 @@ public class GameController {
         }
         return service.useItem(userToken,myPrize);
     }
+
 
 
     @GetMapping("/getBey/{type}/{token}")
@@ -876,8 +923,7 @@ private boolean isFafnir(BeyBlade beyBlade){
     }
 
 
-    public void addPrize(){
-    }
+
 }
 
 

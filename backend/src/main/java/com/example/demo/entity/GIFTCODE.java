@@ -25,5 +25,7 @@ public class GIFTCODE {
     public int type;
 
 
+    @Column(name = "used")
+    public boolean used;
 
 }

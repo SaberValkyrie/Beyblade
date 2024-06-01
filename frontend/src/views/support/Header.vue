@@ -31,11 +31,20 @@
           <ul class="navbar-nav ml-auto">
             <li><a href="/shop" class="nav-item nav-link">Cửa Hàng</a></li>
             <li class="dropdown" v-if="loggedInUser">
+
               <a  class="nav-item nav-link" data-toggle="dropdown">Kho Đồ</a>
               <div class="dropdown-menu">
                 <a href="/user/bag" class="dropdown-item">Beyblade của tôi</a>
                 <a   href="/voucher" class="dropdown-item">Voucher của tôi</a>
               </div>
+            </li>
+            <li class="dropdown" v-if="loggedInUser">
+              <a  class="nav-item nav-link" data-toggle="dropdown">Ví Của Tôi</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item">Số Dư Nạp:{{account.tienmat}}</a>
+                <a class="dropdown-item">BeyPoint :{{account.coint}}</a>
+                <a href="/naptien" class="dropdown-item">Nạp Tiền</a>
+ </div>
             </li>
             <li class="dropdown" v-if="loggedInUser">
               <a  class="nav-item nav-link" data-toggle="dropdown">Tài Khoản</a>
@@ -44,18 +53,10 @@
                 <a  @click="logout()" class="dropdown-item">Đăng Xuất</a>
               </div>
             </li>
-            <li class="dropdown" v-if="loggedInUser">
-              <a  class="nav-item nav-link" data-toggle="dropdown">Số Dư</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item">Số Dư Nạp:{{account.tienmat}}</a>
-                <a class="dropdown-item">BeyPoint :{{account.coint}}</a>
-              </div>
-            </li>
+          
             <li v-else 
             ><a href="/login" class="nav-item nav-link">Đăng Nhập</a></li>
-            <li v-if="loggedInUser" 
-            ><a href="/naptien" class="nav-item nav-link">{{ account.coint == 0 ? 'Nạp Lần Đầu' : 'Nạp Tiền' }}</a></li>
-          </ul>
+                    </ul>
         </div>
       </div>
     </nav>
@@ -72,7 +73,7 @@
   <h1 class="text-danger">HÃY BẬT MÀN HÌNH NGANG ĐỂ CHƠI GAME !!!!!</h1>
   <p class="notification-content">
 
-    Hiện tại đang là phiên bản thử nghiệm, mọi người có thể sử dụng web thoải mái, dự kiến ngày update chính thức là 1/6/2024.
+  Sự kiện đua top sẽ hết hạn vào 25/6/2024 !
   </p>
 </div>
 

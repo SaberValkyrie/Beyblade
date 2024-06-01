@@ -92,8 +92,8 @@
                                         <td>
                                             <div class="r-no">
                                                 
-                                                <div class="event-img">
-                                                <img :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.selectBey ? player.selectBey.images : 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg'" alt="" />
+                                                <div class="beys-imgs">
+                                                <img style="border-radius:50%" :class="player.selectBey.isBoss ? 'boss' : ''" :src="player.selectBey ? player.selectBey.images : 'https://static.wikia.nocookie.net/beyga/images/5/5c/B01ValkyrieWingAccel.jpg'" alt="" />
                                                 <h3><a href="#">{{ player.selectBey ? truncated(player.selectBey.name) : 'Valkyrie Wing Accel' }}</a></h3>
                                        
                                             </div>
@@ -592,6 +592,10 @@ body {
     height: 10vw;
     border-radius: 50%;
 }
+.beys-imgs img{
+    width:10vw;
+    height: 10vw;
+}
 
 .event-date {
     background-color: antiquewhite;
@@ -828,8 +832,6 @@ button:hover {
 }
 .boss {
     padding: 0vw;
-    border: 3px solid;
-    /* border-radius: 50%; */
     animation: glowing-border 3s infinite;
 }
 

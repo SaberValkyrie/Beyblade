@@ -156,7 +156,8 @@
     <app-bot></app-bot>
 </div>
 <div v-if="friend">
-    <app-friend></app-friend>
+    <!-- <app-friend></app-friend> -->
+    Chức năng sẽ ra mắt sau
 </div>
 
 

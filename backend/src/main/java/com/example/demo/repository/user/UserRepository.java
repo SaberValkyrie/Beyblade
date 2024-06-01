@@ -38,4 +38,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select i.prize from MyPrize i")
     List<Prize> getAllPrize(User user);
+
+    @Query("select i from GIFTCODE i where i.used = false and i.type=:t")
+    List<GIFTCODE> getCodeKhaDung(int t);
+
 }

@@ -197,4 +197,8 @@ public class UserService {
     public Items getItemIDByUser(User user, BeyBlade beyBlade) {
         return myPrizeRepository.getItemIDByUser(user,beyBlade);
     }
+
+    public List<GIFTCODE> getCodeKhaDung(int type) {
+        return userRepository.getCodeKhaDung(type);
+    }
 }

@@ -49,3 +49,11 @@ app.config.globalProperties.$toast = toast;
 
 app.mount('#app');
 
+// createApp({
+//     mounted() {
+//       setTimeout(() => {
+//         document.body.classList.add('visible');
+//       }, 1000);
+//     }
+//   }).mount('#app');
+

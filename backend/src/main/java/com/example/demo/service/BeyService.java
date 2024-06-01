@@ -419,10 +419,34 @@ private ImageService imageService;
                 userService.saveMyPrize(myPrize);
 
                 String v = "Chúc mừng bạn vừa nhận được beyblade " + itemVIP.beyBlade.name + (itemVIP.vinhvien ? "  [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
-
                 return Util.checkStatus(HttpStatus.OK,v,itemVIP);
+
+
+            case 11://hộp boss
+            case 12://hộp shopee
+                BeyBlade bey = item.id == 11 ? getRandomBeyBasic() : getRandomBey();
+                if (Util.isTrue(10,100)){
+                    bey= getRandomBeyBoss();
+                }
+                Items itemVIP1 = addNewBey(user,bey);
+                itemVIP1.vinhvien = true;
+                userService.saveItem(itemVIP1);
+
+                myPrize.soluong -= 1;
+                userService.saveMyPrize(myPrize);
+
+                String vv = "Chúc mừng bạn vừa nhận được beyblade " + itemVIP1.beyBlade.name + (itemVIP1.vinhvien ? "  [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
+
+               if (Util.isTrue(50,100)){
+                   Account accountToken = userService.getAccountByUser(user.username);
+                   int cc =Util.nextInt(1,10) * 1000;
+                   accountToken.coint += cc;
+                   userService.saveAccount(accountToken);
+                   vv += " và " + Util.numberToMoney(cc) + " Beypoint";
+               }
+                return Util.checkStatus(HttpStatus.OK,vv,itemVIP1);
             default:
-                if (item.id > 0 && item.id <= 3 || item.id > 5){
+                if (item.type == 1){
                     return Util.checkStatus(HttpStatus.OK,"Sản Phẩm này dùng để đổi Beyblade thật,vui lòng liên hệ admin để đổi nhé!",null);
                 }
                 return Util.checkStatus(HttpStatus.NOT_FOUND,"Item này chưa có chức năng",null);
@@ -519,5 +543,9 @@ private ImageService imageService;
         long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
         items.ngayhethan = new Timestamp(items.create_time.getTime() + millisecondsInADay);
         return items;
+    }
+
+    public void saveCode(GIFTCODE giftcode) {
+        giftcodeRepository.save(giftcode);
     }
 }
