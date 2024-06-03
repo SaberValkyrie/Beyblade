@@ -329,12 +329,7 @@ this.stop()
 
     // toast('sdfghj')
       this.getBoss();
-      // if(this.End && !this.loggedInUser.active){
-      
-      //   setTimeout(() => {
-      //     window.location.href = "/";
-			// 	}, 2000);
-      // }
+    
     }, 100);
 
 },
@@ -526,8 +521,8 @@ checkKQ() {
   };
     this.gameService.updateBoss(option,this.token).then(res => {
     this.hpBoss = res.data.data
+    
     }).catch(error => {
-
       setTimeout(() => {
         window.location.href = '/game/Boss'
 }, 1000); 
@@ -553,8 +548,8 @@ truHPBoss(dame) {
 this.hpBoss -= dame;
   if (this.hpBoss <= 0) {
     this.hpBoss = 0
-
     this.End = true;
+      toast.success('Boss đã bị hạ,phần quà đã trao cho người chiến thắng!')
   }
 
 },

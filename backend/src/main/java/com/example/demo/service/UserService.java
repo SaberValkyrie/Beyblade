@@ -5,7 +5,10 @@ import com.example.demo.repository.ItemsRepository;
 import com.example.demo.repository.product.MyVoucherRepository;
 import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.repository.user.*;
+import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +46,7 @@ public class UserService {
         }
         return null;
     }
+
     public boolean matches(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
@@ -55,7 +59,7 @@ public class UserService {
 
     public void addVoucherInBag(User user, int id){
         Prize prize = voucherRepository.getPrizeByID(id);
-        MyPrize myPrize = voucherRepository.getMYPrizeByID(id);
+        MyPrize myPrize = voucherRepository.getMYPrizeByID(user,id);
         if (myPrize == null){
              myPrize = new MyPrize();
             myPrize.soluong = 1;
@@ -74,7 +78,9 @@ public class UserService {
         return userRepository.getAllPrize(user);
     }
 
-
+    public List<MyPrize> findAllPrize(){
+        return myPrizeRepository.findAll();
+    }
 
 
 
@@ -108,7 +114,13 @@ public class UserService {
     }
 
     public Account getAccountByUser(String username) {
-        return userRepository.getAccount(username);
+        List<Account> accounts = userRepository.getAccount(username);
+        if (accounts.isEmpty()) {
+            throw new UsernameNotFoundException("No account found for username: " + username);
+        } else if (accounts.size() > 1) {
+            return accounts.get(0);
+        }
+        return accounts.get(0);
     }
 
     public void saveMessage(ChatGlobal messages) {
@@ -194,10 +206,13 @@ public class UserService {
         return myPrizeRepository.getMyPrizeByStatus(username,i);
     }
 
-    public Items getItemIDByUser(User user, BeyBlade beyBlade) {
-        return myPrizeRepository.getItemIDByUser(user,beyBlade);
+    public List<Items> getItemIDByUser(User user, BeyBlade beyBlade) {
+        return myPrizeRepository.getItemIDByUser(user, beyBlade);
     }
 
+    public  Items getItemByUser(User user, BeyBlade beyBlade) {
+        return myPrizeRepository.getItemByUser(user, beyBlade);
+    }
     public List<GIFTCODE> getCodeKhaDung(int type) {
         return userRepository.getCodeKhaDung(type);
     }

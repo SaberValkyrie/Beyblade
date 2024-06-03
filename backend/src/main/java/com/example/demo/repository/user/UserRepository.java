@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findByAccountId(int accountId);
 
     @Query("select a from Account a where a.username = :username")
-    Account getAccount(String username);
+    List<Account> getAccount(String username);
 
 
     @Query("select i from Items i where i.user =:userToken order by i.create_time desc")

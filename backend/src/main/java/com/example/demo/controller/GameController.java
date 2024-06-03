@@ -41,7 +41,6 @@ public class GameController {
 
 
 
-    private long st;
 
 
 
@@ -321,11 +320,7 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
         }
         List<MyPrize> myPrizes  = userService.getPrizeByStatus(userToken.username,status);
-        for (MyPrize myPrize : myPrizes){
-            if (myPrize.soluong <= 0){
-                userService.deteleMyPrize(myPrize);
-            }
-        }
+
         return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được "  + " beyblade với hệ ",  myPrizes);
     }
 
@@ -391,10 +386,6 @@ public class GameController {
 
     @GetMapping("/shop")
     public ResponseEntity<ResponseOpject> getShop() {
-        if (service.loadShop){
-            service.item_shop.clear();
-            service.loadItemShop();
-        }
         List<ItemShop> beyBlades = service.item_shop;
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + beyBlades.size() + " sản phẩm ", beyBlades);
     }
@@ -434,12 +425,6 @@ public class GameController {
                }
                 break;
         }
-
-        long timeleft = (time - (System.currentTimeMillis() - st))/1000;
-        if (!Util.canDoWithTime(st,time)){
-            return Util.checkStatusRes(HttpStatus.NOT_IMPLEMENTED, "Vui Lòng Chờ " + timeleft + " giây nữa" , null);
-        }
-        st = System.currentTimeMillis();
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", userFromToken);
     }
 
@@ -466,7 +451,6 @@ public class GameController {
             //boss TG die
             service.addPrize(service.boss.playerKill);
         }
-
         return Util.checkStatusRes(HttpStatus.OK,  "update thành công", service.boss.hp);
     }
     @PostMapping("/naptien/{token}/{amount}")
@@ -568,7 +552,6 @@ public class GameController {
 
     @GetMapping("/getBossTG")
     public ResponseEntity<ResponseOpject> getbossTG() {
-        service.loadBoss();
         BeyBoss boss = service.boss;
         return Util.checkStatusRes(HttpStatus.OK, "          HP:" + Util.numberToMoney(boss.hp) + "                ", boss);
     }
@@ -576,17 +559,16 @@ public class GameController {
 
     @GetMapping("/top")
     public ResponseEntity<ResponseOpject> getTop() {
-        List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
-        service.loadTop(); // Dữ liệu cứng
+        List<TOP> topDB = service.getTop();
         List<TOP> topBOT = service.topList;
-        // Kết hợp hai danh sách
-        List<TOP> topAll = service.getTopAll(topBOT,topDB);
-        for (TOP top : topAll){
+        List<TOP> topAll = service.getTopAll(topBOT, topDB);
+        for (TOP top : topAll) {
             User user = top.user;
-            if (user.userId != 0){
-                Items itemIDByUser = userService.getItemIDByUser(user,top.selectBey);
-                boolean case2 = itemIDByUser != null && itemIDByUser.beyBlade.equals(top.selectBey) && itemIDByUser.selectedBey;
-                if (!case2){
+            if (user.userId != 0) {
+                List<Items> itemsList = userService.getItemIDByUser(user, top.selectBey);
+                boolean case2 = itemsList.stream()
+                        .anyMatch(item -> item.beyBlade.equals(top.selectBey) && item.selectedBey);
+                if (!case2) {
                     top.selectBey = service.getBeyByID(1);
                     service.saveTop(top);
                 }
@@ -594,6 +576,7 @@ public class GameController {
         }
         return Util.checkStatusRes(HttpStatus.OK, "Quay Tay Nào !!!!", topAll);
     }
+
 
 
 
@@ -638,6 +621,8 @@ public class GameController {
         }
         return Util.checkStatusRes(HttpStatus.OK, "Đã tìm được bey", null);
     }
+
+
     @PostMapping("/setKQ")
     public ResponseEntity<ResponseOpject> setKQ(@RequestBody CheckKQ battle) {
 
@@ -675,6 +660,7 @@ public class GameController {
         service.saveTop(topMe);
         return Util.checkStatusRes(HttpStatus.OK, "Chúc Mừng Bạn đã đánh bại được " + battle.user2 + " và đạt top " + top, battle);
     }
+
     @PostMapping("/attack")
     public ResponseEntity<ResponseOpject> BossAttack(
             @RequestBody BeyBattle battle
@@ -691,15 +677,6 @@ public class GameController {
         if (userFromToken == null) {
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Token sai", null);
         }
-        Account accountToken = userService.getAccountByUser(userFromToken.username);
-
-    if (type == 0){
-        if (!userFromToken.active){
-            int dongia = 100;
-            accountToken.coint -= dongia;
-            userService.saveAccount(accountToken);
-        }
-    }
         return attack(battle.boss.bey,battle.me,battle.me.power,type);
     }
 
@@ -747,7 +724,7 @@ public static int pb = 2_100_000_000;
             beyDame.hutdame = damehut;
             hut = true;
         }
-        if (type == 0 && Util.isTrue(5,100)){
+        if (type == 0 && Util.isTrue(8 - (beyOrther.season),100)){
             if (isBurstStopper(beyOrther) && Util.isTrue(70,100) || isLock(beyOrther) && Util.isTrue(90,100)){
                 dame = 2;
                 txtBurst = beyOrther.name + " đã chặn được cú Burst từ " + beyChinh.name;

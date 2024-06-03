@@ -121,6 +121,17 @@
                 <div class="primary-btn text-center">
                     <a href="/game/boss" class="btn btn-primary">Bạn chưa đủ mạnh ? Hãy Tham Chiến Boss Ngay !!!!</a>
                 </div>
+                <div  class="primary-btn text-center" style="zoom: 300%;">
+                    Phần Thưởng mỗi ngày (trao lúc 0h)
+                    <br>
+                    Top 1 :1 Hộp quà + 20k BP + Thẻ Hồi Sinh Boss + Thẻ Reset Shop
+                    <br>
+Top 2: 1 Hộp Quà + 10k BP        <br>
+top 3: 1 Hộp Quà + 5K BP        <br>
+Top 4-10 : 5K BP        <br>
+Top 11-50 : 3k BP        <br>
+TOP 50-100: 1k BP        <br>        <br>        <br>
+                </div>
             </div>
             <!-- /col end-->
         </div>
@@ -238,7 +249,7 @@ export default {
     this.getTop()
     setInterval(() => {
         this.getTop()
-}, 1000);
+}, 10000);
   },
   methods: {
 
@@ -248,7 +259,9 @@ export default {
     thachdauNgay(kethu){
         this.info = false;
         this.thachdau = true;
-        localStorage.setItem('kethuTop', JSON.stringify(kethu));    
+
+        localStorage.setItem('kethuTop', JSON.stringify(kethu));   
+        window.location.href='/game/top/battle' 
     },
 
 

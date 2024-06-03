@@ -56,11 +56,7 @@
 <!--   -->
 <div class="col-sm-4 cc" 
 v-if="selectedBey.images">
-
-
      <div class="concac">
-
-
        <div v-if="End" class="card-body1" style="left: 0;">              
 <div v-if="playerWin == this.selectedBey"  class="win">
 <img src="https://media4.giphy.com/media/wX7I4l8SfFyG8rqhsd/giphy.gif?cid=6c09b9521m9ha26wetn2vncs3anyrie18dr0kfp6ey3j82jy&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s">

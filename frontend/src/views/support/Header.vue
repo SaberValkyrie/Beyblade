@@ -62,9 +62,9 @@
     </nav>
     
   </header>
-
   <br><br><br><br><br>
   
+  <!-- 
   <div class="notify" v-if="isShow" @click="acp">
       
       <div class="tb">
@@ -77,7 +77,7 @@
   </p>
 </div>
 
-</div>
+</div> -->
   </body>
   </html>
 </template>
@@ -161,6 +161,7 @@ export default {
         console.log(error)
         toast(error.response.data.message)
         this.logout();
+        window.location.href='/login'
       });
     },
     logout() {
@@ -204,13 +205,13 @@ this.isShow = false;
     }, 10);
 
 
-    setTimeout(() => {
-      const header = document.querySelector('.notify');
-      if (header) {
-        this.isShow = true;
-        header.classList.add('notify--show');
-      }
-    }, 10); 
+    //setTimeout(() => {
+      //const header = document.querySelector('.notify');
+      //if (header) {
+        //this.isShow = true;
+        //header.classList.add('notify--show');
+      //}
+    //}, 10); 
   }
 }
 </script>

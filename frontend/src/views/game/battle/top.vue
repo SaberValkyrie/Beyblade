@@ -37,9 +37,11 @@
     
     
     <div class="concac" v-if="selectedBey.images">
+    
       <button  style="font-size: 2vw;"  v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End" @click="spinWheel" :disabled="spinning">Đánh 1 cú</button>
       <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Vui Lòng Chờ</button>
     </div>
+    <button v-if="pointBoss == 0 && pointMe == 0" click="reset()">Load</button>
     <!--   -->
     <div class="col-sm-4 cc" 
     v-if="selectedBey.images">
@@ -197,7 +199,9 @@
     this.stop()
     this.setBey()
     setInterval(() => {
-    this.checkKQ();
+    if(this.playerWin){
+      this.checkKQ();
+    }
   }, 1000);
 
     },

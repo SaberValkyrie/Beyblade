@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
@@ -51,30 +52,22 @@ public class BeyService {
     public BeyBoss boss = new BeyBoss();
 
     public int hour = 0;
-    public boolean loadShop = true;
-    public boolean loadBoss = true;
-    public boolean loadTop = true;
+
     public void loadItemShop(){
-        if (!loadShop){
-            return;
-        }
+        item_shop.clear();
 
         BeyBlade index1 = getRandomBeyBoss();
-
         ItemShop itemShop = new ItemShop();
         itemShop.code = String.valueOf(UUID.randomUUID());
         itemShop.beyBlade = index1;
         itemShop.quantity = Util.nextInt(1,5);
-        itemShop.price = index1.price *  Util.nextInt(1,5);
+        itemShop.price = index1.price *  Util.nextInt(1,10);
         itemShop.day = 0;
         itemShop.stt = 0;
         item_shop.add(itemShop);
 
         for (int i = 1; i <= 9; i++){
-            List<BeyBlade> beyBlades = getBasicBey();
-            int randomIndex1 = new Random().nextInt(beyBlades.size());
-            int randomId1 = (int) beyBlades.get(randomIndex1).id;  // Fixed line
-            BeyBlade indexend = getBeyByID(randomId1);
+            BeyBlade indexend = getBeyByID(getRandomBey().id);
             ItemShop itemShop1 = new ItemShop();
             itemShop1.stt = i;
             itemShop1.code = String.valueOf(UUID.randomUUID());
@@ -82,15 +75,14 @@ public class BeyService {
             itemShop1.quantity = Util.nextInt(1,5);
             itemShop1.price = indexend.price *  Util.nextInt(1,5);
             itemShop1.day = 0;
-            if (Util.isTrue(50,100)){
+            if (Util.isTrue(80,100)){
                 itemShop1.day = Util.nextInt(1,3);
-                itemShop1.price /= 5;
+                itemShop1.price /= Util.nextInt(1,5);
             }
             item_shop.add(itemShop1);
         }
 
         hour = LocalTime.now().getHour();
-        loadShop = false;
         System.out.println("Load Item Shop Thành Công! " + hour);
     }
 
@@ -105,10 +97,16 @@ public class BeyService {
         top.endBuff = top.createdAt;
         saveTop(top);
     }
+    @PostConstruct
+    public void init() {
+        loadTop();
+        loadItemShop();
+        loadBoss();
+    }
+
+
+
     public void loadTop(){
-       if (!loadTop){
-           return;
-       }
         topList.clear();
         for (int i = 1; i <= 100; i++){
             User userclone = new User();
@@ -128,20 +126,20 @@ public class BeyService {
             BeyBlade bey = getRandomBey();
             TOP top = new TOP();
             top.user = userclone;
-            top.win = (short) Util.nextInt(1,10);
-            top.buff = (byte) Util.nextInt(1,5);
+            top.win = (short) Util.nextInt(40,70);
+            top.buff = (byte) (Util.isTrue(20,100) ? 5 :(Util.isTrue(50,100) ? 3 : 2));
+            if(Util.isTrue(50,100)){
+                top.buff = 0;
+            }
             top.selectBey = bey;
-            top.lost = (short) Util.nextInt(1,10);
+            top.lost = (short) Util.nextInt(40,70);
             top.top = i;
             top.createdAt = new Timestamp(System.currentTimeMillis());
             top.endBuff = top.createdAt;
             topList.add(top);
         }
-        loadTop = false;
         System.out.println("Load TOP Thành Công! " + topList.size());
     }
-    private static final String ACCESS_KEY = "your_access_key"; // Thay bằng API key của bạn
-
 
     public String randomTen(){
         return randomName() + randomLastName();
@@ -251,8 +249,8 @@ private ImageService imageService;
     }
 
 
-//    private static String host = "beybladegame.online";
-    private static String host = "localhost";
+    private static String host = "beybladegame.online";
+//    private static String host = "localhost";
 
     public List<TOP> getTopAll(List<TOP> topBOT,List<TOP> topDB){
         List<TOP> topAll = new ArrayList<>(topBOT);
@@ -302,20 +300,17 @@ private ImageService imageService;
     }
 
     public void loadBoss(){
-        if (!loadBoss){
-            return;
-        }
+
         BeyBlade beyBlade = getRandomBeyBoss();
         boss.bey = beyBlade;
         boss.time = (byte) LocalTime.now().getHour();
-        boss.buff = (byte) Util.nextInt(20,120);
+        boss.buff = (byte) Util.nextInt(90,120);
         boss.dame = boss.bey.power;
         boss.hp = 10_000_000
                 + boss.buff * boss.bey.hp * (8 - boss.bey.season)
         ;
         boss.playerKill = null;
         boss.die = false;
-        loadBoss = false;
         System.out.println("Load Boss Thành Công! " + boss.bey.name);
     }
 
@@ -378,6 +373,47 @@ private ImageService imageService;
     }
 
 
+
+    public void traoqua(User user){
+        TOP top = getTopByUser(user);
+        if (top != null && top.top <= 100){
+            int cointAdd = 0;
+
+            switch (top.top){
+                case 1:
+                    userService.addVoucherInBag(user,13);
+                    cointAdd = 20000;
+                    userService.addVoucherInBag(user,14);
+                    userService.addVoucherInBag(user,15);
+                    break;
+                case 2:
+                    userService.addVoucherInBag(user,14);
+                    cointAdd = 10000;
+                    break;
+                case 3:
+                    userService.addVoucherInBag(user,14);
+                    cointAdd = 5000;
+                    break;
+                default:
+                    if (top.top >= 4 && top.top <= 10){
+                        cointAdd = 5000;
+                    }
+                    if (top.top >= 11 && top.top <= 50){
+                        cointAdd = 3000;
+                    }
+                    if (top.top >= 51){
+                        cointAdd = 1000;
+                    }
+            }
+
+            Account accountToken = userService.getAccountByUser(user.username);
+            accountToken.coint += cointAdd;
+            userService.saveAccount(accountToken);
+
+        }
+    }
+
+
     public ResponseEntity<ResponseOpject> useItem(User user, MyPrize myPrize){
         Prize item = myPrize.prize;
         if (myPrize.soluong <= 0){
@@ -386,21 +422,21 @@ private ImageService imageService;
         switch (item.id){
             case 4://hộp dd
                 Items itemAdd = addNewBey(user,getRandomBeyBasic());
-                Items itemOld = userService.getItemIDByUser(user,itemAdd.beyBlade);
+//                Items itemOld = userService.getItemByUser(user,itemAdd.beyBlade);
                 itemAdd.vinhvien = false;
                 if (Util.isTrue(20,100)){
                     itemAdd.vinhvien = true;
                 }
                 String t = "Chúc mừng bạn vừa nhận được beyblade " + itemAdd.beyBlade.name + (itemAdd.vinhvien ? " [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
 
-                if (itemOld != null){
-                    long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
-                    itemOld.ngayhethan  = new Timestamp(itemOld.ngayhethan.getTime() + millisecondsInADay);
-                    myPrize.soluong -= 1;
-                    userService.saveItem(itemOld);
-                    userService.saveMyPrize(myPrize);
-                    return Util.checkStatus(HttpStatus.OK, t ,itemAdd);
-                }
+//                if (itemOld != null){
+//                    long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
+//                    itemOld.ngayhethan  = new Timestamp(itemOld.ngayhethan.getTime() + millisecondsInADay);
+//                    myPrize.soluong -= 1;
+//                    userService.saveItem(itemOld);
+//                    userService.saveMyPrize(myPrize);
+//                    return Util.checkStatus(HttpStatus.OK, t ,itemAdd);
+//                }
                 userService.saveItem(itemAdd);
                 myPrize.soluong -= 1;
                 userService.saveMyPrize(myPrize);
@@ -421,7 +457,7 @@ private ImageService imageService;
                 String v = "Chúc mừng bạn vừa nhận được beyblade " + itemVIP.beyBlade.name + (itemVIP.vinhvien ? "  [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
                 return Util.checkStatus(HttpStatus.OK,v,itemVIP);
 
-
+            case 14://hộp top
             case 11://hộp boss
             case 12://hộp shopee
                 BeyBlade bey = item.id == 11 ? getRandomBeyBasic() : getRandomBey();
@@ -445,6 +481,23 @@ private ImageService imageService;
                    vv += " và " + Util.numberToMoney(cc) + " Beypoint";
                }
                 return Util.checkStatus(HttpStatus.OK,vv,itemVIP1);
+
+            case 13:
+                if (!this.boss.die){
+                    return Util.checkStatus(HttpStatus.BAD_REQUEST,"Boss còn đang sống,không thể hồi sinh lúc này",null);
+                }
+                myPrize.soluong -= 1;
+                userService.saveMyPrize(myPrize);
+                loadBoss();
+                boss.hp = 10_000_000;
+                return Util.checkStatus(HttpStatus.OK,"Hồi Sinh Boss Mới Thành Công : " + boss.bey.name ,boss);
+
+                case 15:
+                myPrize.soluong -= 1;
+                userService.saveMyPrize(myPrize);
+                loadItemShop();
+                return Util.checkStatus(HttpStatus.OK,"Reset Shop Thành Công ,Prize  : " + item_shop.get(0).beyBlade.name ,item_shop);
+
             default:
                 if (item.type == 1){
                     return Util.checkStatus(HttpStatus.OK,"Sản Phẩm này dùng để đổi Beyblade thật,vui lòng liên hệ admin để đổi nhé!",null);
@@ -524,7 +577,7 @@ private ImageService imageService;
 
             case 4: //code mua trên shopee
                 txt+= " và " + 20 + "K Beypoint";
-                accountToken.coint += 20 * 1000;
+                accountToken.tienmat += 20 * 1000;
                 userService.addVoucherInBag(userToken,12);
                 txt += " kèm thêm Hộp Quà Shopee";
                 break;

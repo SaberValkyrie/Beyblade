@@ -1,9 +1,6 @@
 package com.example.demo.support;
 
-import com.example.demo.entity.BeyBlade;
-import com.example.demo.entity.Items;
-import com.example.demo.entity.TOP;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.service.BeyService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +21,27 @@ public class Auto {
     @Autowired
     private BeyService beyService;
         @Scheduled(cron = "0 * * * * *") // Chạy vào mỗi phút
-//@Scheduled(cron = "*/30 * * * * *")//MỖI 30S
-// @Scheduled(cron = "* * * * * *")//MỖI S
     public void checkVipExpiration() {
-            Timestamp cur = new Timestamp(System.currentTimeMillis());
-            for (TOP top : beyService.getTop()){
-                if (top.endBuff.before(new Timestamp(System.currentTimeMillis()))){
-                    top.buff = 0;
-                    beyService.saveTop(top);
+            for (MyPrize myPrize : userService.findAllPrize()){
+                if (myPrize.soluong <= 0){
+                    userService.deteleMyPrize(myPrize);
                 }
-            }
-            for (Items items : userService.getAllItems()){
-                if (!items.vinhvien && items.ngayhethan.before(cur)){//item hsd và tới ngày hết hạn
-                        System.out.println("delete item hsd");
-                        userService.deteleItem(items);//bey chưa sử dụng thì xóa
 
-                }
             }
     }
 
     @Scheduled(cron = "0 0 * * * *") // Chạy mỗi giờ
     public void resetShop() {
+            beyService.loadTop();
+            beyService.loadItemShop();
+            beyService.loadBoss();
+
+        if (LocalTime.now().getHour() == 0){
+            for(User user : userService.getAllUser()){
+                beyService.traoqua(user);
+            }
+          }
+
            if (LocalTime.now().getHour() == 1){
                for(User user : userService.getAllUser()){
                    user.diemdanh = false;
@@ -54,20 +51,28 @@ public class Auto {
                }
                System.out.println("Reset Điểm Danh: " + Util.getNowString());
            }
+           Timestamp cur = new Timestamp(System.currentTimeMillis());
+
            for (TOP top : beyService.getTop()){
-               if (top.endBuff.before(new Timestamp(System.currentTimeMillis()))){
+               if (top.endBuff.before(cur)){
                    top.buff = 0;
                    beyService.saveTop(top);
                }
            }
+
+        for (Items items : userService.getAllItems()){
+            if (!items.vinhvien && items.ngayhethan.before(cur)){//item hsd và tới ngày hết hạn
+                userService.deteleItem(items);//bey chưa sử dụng thì xóa
+            }
+        }
+
         for (User user : userService.getAllUser()){
             if(user.diem > 0){
                 user.diem = 0;
             }
+            userService.saveUser(user);
         }
-        beyService.loadShop = true;
-        beyService.loadBoss = true;
-        beyService.loadTop = true;
+
         System.out.println("Reset thành công: " +  Util.getNowString());
     }
 

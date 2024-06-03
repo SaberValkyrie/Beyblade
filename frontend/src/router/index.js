@@ -201,6 +201,11 @@ const routes = [
     component: () => import('../views/game/BattleTop.vue')
   },
   {
+    path: '/game/top/battle',
+    name: 'game.battle',
+    component: () => import('../views/game/BattleTopCheck.vue')
+  },
+  {
     path: '/user/bag',
     name: 'game.myItems',
     component: () => import('../views/game/Bag.vue')

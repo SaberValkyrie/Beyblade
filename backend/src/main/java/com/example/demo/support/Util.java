@@ -2,6 +2,8 @@ package com.example.demo.support;
 
 import com.example.demo.dto.ResponseOpject;
 import com.example.demo.entity.User;
+import com.example.demo.service.BeyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -22,18 +24,6 @@ public class Util {
     static {
         rand = new Random();
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static int nextInt(int from, int to) {
         return from + rand.nextInt(to - from + 1);

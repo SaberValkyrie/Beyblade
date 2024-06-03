@@ -102,7 +102,7 @@
 
         naptien(){
 
-         this.service.checkNapTien(this.token,this.amount)
+         this.service.checkNapTien(this.token,this.amountLeft)
                   .then(response => {
                     toast.success(response.data.message);
          })

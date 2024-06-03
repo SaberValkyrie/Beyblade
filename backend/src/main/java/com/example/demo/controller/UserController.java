@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AccountResponse;
 import com.example.demo.dto.UserResponse;
+import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.service.BeyService;
 import com.example.demo.support.Util;
 import com.example.demo.dto.ResponseOpject;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @RestController
 public class UserController {
@@ -101,10 +103,28 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseOpject> register(@RequestBody Account loginRequest) {
+
+        String username = loginRequest.getUsername();
+        // Check if username contains any spaces
+        if (username.contains(" ")) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Tên tài khoản không được chứa dấu cách", null);
+        }
+        // Check if username contains any uppercase letters
+        if (!username.equals(username.toLowerCase())) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Tên tài khoản không được chứa chữ hoa", null);
+        }
+
+        // Check if username contains Vietnamese diacritical marks
+        Pattern vietnameseDiacriticalMarksPattern = Pattern.compile("[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]");
+        if (vietnameseDiacriticalMarksPattern.matcher(username).find()) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Tên tài khoản không được chứa dấu tiếng Việt", null);
+        }
+
         Account acc = userService.authenticate(loginRequest);
         if (acc != null){
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Tài Khoản Đã Tồn Tại", null);
         }
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         Account account = new Account();
         account.username = loginRequest.username;
@@ -223,10 +243,6 @@ public class UserController {
                }
                 userFromToken.active = true;
                 break;
-
-
-
-
             case 2:
                 if (!userFromToken.active){
                     return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Yêu cầu mở thành viên trước", null);
@@ -245,7 +261,6 @@ public class UserController {
                     userService.addVoucherInBag(userFromToken,id);
                     txt = "Điểm danh VIP thành công! Chúc Mừng bạn đã may mắn trúng voucher đổi Beyblade và " + coint + "K Beypoint";
                 }
-
                 userService.addVoucherInBag(userFromToken,5);
                 account.tienmat -= 5000;
                 userFromToken.diemdanhVIP = true;
@@ -256,6 +271,8 @@ public class UserController {
         userService.saveUser(userFromToken);
         return Util.checkStatusRes(HttpStatus.OK, txt, account);
     }
+
+
     @PutMapping("/user/edit/{token}")
     public ResponseEntity<ResponseOpject> editUser(@PathVariable String token,@RequestBody User user) {
         User userFromToken = tokenService.getUserFromToken(token);
@@ -404,11 +421,8 @@ public ResponseEntity<ResponseOpject> check(@PathVariable String token,
         return Util.checkStatus(HttpStatus.UNAUTHORIZED, "Token sai", null);
     }
     if (!userToken.code.equals(code)){
-
         return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Vui Lòng Đăng Nhập Lại", null);
     }
-//    System.out.println(userToken.code + '/' + code);
-
     return Util.checkStatusRes(HttpStatus.OK, "Get Account Success", userToken);
 }
 //===================================================================================================================

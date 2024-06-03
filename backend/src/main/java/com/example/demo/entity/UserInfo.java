@@ -24,13 +24,13 @@ public class UserInfo {
     @Column(name = "user_id")
     public int userId;
 
-    @Column(name = "shopee_name", nullable = false)
+    @Column(name = "shopee_name")
     public String shopeeName;
 
-    @Column(name = "fullname", nullable = false)
+    @Column(name = "fullname")
     public String fullname;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     public String email;
 
     @Column(name = "phone")
@@ -42,7 +42,7 @@ public class UserInfo {
     @Column(name = "date")
     public Timestamp date;
 
-    @Column(name = "updated_time", columnDefinition = "TIMESTAMP DEFAULT current_timestamp() ON UPDATE current_timestamp()")
+    @Column(name = "updated_time")
     public Timestamp updatedTime;
 
 
