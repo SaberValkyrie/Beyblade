@@ -20,4 +20,7 @@ public interface MyVoucherRepository extends JpaRepository<MyPrize,Long> {
 
    @Query("select i from Items i where i.user=:user and i.beyBlade=:beyBlade")
    Items getItemByUser(User user, BeyBlade beyBlade);
+
+//   @Query("select i from Items i where i.user=:user and i.beyBlade=:beyBlade")
+//   List<Items> getItemsByUser(User user, BeyBlade beyBlade);
 }

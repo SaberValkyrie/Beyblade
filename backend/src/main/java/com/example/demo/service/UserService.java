@@ -2,11 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.ItemsRepository;
+import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.repository.product.MyVoucherRepository;
 import com.example.demo.repository.product.VoucherRepository;
 import com.example.demo.repository.user.*;
 import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -188,10 +191,57 @@ public class UserService {
         return userRepository.getAllItems();
     }
 
-    public void saveItem(Items itemEdit) {
+//    @Autowired
+//    private BeyService beyService;
+
+
+    public void saveItem(User user,Items itemEdit) {
+//        switch ((int) itemEdit.beyBlade.id){
+//            case 86://legend
+//              saveLR(user,itemEdit,83,84);
+//              break;
+//            case 100://requiem
+//                saveLR(user,itemEdit,93,94);
+//                break;
+//            case 128://requiem
+//                saveLR(user,itemEdit,123,124);
+//                break;
+//        }
          itemsRepository.save(itemEdit);
     }
+//    public Items addNewBey(User user,BeyBlade beyBlade){
+//        Items items = new Items();
+//        items.beyBlade = beyBlade;
+//        items.user = user;
+//        items.selectedBey = false;
+//        items.create_time = new Timestamp(System.currentTimeMillis());
+//        long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
+//        items.ngayhethan = new Timestamp(items.create_time.getTime() + millisecondsInADay);
+//        return items;
+//    }
 
+//    @Autowired
+//    private BeyRepository beyRepository;
+//
+//    public BeyBlade getBeyByID(long id) {
+//        return beyRepository.getBeyById(id);
+//    }
+//    public void saveLR(User user,Items itmain, int id1){
+//        Items L = addNewBey(user,getBeyByID(id1));
+//        L.vinhvien = itmain.vinhvien;
+//        L.ngayhethan = itmain.ngayhethan;
+//        itemsRepository.save(L);
+//    }
+//   public void saveLR(User user,Items itmain, int id1,int id2){
+//        Items L = addNewBey(user,getBeyByID(id1));
+//        Items R =  addNewBey(user,getBeyByID(id2));
+//        L.vinhvien = itmain.vinhvien;
+//        R.vinhvien = itmain.vinhvien;
+//        L.ngayhethan = itmain.ngayhethan;
+//        R.ngayhethan = itmain.ngayhethan;
+//        itemsRepository.save(L);
+//        itemsRepository.save(R);
+//    }
     public void deteleItem(Items items) {
         itemsRepository.delete(items);
     }
@@ -210,9 +260,20 @@ public class UserService {
         return myPrizeRepository.getItemIDByUser(user, beyBlade);
     }
 
-    public  Items getItemByUser(User user, BeyBlade beyBlade) {
-        return myPrizeRepository.getItemByUser(user, beyBlade);
-    }
+//    public  Items getItemByUser(User user, BeyBlade beyBlade) {
+//        Items it = null;
+//        List<Items> items = myPrizeRepository.getItemsByUser(user, beyBlade);
+//        for (Items items1 : items){
+//            if (items1.vinhvien){
+//                it = items1;
+//                break;
+//            }else{
+//                it = items1;
+//                break;
+//            }
+//        }
+//        return it;
+//    }
     public List<GIFTCODE> getCodeKhaDung(int type) {
         return userRepository.getCodeKhaDung(type);
     }

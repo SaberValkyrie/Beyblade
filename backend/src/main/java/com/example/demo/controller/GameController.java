@@ -167,8 +167,8 @@ public class GameController {
             if (item.equals(edit)){
                 item.selectedBey = true;
             }
-            userService.saveItem(edit);
-            userService.saveItem(item);
+            userService.saveItem(userToken,edit);
+            userService.saveItem(userToken,item);
         }
         TOP top = service.getTopByUser(userToken);
         top.selectBey = item.beyBlade;
@@ -247,12 +247,25 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Beyblade ưu tiên chỉ bán cho những người đã mở thành viên,vui lòng chọn beyblade khác!",  null);
         }
 
-        List<BeyBlade> myItem = userService.getBeysByUser(userToken);
-        if (myItem.contains(item.beyBlade)){
-            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã có beyblade này trước đó",  null);
-        }
+//        List<BeyBlade> myItem = userService.getBeysByUser(userToken);
+//        Items myItem = service.userService.getItemByUser(userToken,item.beyBlade);
+//
+//        if (myItem != null && myItem.vinhvien){
+//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã có beyblade này trước đó",  null);
+//        }
         if (item.quantity <= 0) {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Sản Phẩm Đã Hết Hàng", null);
+        }
+        if (item.beyBlade.id == 207) {
+            Items hyperion = service.getItemsByID(userToken,203);
+            Items helios = service.getItemsByID(userToken,204);
+
+            if (hyperion == null){
+                return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Hãy Sở Hữu Hyperion MR vĩnh viễn trước", null);
+            }
+            if (helios == null){
+                return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Hãy Sở Hữu Helios MR vĩnh viễn trước", null);
+            }
         }
         Items items = new Items();
         Account accountToken = userService.getAccountByUser(userToken.username);
@@ -274,7 +287,7 @@ public class GameController {
 
 
         userService.saveAccount(accountToken);
-        userService.saveItem(items);
+        userService.saveItem(userToken,items);
 
         // Giảm số lượng của item trong danh sách item_shop
         service.item_shop.get(item.stt).quantity -= 1;
@@ -877,11 +890,13 @@ private boolean isFafnir(BeyBlade beyBlade){
             case 203:
             case 187:
             case 204:
-            case 205:
+            case 183:
             case 206:
             case 194:
             case 184:
             case 162:
+            case 205:
+            case 208:
                 return true;
             default:
                 return false;

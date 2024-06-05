@@ -10,6 +10,7 @@ import com.example.demo.repository.giftcode.HistoryRepo;
 import com.example.demo.repository.product.BeyRepository;
 import com.example.demo.support.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class BeyService {
 
     @Autowired
     public UserService userService;
+
     @Autowired
     private GiftcodeRepo giftcodeRepository;
 
@@ -429,15 +431,10 @@ private ImageService imageService;
                 }
                 String t = "Chúc mừng bạn vừa nhận được beyblade " + itemAdd.beyBlade.name + (itemAdd.vinhvien ? " [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
 
-//                if (itemOld != null){
-//                    long millisecondsInADay = TimeUnit.DAYS.toMillis(Util.nextInt(1,3));
-//                    itemOld.ngayhethan  = new Timestamp(itemOld.ngayhethan.getTime() + millisecondsInADay);
-//                    myPrize.soluong -= 1;
-//                    userService.saveItem(itemOld);
-//                    userService.saveMyPrize(myPrize);
-//                    return Util.checkStatus(HttpStatus.OK, t ,itemAdd);
-//                }
-                userService.saveItem(itemAdd);
+
+
+
+                userService.saveItem(user,itemAdd);
                 myPrize.soluong -= 1;
                 userService.saveMyPrize(myPrize);
                 return Util.checkStatus(HttpStatus.OK, t ,itemAdd);
@@ -446,13 +443,22 @@ private ImageService imageService;
                 BeyBlade b = getRandomBey();
                 if (Util.isTrue(10,100)){
                     b= getRandomBeyBoss();
+                    if (b.id == 207){
+                        Items hyperion = getItemsByID(user,203);
+                        Items helios = getItemsByID(user,204);
+                        if (hyperion == null || helios == null){
+                            b = getRandomBey();
+                        }
+                    }
+
                 }
                 Items itemVIP = addNewBey(user,b);
                 itemVIP.vinhvien = true;
-                userService.saveItem(itemVIP);
+                userService.saveItem(user,itemVIP);
 
                 myPrize.soluong -= 1;
                 userService.saveMyPrize(myPrize);
+
 
                 String v = "Chúc mừng bạn vừa nhận được beyblade " + itemVIP.beyBlade.name + (itemVIP.vinhvien ? "  [Vĩnh Viễn] " : " ---Hạn Sử Dụng");
                 return Util.checkStatus(HttpStatus.OK,v,itemVIP);
@@ -463,10 +469,17 @@ private ImageService imageService;
                 BeyBlade bey = item.id == 11 ? getRandomBeyBasic() : getRandomBey();
                 if (Util.isTrue(10,100)){
                     bey= getRandomBeyBoss();
+                    if (bey.id == 207){
+                        Items hyperion = getItemsByID(user,203);
+                        Items helios = getItemsByID(user,204);
+                        if (hyperion == null || helios == null){
+                            bey = getRandomBey();
+                        }
+                    }
                 }
                 Items itemVIP1 = addNewBey(user,bey);
                 itemVIP1.vinhvien = true;
-                userService.saveItem(itemVIP1);
+                userService.saveItem(user,itemVIP1);
 
                 myPrize.soluong -= 1;
                 userService.saveMyPrize(myPrize);
@@ -507,7 +520,6 @@ private ImageService imageService;
     }
 
     public Items addNewBey(User user,BeyBlade beyBlade){
-
         Items items = new Items();
         items.beyBlade = beyBlade;
         items.user = user;
@@ -559,7 +571,7 @@ private ImageService imageService;
                 if (Util.isTrue(10,100)){
                     item.vinhvien = true;
                 }
-                userService.saveItem(item);
+                userService.saveItem(userToken,item);
                 txt += beyBlade.name + (item.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
                 break;
             case 3: //type 3: code chào mừng
@@ -568,7 +580,7 @@ private ImageService imageService;
                 if (Util.isTrue(10,100)){
                     it.vinhvien = true;
                 }
-                userService.saveItem(it);
+                userService.saveItem(userToken,it);
                 txt += beyBlade1.name + (it.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
                 int random = Util.nextInt(1,10);
                 txt+= " và " + random + "K Beypoint";
@@ -600,5 +612,17 @@ private ImageService imageService;
 
     public void saveCode(GIFTCODE giftcode) {
         giftcodeRepository.save(giftcode);
+    }
+
+//    public Items getItemsByID(User userToken, long i) {
+//
+//        return beyRepository.finItem(userToken,i).get(0);
+//    }
+    public Items getItemsByID(User userToken, long beyBladeId) {
+        List<Items> items = beyRepository.finItem(userToken, beyBladeId);
+        if (items.isEmpty()) {
+            return null;
+        }
+        return items.get(0);
     }
 }

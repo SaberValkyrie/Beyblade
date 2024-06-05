@@ -79,7 +79,7 @@ public class UserController {
             item.beyBlade = beyService.getBeyByID(1);
             item.create_time = new Timestamp(System.currentTimeMillis());
             item.ngayhethan = item.create_time;
-            userService.saveItem(item);
+            userService.saveItem(user,item);
             add(user);
         }
 
@@ -95,7 +95,7 @@ public class UserController {
             item.beyBlade = beyService.getBeyByID(i);
             item.create_time = new Timestamp(System.currentTimeMillis());
             item.ngayhethan = item.create_time;
-            userService.saveItem(item);
+            userService.saveItem(user,item);
         }
     }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

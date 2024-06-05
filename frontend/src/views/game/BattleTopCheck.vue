@@ -38,7 +38,7 @@
   
   <div class="concac" v-if="selectedBey.images">
   
-    <button  style="font-size: 2vw;"  v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End" @click="spinWheel" :disabled="spinning">Đánh 1 cú</button>
+    <button  style="font-size: 2vw;"  v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End && !start" @click="setStart(true)" :disabled="spinning">{{ round == 1 ? 'Bắt Đầu' : 'Đánh Hiệp ' + round }}</button>
     <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Vui Lòng Chờ</button>
   </div>
   <!--   -->
@@ -190,6 +190,7 @@
   BossBurst:false,
   MeBurst:false,
   isWin:false,
+  start:false,
   };
   },
   created(){
@@ -205,6 +206,9 @@ if (kethuTop === null) {
 
 
   setInterval(() => {
+    if(this.start && this.hpBoss > 0 && this.hpMe > 0){
+      this.spinWheel()
+    }
   if(this.playerWin){
     this.checkKQ();
   }
@@ -214,7 +218,9 @@ if (kethuTop === null) {
   
   methods: {
   
-  
+    setStart(s){
+      this.start = s;
+    },
   
   convert(power) {
   const formatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
@@ -447,6 +453,8 @@ setTimeout(() => {
     this.pointBoss += 1;
     this.MeBurst = true;
   }
+  this.start = false;
+  this.round += 1;
       this.pointBoss += point;
       if (this.pointBoss >= 3 && this.playerWin != this.selectedBey) {
         this.End = true;
@@ -469,6 +477,9 @@ setTimeout(() => {
     this.pointMe += 1;
     this.BossBurst = true;
   }
+  this.start = false;
+  this.round += 1;
+
       this.pointMe += point;
       if (this.pointMe >= 3) {
         this.End = true;
