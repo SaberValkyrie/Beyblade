@@ -25,7 +25,7 @@
   </div>
   <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
     <img v-if="BossBurst" :src="img" class="effect">
-      <img :src="Boss.bey.images" class="wheel-image">
+      <img :src="Boss.images" class="wheel-image">
   </div>
   
   
@@ -64,7 +64,7 @@
             <h5 class="d-flex align-items-center mb-3">Chỉ Số {{ userA }}</h5>
             <p>Tấn Công : {{ convert(selectedBey.power) }}</p>
             <div class="progress mb-3" style="height: 5px">
-                <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) * ((8 - selectedBey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (selectedBey.power / 10000) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <p>Sức Bền:{{ convert(hpMe > 0 ? hpMe : 0) }}</p>
             <div class="progress mb-3" style="height: 5px">
@@ -131,12 +131,12 @@
   
   
   
-  
+
   
   
   </div>
 
-  
+  <!-- {{Boss}} -->
   </body>
   
   </template>
@@ -206,11 +206,12 @@
   };
   },
   created(){
-  const kethuTop = JSON.parse(localStorage.getItem('kethuTop'));
-if (kethuTop === null) {
-    window.location.href='/game/top'
-  }
-  this.getType()
+
+//   const kethuTop = JSON.parse(localStorage.getItem('dichsinhton'));
+// if (kethuTop === null) {
+//     window.location.href='/game/top'
+//   }
+//   this.getType()
   this.getBoss()
   this.stop()
   this.setBey()
@@ -260,32 +261,29 @@ if (kethuTop === null) {
   },
   
   setBey(){
-  this.gameService.getBeyDefault(this.token).then(res => {
-    this.selectedBey = res.data.data ;
+  this.gameService.getRandomBey(this.token).then(res => {
+    this.selectedBey = res.data.data.bey;
     this.hpMe = this.selectedBey.hp;
     this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
   }).catch(error => {
   toast.warning(error.response.data.message)
   });
   },
+
   getBoss(){
-    const bossStr = localStorage.getItem('kethuTop');
+
+    const bossStr = localStorage.getItem('dichsinhton');
     let bossObj;
     bossObj = JSON.parse(bossStr);
+
     const loggedInUser = localStorage.getItem('loggedInUser');
     let loginObj;
     loginObj = JSON.parse(loggedInUser);
-
-    this.top = bossObj.top
-    this.userB = bossObj.user.username
-    this.userA = loginObj.username;
     
-
-  
-  this.gameService.setPK(bossObj).then(res => {
+  this.gameService.setBattle(this.token,bossObj).then(res => {
     this.Boss = res.data.data ;
-    this.hpMe = this.selectedBey.hp;
-    this.hpBoss = this.Boss.selectBey.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
+    // this.hpMe = 10000000;
+    // this.hpBoss = 10000000; 
   
   }).catch(error => {
   toast.warning(error.response.data.message)
@@ -463,7 +461,7 @@ this.gameService.getKQ(option).then(res => {
 
 
     toast.success(res.data.message)
-    localStorage.setItem('kethuTop', JSON.stringify(null));
+    localStorage.setItem('dichsinhton', JSON.stringify(null));
 }).catch(error => {
 toast.warning(error.response.data.message)
 });
@@ -493,8 +491,8 @@ setTimeout(() => {
       this.pointBoss += point;
       if (this.pointBoss >= 3 && this.playerWin != this.selectedBey) {
         this.End = true;
-        this.playerWin = this.Boss.bey;
-        localStorage.setItem('kethuTop', JSON.stringify(null));
+        this.playerWin = this.Boss;
+        localStorage.setItem('dichsinhton', JSON.stringify(null));
         // toast('Bạn đã thất bại,vui lòng quay lại sau')
         setTimeout(() => {
           window.location.href = "/game/top";

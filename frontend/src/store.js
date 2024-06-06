@@ -52,8 +52,11 @@ export default createStore({
     codeXN: state => {
       return JSON.parse(localStorage.getItem('codeXN'));
     },
-    codeXN: kethuTop => {
+    kethuTop: kethuTop => {
       return JSON.parse(localStorage.getItem('kethuTop'));
+    },
+    dichsinhton: dichsinhton => {
+      return JSON.parse(localStorage.getItem('dichsinhton'));
     },
     searchHistory: state => {
       return JSON.parse(localStorage.getItem('searchHistory'));

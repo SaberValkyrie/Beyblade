@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.BeyBoss;
-import com.example.demo.dto.ItemShop;
-import com.example.demo.dto.ResponseOpject;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.repository.TopRepository;
 import com.example.demo.repository.giftcode.GiftcodeRepo;
@@ -50,10 +48,28 @@ public class BeyService {
     private HistoryRepo historyRepository;
     public List<ItemShop> item_shop = new ArrayList<>();
     public List<TOP> topList = new ArrayList<>();
-
+    public List<Register> topDangKy = new ArrayList<>();
     public BeyBoss boss = new BeyBoss();
 
+    public String code = "";
     public int hour = 0;
+
+    public void loadCode(){
+     for (int i = 1;i <= 20;i++){
+         Register register = new Register();
+         register.avatar = getAnhRand();
+         register.isDie = true;
+         if (Util.isTrue(50,100)){
+             register.isDie = false;
+         }
+         register.createTime = new Timestamp(System.currentTimeMillis());
+         register.username = Util.generateRandomText(6);
+         register.is = true;
+         register.hp = 10000000;
+         register.buff = 5;
+         topDangKy.add(register);
+     }
+    }
 
     public void loadItemShop(){
         item_shop.clear();
@@ -87,7 +103,15 @@ public class BeyService {
         hour = LocalTime.now().getHour();
         System.out.println("Load Item Shop Thành Công! " + hour);
     }
-
+    public boolean isUsernameTaken(String username) {
+        return topDangKy.stream().anyMatch(register -> register.username.equals(username));
+    }
+    public Register getByUserName(String username) {
+        Optional<Register> optionalRegister = topDangKy.stream()
+                .filter(register -> register.username.equals(username))
+                .findFirst();
+        return optionalRegister.orElse(null);
+    }
     public void addTOP(User user){
         TOP top = new TOP();
         top.user = user;
@@ -104,6 +128,7 @@ public class BeyService {
         loadTop();
         loadItemShop();
         loadBoss();
+        loadCode();
     }
 
 
@@ -117,10 +142,10 @@ public class BeyService {
             userclone.accountId = 0;
             userclone.code ="";
             userclone.createdAt = new Timestamp(System.currentTimeMillis());
-            userclone.avatar = getAvatar();
-            if (Util.isTrue(50,100)){
-                userclone.avatar = getAnhRand();
-            }
+            userclone.avatar = "http://" + host + ":8080/files/user_avatar.png";
+//            if (Util.isTrue(50,100)){
+//                userclone.avatar = getAnhRand();
+//            }
             userclone.diem = i * 2;
             userclone.active = true;
             userclone.rank= (byte) i;
@@ -274,6 +299,7 @@ private ImageService imageService;
         return topAll;
     }
 
+
     public BeyBlade getRandomBey(){
         List<BeyBlade> list0 = getBoss();
         List<BeyBlade> list1 = getBasicBey();
@@ -286,6 +312,64 @@ private ImageService imageService;
 
     }
 
+    public BeyBlade getRandomBeyBySS() {
+        byte ss = getSS();
+        List<BeyBlade> list = beyRepository.getRandomBeyBySS(ss);
+        int randomIndex = new Random().nextInt(list.size());
+        int randomId = (int) list.get(randomIndex).id;
+        return getBeyByID(randomId);
+    }
+
+    private byte getSS(){
+        byte ss;
+        switch (LocalTime.now().getHour()){
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                ss = 2;
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                ss = 3;
+                break;
+
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                ss = 4;
+                break;
+
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+                ss = 5;
+                break;
+
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+                ss = 6;
+                break;
+
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+                ss = 7;
+                break;
+
+            default :
+                ss = 1;
+                break;
+        }
+        return ss;
+    }
     public BeyBlade getRandomBeyBoss(){
         List<BeyBlade> list = getBoss();
         int randomIndex = new Random().nextInt(list.size());
@@ -568,18 +652,17 @@ private ImageService imageService;
             case 2:        //type 2:code bey random hsd-vv
                 BeyBlade beyBlade = getRandomBey();
                 Items item = createBey(userToken, (int) beyBlade.id);
-                if (Util.isTrue(10,100)){
                     item.vinhvien = true;
-                }
+
                 userService.saveItem(userToken,item);
                 txt += beyBlade.name + (item.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
                 break;
             case 3: //type 3: code chào mừng
                 BeyBlade beyBlade1 = getRandomBey();
                 Items it = createBey(userToken, (int) beyBlade1.id);
-                if (Util.isTrue(10,100)){
+
                     it.vinhvien = true;
-                }
+
                 userService.saveItem(userToken,it);
                 txt += beyBlade1.name + (it.vinhvien ? " Vĩnh Viễn" : " Hạn sử dụng");
                 int random = Util.nextInt(1,10);
@@ -625,4 +708,9 @@ private ImageService imageService;
         }
         return items.get(0);
     }
+    public Items getItemsByItemID(User userToken, int itemID) {
+        return beyRepository.finItemBYID(userToken, itemID);
+    }
+
+
 }

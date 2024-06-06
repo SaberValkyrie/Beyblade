@@ -52,6 +52,11 @@ async getItem(code) {
     const response = await axios.get(`${baseURL}/game/getAllTypes`);
     return response;
 }
+
+async listRes() {
+    const response = await axios.get(`${baseURL}/game/register`);
+    return response;
+}
 async getItems(token) {
     const response = await axios.get(`${baseURL}/game/getItemsBag/${token}`,);
     return response;
@@ -65,6 +70,25 @@ buyBUFF(token,x,type) {
     return response;
 }
 
+setBattle(token,item){
+    const response =  axios.post(`${baseURL}/game/setBattle/${token}`,item);
+    return response;
+}
+register(token,item) {
+    const response =  axios.post(`${baseURL}/game/register/${token}`,item);
+    return response;
+}
+
+async checkRegister(token) {
+    const response = await axios.get(`${baseURL}/game/checkRegister/${token}`,);
+    return response;
+}
+
+
+async getRandomBey(token){
+    const response = await axios.get(`${baseURL}/game/getRandomBey/${token}`,);
+    return response;
+}
 
 buyItem(token,item) {
     const response =  axios.post(`${baseURL}/game/buyItem/${token}`,item);
@@ -73,6 +97,12 @@ buyItem(token,item) {
 
 checkGC(token,code) {
     const response =  axios.post(`${baseURL}/game/checkCode/${token}/${code}`);
+    return response;
+}
+
+
+sell(token,code) {
+    const response =  axios.post(`${baseURL}/game/sellItem/${token}`,code);
     return response;
 }
 

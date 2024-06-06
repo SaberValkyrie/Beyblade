@@ -191,6 +191,16 @@ const routes = [
     component: () => import('../views/game/ItemDetails.vue')
   },
   {
+    path: '/game/sinhton',
+    name: 'game.sinhton',
+    component: () => import('../views/game/SinhTon.vue')
+  },
+  {
+    path: '/game/sinhton/battle',
+    name: 'game.sinhton.battle',
+    component: () => import('../views/game/BattleSinhTon.vue')
+  },
+  {
     path: '/history/:username',
     name: 'game.history',
     component: () => import('../views/game/HistoryTop.vue')

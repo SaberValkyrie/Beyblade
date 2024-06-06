@@ -246,13 +246,6 @@ public class GameController {
         if (item.beyBlade.isBoss && !userToken.active){
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Beyblade ưu tiên chỉ bán cho những người đã mở thành viên,vui lòng chọn beyblade khác!",  null);
         }
-
-//        List<BeyBlade> myItem = userService.getBeysByUser(userToken);
-//        Items myItem = service.userService.getItemByUser(userToken,item.beyBlade);
-//
-//        if (myItem != null && myItem.vinhvien){
-//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã có beyblade này trước đó",  null);
-//        }
         if (item.quantity <= 0) {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Sản Phẩm Đã Hết Hàng", null);
         }
@@ -296,7 +289,108 @@ public class GameController {
         return Util.checkStatusRes(HttpStatus.OK, "Mua Thành Công " + items.beyBlade.name,  items);
     }
 
+    @PostMapping("/sellItem/{token}")
+    public ResponseEntity<ResponseOpject> sell(@PathVariable String token,
+                                                  @RequestBody Items item) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        if (item == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Beyblade Không Tồn Tại",  null);
+        }
+        Items items = service.getItemsByItemID(userToken,item.id);
+        if (items == null) {
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Không tìm thấy Item", null);
+        }
+        if (!items.vinhvien){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Hãy chọn Beyblade Vĩnh Viễn",  null);
+        }
+        userService.deteleItem(items);
 
+        int coint = Util.nextInt(item.beyBlade.price / 5,item.beyBlade.price / 2);
+        return Util.checkStatusRes(HttpStatus.OK, "Bán Thành Công " + items.beyBlade.name + " và nhận được " + Util.numberToMoney(coint) + " Beypoint",  items);
+    }
+
+    @GetMapping("/register")
+    public ResponseEntity<ResponseOpject> getAllregister() {
+        List<Register> list = service.topDangKy;
+        return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + "" ,  list);
+    }
+
+    @PostMapping("/register/{token}")
+    public ResponseEntity<ResponseOpject> res(@PathVariable String token,@RequestBody TypeBey typeBey) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        // Kiểm tra username đã tồn tại
+        if (service.isUsernameTaken(userToken.username)) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã đăng ký trước đó", null);
+        }
+        Register register = new Register();
+        register.avatar = userToken.avatar;
+        register.username = userToken.username;
+        register.type = typeBey;
+        register.createTime = new Timestamp(System.currentTimeMillis());
+        register.isDie = false;
+        service.topDangKy.add(register);
+
+        return  Util.checkStatusRes(HttpStatus.OK, "Đăng Ký Thành Công Với username: " + userToken.username  ,  register);
+    }
+
+    @GetMapping("/getRandomBey/{token}")
+    public ResponseEntity<ResponseOpject> randomBey(@PathVariable String token) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        BeyBlade beyBlade = service.getRandomBeyBySS();
+
+        Register res = service.getByUserName(userToken.username);
+        if (res == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Đăng Ký Trước ", null);
+        }
+        res.bey = beyBlade;
+
+        return Util.checkStatusRes(HttpStatus.OK, "Tìm được ", res);
+    }
+
+    @PostMapping("/setBattle/{token}")
+    public ResponseEntity<ResponseOpject> res(@PathVariable String token,
+                                              @RequestBody Register register) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+
+//        // Kiểm tra username đã tồn tại
+//        if (service.isUsernameTaken(userToken.username)) {
+//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã đăng ký trước đó", null);
+//        }
+        BeyBlade beyBlade = service.getRandomBeyBySS();
+
+        Register res = service.getByUserName(register.username);
+        if (res == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Đăng Ký Trước ", null);
+        }
+        res.bey = beyBlade;
+        return  Util.checkStatusRes(HttpStatus.OK, "Hãy Chiến Đấu chống lại " + register.username + " nào!"  ,  res);
+    }
+
+
+    @GetMapping("/checkRegister/{token}")
+    public ResponseEntity<ResponseOpject> regis(@PathVariable String token) {
+        User userToken = tokenService.getUserFromToken(token);
+        if (userToken == null){
+            return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
+        }
+        // Kiểm tra username đã tồn tại
+        if (service.isUsernameTaken(userToken.username)) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã đăng ký trước đó", true);
+        }
+        return  Util.checkStatusRes(HttpStatus.OK, "Đăng Ký Thành Công Với username: " + userToken.username  ,  false);
+    }
 
 
     @GetMapping("/getBey/{type}")
