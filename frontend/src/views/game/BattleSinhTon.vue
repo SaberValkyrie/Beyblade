@@ -25,7 +25,7 @@
   </div>
   <div class="wheel" :style="wheelStyle" :class="{ 'spinning': spinning }">
     <img v-if="BossBurst" :src="img" class="effect">
-      <img :src="Boss.images" class="wheel-image">
+      <img :src="Boss.bey.images" class="wheel-image">
   </div>
   
   
@@ -38,8 +38,9 @@
 
   <div class="concac" v-if="selectedBey.images">
    
-   <br>   <button  style="font-size: 2vw;"  v-if="hpMe > 0 && hpBoss > 0 && playerWin != selectedBey && !End && !start" @click="setStart(true)" :disabled="spinning">{{ round == 1 ? 'Bắt Đầu' : 'Đánh Hiệp ' + round }}</button>
-    <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Vui Lòng Chờ</button>
+   <br>   <button  style="font-size: 2vw;"
+     v-if="!End && !start" @click="setStart(true)" :disabled="spinning">{{ round == 1 ? 'Bắt Đầu' : 'Đánh Hiệp ' + round }}</button>
+    <!-- <button style="background-color:#a3a3a3" v-if="!End && (hpBoss <= 0 || hpMe <= 0) && (playerWin != Boss.bey && playerWin != selectedBey)" >Vui Lòng Chờ</button> -->
   </div>
   <!--   -->
   <div class="col-sm-4 cc" 
@@ -85,7 +86,7 @@
   </div>
         <div v-else class="card-body1" style="right:0;">
             <h5 class="d-flex align-items-center mb-3">Chỉ Số {{userB}}</h5>
-            <p>Tấn Công : {{ convert(Boss.dame) }}</p>
+            <p>Tấn Công : {{ convert(Boss.bey.power) }}</p>
             <div class="progress mb-3" style="height: 5px">
                 <div class="progress-bar bg-primary" role="progressbar" :style="{ width: (Boss.dame / 10000) * ((8 - Boss.bey.season) * 2) + '%' }" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
@@ -225,10 +226,6 @@
 
  
 
-
-  if(this.playerWin){
-    this.checkKQ();
-  }
 }, this.milis);
 
   },
@@ -261,12 +258,12 @@
   },
   
   setBey(){
-  this.gameService.getRandomBey(this.token).then(res => {
+  this.gameService.checkBey(this.token).then(res => {
     this.selectedBey = res.data.data.bey;
-    this.hpMe = this.selectedBey.hp;
-    this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
+    this.hpMe = res.data.data.hp;
   }).catch(error => {
   toast.warning(error.response.data.message)
+  window.location.href ='/game/sinhton'
   });
   },
 
@@ -279,12 +276,12 @@
     const loggedInUser = localStorage.getItem('loggedInUser');
     let loginObj;
     loginObj = JSON.parse(loggedInUser);
-    
+
+    this.userA = loginObj.username;
+    this.userB = bossObj.username;
   this.gameService.setBattle(this.token,bossObj).then(res => {
     this.Boss = res.data.data ;
-    // this.hpMe = 10000000;
-    // this.hpBoss = 10000000; 
-  
+    this.hpBoss = this.Boss.hp 
   }).catch(error => {
   toast.warning(error.response.data.message)
   });
@@ -292,6 +289,7 @@
 
   },
   
+
   setTypeBey(type){
   this.buoc = 2;
   this.selectedType = type;
@@ -320,8 +318,8 @@
   
   reset(){
   
-this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
-  this.hpMe = this.selectedBey.hp;
+this.hpBoss = this.Boss.hp;
+this.setBey()
   this.BossBurst = false;
   this.MeBurst = false;
   
@@ -388,12 +386,18 @@ this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
   document.documentElement.style.setProperty('--final-rotation', finalRotation);
   
   this.end = true;
-  
-  const boss = {
+
+  const boss1 = {
   boss:this.Boss,
   me:this.selectedBey
   };
-  this.gameService.spin(this.token,boss,0).then(res => { // mình gây lên boss
+
+  const boss = {
+  boss:this.Boss.bey,
+  me:this.selectedBey
+  };
+
+  this.gameService.spin(this.token,boss1,0).then(res => { // mình gây lên boss
 
   this.dameMe = res.data.data;
 
@@ -421,7 +425,7 @@ this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
   
   
   bossAttackMe(boss){
-  this.gameService.pst(boss).then(res => {
+  this.gameService.pst1(boss).then(res => {
   this.dameBoss = res.data.data;
   this.textBoss = res.data.message;
   
@@ -447,34 +451,29 @@ this.hpBoss = this.Boss.hp * (this.Boss.buff > 0 ? this.Boss.buff : 1);
    
     if(this.isWin){
 const option = {
-
   user1:this.userA,
   user2:this.userB,
-  topUser2:this.top,
+  win:this.playerWin,
 };
+// this.gameService.getKQ(option).then(res => {
 
-this.gameService.getKQ(option).then(res => {
-
-  this.gameService.setKQ(option).then(res => {
-
-
-
-
+  this.gameService.setSinhTon(option).then(res => {
     toast.success(res.data.message)
     localStorage.setItem('dichsinhton', JSON.stringify(null));
 }).catch(error => {
 toast.warning(error.response.data.message)
 });
 
-}).catch(error => {
-toast.warning(error.response.data.message)
-return
-});
-this.isWin = false;
+// }).catch(error => {
+// toast.warning(error.response.data.message)
+// return
+// });
+
+// this.isWin = false;
 setTimeout(() => {
 
   this.reset();
-          window.location.href = "/game/top";
+  window.location.href = '/game/sinhton';
         }, 4000);
     }
   },
@@ -492,16 +491,18 @@ setTimeout(() => {
       if (this.pointBoss >= 3 && this.playerWin != this.selectedBey) {
         this.End = true;
         this.playerWin = this.Boss;
+        this.checkKQ();
         localStorage.setItem('dichsinhton', JSON.stringify(null));
-        // toast('Bạn đã thất bại,vui lòng quay lại sau')
         setTimeout(() => {
-          window.location.href = "/game/top";
+          window.location.href = '/game/sinhton';
         }, 3000);
       }
     }
   
     this.checkEndGame();
   },
+
+
   
   truHPBoss(point) {
     
@@ -519,7 +520,7 @@ setTimeout(() => {
         this.End = true;
         this.playerWin = this.selectedBey;
         this.isWin = true;
-
+        this.checkKQ();
       }
     }
   

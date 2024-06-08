@@ -22,6 +22,10 @@ public class Auto {
     private BeyService beyService;
         @Scheduled(cron = "0 * * * * *") // Chạy vào mỗi phút
     public void checkVipExpiration() {
+            if (LocalTime.now().getHour() % 2 == 0 && LocalTime.now().getMinute() >= 59){// 2 4 6 8 10
+                beyService.topDangKy.clear();
+            }
+
             for (MyPrize myPrize : userService.findAllPrize()){
                 if (myPrize.soluong <= 0){
                     userService.deteleMyPrize(myPrize);
@@ -36,10 +40,12 @@ public class Auto {
             beyService.loadItemShop();
             beyService.loadBoss();
 
+
         if (LocalTime.now().getHour() == 0){
             for(User user : userService.getAllUser()){
                 beyService.traoqua(user);
             }
+            beyService.thongbao.clear();
           }
 
            if (LocalTime.now().getHour() == 1){

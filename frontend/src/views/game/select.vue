@@ -35,6 +35,22 @@
 </div>
 
 
+<div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/game/sinhton')">
+  <div class="item-wrapper">
+    <div class="card-box align-left">
+      <div class="img-wrapper mt-4 mb-3">
+        <img src="https://mir-s3-cdn-cf.behance.net/project_modules/disp_still/4ce96d103951981.5f5867b602e40.png"
+         data-slide-to="2" data-bs-slide-to="2" alt="">
+      </div>
+      <h5 class="card-title mbr-fonts-style display-7">
+        <strong>Chế Độ Sinh Tồn</strong>
+        <p class="card-text mbr-fonts-style display-7">Tham Gia Để Có Thêm Nhiều BeyPoint</p>
+
+      </h5>
+    </div>
+  </div>
+</div>
+
 <div class="item features-without-image col-12 col-md-6 col-lg-4" @click="go('/luyentap')">
   <div class="item-wrapper">
     <div class="card-box align-left">
@@ -97,6 +113,7 @@
     </div>
   </div>
 </div>
+
 </div>
 </template>
 

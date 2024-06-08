@@ -18,21 +18,35 @@ pst(boss) {
     const response =  axios.post(`${baseURL}/game/attack`,boss);
     return response;
 }
-
+pst1(boss) {
+    const response =  axios.post(`${baseURL}/game/attackSinhTon`,boss);
+    return response;
+}
 checkSpin(option) {
     const response =  axios.post(`${baseURL}/game/spin/check`,option);
     return response;
 }
+setSinhTon(option) {
+    const response =  axios.post(`${baseURL}/game/setSinhTon`,option);
+    return response;
+}
+
 setKQ(option) {
     const response =  axios.post(`${baseURL}/game/setKQ`,option);
     return response;
 }
+
 getKQ(option) {
     const response =  axios.post(`${baseURL}/game/getKQ`,option);
     return response;
 }
 updateBoss(option,token) {
     const response =  axios.post(`${baseURL}/game/updateBoss/${token}`,option);
+    return response;
+}
+
+async getThongBao(type) {
+    const response = await axios.get(`${baseURL}/game/thongbao/${type}`);
     return response;
 }
 
@@ -74,6 +88,7 @@ setBattle(token,item){
     const response =  axios.post(`${baseURL}/game/setBattle/${token}`,item);
     return response;
 }
+
 register(token,item) {
     const response =  axios.post(`${baseURL}/game/register/${token}`,item);
     return response;
@@ -85,8 +100,8 @@ async checkRegister(token) {
 }
 
 
-async getRandomBey(token){
-    const response = await axios.get(`${baseURL}/game/getRandomBey/${token}`,);
+async checkBey(token){
+    const response = axios.get(`${baseURL}/game/checkBey/${token}`);
     return response;
 }
 

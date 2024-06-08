@@ -201,9 +201,14 @@ const routes = [
     component: () => import('../views/game/BattleSinhTon.vue')
   },
   {
-    path: '/history/:username',
+    path: '/history',
     name: 'game.history',
     component: () => import('../views/game/HistoryTop.vue')
+  },
+  {
+    path: '/huongdan',
+    name: 'game.huongdan',
+    component: () => import('../views/game/HD.vue')
   },
   {
     path: '/game/top',
@@ -232,8 +237,10 @@ const routes = [
   }
 ]
 // index.js
-export const baseURL = 'http://localhost:8080';
-export const baseWeb = 'http://localhost';
+// export const baseURL = 'http://localhost:8080';
+// export const baseWeb = 'http://localhost';
+export const baseURL = 'http://beybladegame.online:8080';
+export const baseWeb = 'http://beybladegame.online';
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes

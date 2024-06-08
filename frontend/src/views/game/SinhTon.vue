@@ -6,14 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
+    <app-header></app-header>
     <body>
-    
+  
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  rel="stylesheet"  />
    
    
     <section id="team" class="team_area section-padding" v-if="buoc == 1 " >
+        
     <div class="container">
     <h2 class="title_spectial">Danh Sách Đăng Ký</h2>
+     <h2 @click="goto('/huongdan')">Hướng Dẫn Cách Chơi</h2>
+     <br>
     <div class="row text-center">
     
 
@@ -48,6 +52,7 @@
     <div class="single-team">
     <img :src="user.is ? user.avatar: baseUrl +'/files/' + user.avatar" :class="['img-fluid', user.isDie ? 'dead-img' : 'boss']" alt>
     <h3>{{truncatedProductName(user.username)}}</h3>
+    <h3>{{user.type.name}}</h3>
     </div>
     <ul class="social">
     <li><a href="#" class="fa fa-user"></a></li>
@@ -93,8 +98,30 @@
     
     </div>
     </div>
+
     </section>
     
+
+
+    <section id="bod" class="bod_area">
+    <div class="container">
+    <h2 class="title_spectial">Lịch Sử Đấu</h2>
+    
+    <div class="row text-center">
+    
+    <div v-for="type in ThongBao">
+    <div class="our">
+    <div class="single">
+    <h3> {{formatHour(type.createAt)}} ✌  {{type.message}} ✌</h3>
+    </div>
+    
+    </div>
+    </div>
+    
+    </div>
+    </div>
+
+    </section>
     <app-footer></app-footer>
     </body>
     </html>
@@ -112,9 +139,14 @@ import axios from 'axios';
 import { GameService } from '@/core/service/game';
 import Chart from 'chart.js/auto';
 import moment from 'moment';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'BOT',
+  computed: {
+    ...mapGetters(['loggedInUser']),
+   
+  },
 components: {
 'app-header': Header,
 'app-footer': Footer,
@@ -131,31 +163,55 @@ return {
 buoc:1,
 dangky:false,
 baseUrl : baseURL,
+ThongBao:[],
 };
 },
 created(){
 this.getType()
 this.check()
 
+
 setInterval(() => {
     this.getUsers()
+    this.getThongBao()
 }, 1000);
 },
 
 methods: {
     battle(kethu){
+        if(!this.dangky){
+            toast.warning('Vui Lòng Đăng Ký Để Tiếp Tục')
+            return
+        }
         this.kethu = kethu;
-        // this.gameService.setBattle(this.token,this.kethu).then(res => {
-     localStorage.setItem('dichsinhton', JSON.stringify(kethu));   
-        window.location.href='/game/sinhton/battle' 
-
-// }).catch(error => {
-//  toast.warning(error.response.data.message)
-// });
+        console.log(this.kethu)
+        if(this.kethu.username === this.loggedInUser.username){
+            toast.warning('Không thể đánh chính mình')
+            return
+        }
+        if(this.kethu.isDie){
+            toast.error('Không thể đánh bại người đã bị hạ')
+            return
+        }
+    
+this.gameService.checkBey(this.token).then(res => {
+    localStorage.setItem('dichsinhton', JSON.stringify(kethu));   
+     window.location.href = '/game/sinhton/battle';
+}).catch(error => {
+ toast.warning(error.response.data.message)
+});
       
 
 
     },
+
+    goto(s){
+
+        window.location.href = s;
+    },
+    formatHour(timestamp) {
+     return moment(timestamp).format('HH:mm'); // Định dạng ngày tháng giờ phút theo ý muốn
+ },
     truncatedProductName(name) {
     const max = 20;
           if (name.length > max) {
@@ -173,7 +229,13 @@ methods: {
         this.dangky = true;
     },
 
-
+    getThongBao(){
+this.gameService.getThongBao(1).then(res => {
+this.ThongBao = res.data.data 
+}).catch(error => {
+ toast.warning(error.response.data.message)
+});
+},
     getType(){
 this.gameService.getType().then(res => {
 this.types = res.data.data 
@@ -257,7 +319,6 @@ this.listResgiser = res.data.data
     font-size: 1.5rem;
     background-color: rgba(0, 0, 0, 0.7);
 }
-
 /* Other existing CSS */
 body {
     margin-top: 20px;
@@ -274,12 +335,7 @@ a {
     text-transform: capitalize;
     font-weight: 600;
 }
-.our-team {}
-@media only screen and (max-width: 768px) {
-    .our-team {
-        margin-bottom: 30px;
-    }
-}
+
 .single-team {
     margin-bottom: 10px;
 }
@@ -444,4 +500,49 @@ a {
 .our-team {
     background-color: black;
 }
+@keyframes glowing-border {
+  1% {
+    border-color: #ac2a02;
+    box-shadow: 0 0 5px #8f1100;
+  }
+  50% {
+    border-color: #3400c4;
+    box-shadow: 0 0 20px #242c02;
+  }
+  100% {
+    border-color: #6b6035;
+    box-shadow: 0 0 5px #31018b;
+  }
+}
+
+.boss {
+    padding: 0vw;
+    border: 3px solid;
+    animation: glowing-border 3s infinite;
+}
+
+.dead {
+    background-color: #333;
+    position: relative;
+}
+
+.dead-img {
+    opacity: 0.5;
+}
+
+.dead h3::after {
+    content: "Đã Chết";
+    color: red;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
 </style>

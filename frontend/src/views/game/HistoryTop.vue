@@ -7,23 +7,18 @@
                         <h5 class="mb-0">Lịch Sử Xếp Hạng</h5>
                     </div>
                     <div class="table-responsive">
-                        <table class="table mb-0">
+                        <table class="table mb-0" >
                             <thead class="small text-uppercase bg-body text-muted">
                                 <tr>
                                     <th>Thời Gian</th>
-                                    <th>Người Thách Đấu</th>
-                                    <th>Người Giữ Top</th>
-                                    <th>Trạng Thái</th>
+                                    <th>Chi Tiết</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="align-middle">
-                                    <td>13 Sep, 2021</td>
-                                    <td>Renee Sims</td>
-                                    <td>haidz</td>
-                                    <td>
-                                        <span class="badge fs-6 fw-normal bg-tint-success text-success">Completed</span>
-                                    </td>
+                                <tr class="align-middle" v-for="tb in ThongBao">
+                                    <td>{{ formatHour(tb.createAt) }}</td>
+                                    <td>{{ tb.message }}</td>
+                                
                                 </tr>
                             </tbody>
                         </table>
@@ -34,6 +29,127 @@
     </div>
     </template>
     
+
+    <script>
+    import Header from '@/views/support/Header.vue';
+    import Footer from '@/views/support/Footer.vue';
+    import { toast } from 'vue3-toastify';
+    import 'vue3-toastify/dist/index.css';
+    import { baseURL } from '@/router/index';
+    import axios from 'axios';
+    import { GameService } from '@/core/service/game';
+    import Chart from 'chart.js/auto';
+    import moment from 'moment';
+    import { mapGetters } from 'vuex';
+    
+    export default {
+      name: 'BOT',
+      computed: {
+        ...mapGetters(['loggedInUser']),
+       
+      },
+    components: {
+    'app-header': Header,
+    'app-footer': Footer,
+    },
+    data() {
+    
+    return {
+     token : localStorage.getItem('token'),
+     gameService: new GameService(),
+     types:[],
+     listResgiser:[],
+     selectedType:{},
+     kethu:{},
+    buoc:1,
+    dangky:false,
+    baseUrl : baseURL,
+    ThongBao:[],
+    };
+    },
+    created(){
+    this.getType()
+    this.check()
+    
+    
+    setInterval(() => {
+        this.getThongBao()
+    }, 1000);
+    },
+    
+    methods: {
+  
+          
+    
+    
+        
+        formatHour(timestamp) {
+         return moment(timestamp).format('HH:mm'); // Định dạng ngày tháng giờ phút theo ý muốn
+     },
+        truncatedProductName(name) {
+        const max = 20;
+              if (name.length > max) {
+                  return name.substring(0, max) + '...';
+              }
+              return name;
+          },
+        select(t){
+            this.selectedType = t
+            this.buoc = 1;
+            this.register()
+        },
+        setbuoc(s){
+            this.buoc = s;
+            this.dangky = true;
+        },
+    
+        getThongBao(){
+    this.gameService.getThongBao(2).then(res => {
+    this.ThongBao = res.data.data 
+    }).catch(error => {
+     toast.warning(error.response.data.message)
+    });
+    },
+        getType(){
+    this.gameService.getType().then(res => {
+    this.types = res.data.data 
+    }).catch(error => {
+     toast.warning(error.response.data.message)
+    });
+    },
+    
+    check(){
+    this.gameService.checkRegister(this.token).then(res => {
+    this.dangky = false; 
+    
+    }).catch(error => {
+        this.dangky = true; 
+    });
+    },
+    
+    
+    register(){
+    this.gameService.register(this.token,this.selectedType).then(res => {
+        toast.success(res.data.message)
+    
+    }).catch(error => {
+     toast.warning(error.response.data.message)
+    });
+    },
+    
+    
+    getUsers(){
+    this.gameService.listRes().then(res => {
+    this.listResgiser = res.data.data 
+    }).catch(error => {
+     toast.warning(error.response.data.message)
+    });
+    },
+    },
+    }
+    </script>
+
+
     <style>
     body {
         margin-top: 20px;

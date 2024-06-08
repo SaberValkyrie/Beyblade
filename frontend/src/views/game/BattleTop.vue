@@ -20,6 +20,7 @@
                      Dưới đây là top {{ players.length }} người đang có mặt trên bảng xếp hạng<br />
             
                     </p>
+                    <h2 style="color:blue" @click="goto('/history')">Xem Lịch Sử Đấu</h2>
                 </div>
             </div>
             <!-- /.col end-->
@@ -254,8 +255,6 @@ export default {
   methods: {
 
 //--------------------------------------------------
-
-
     thachdauNgay(kethu){
         this.info = false;
         this.thachdau = true;
@@ -265,6 +264,9 @@ export default {
     },
 
 
+    goto(s){
+        window.location.href = s;
+    },
 
 
 

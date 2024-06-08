@@ -39,6 +39,6 @@ public interface BeyRepository extends JpaRepository<BeyBlade,Long> {
     @Query("select i from Items i where i.user=:userToken and i.beyBlade.id=:beyBladeId and i.vinhvien = true")
     List<Items> finItem(User userToken, long beyBladeId);
 
-    @Query("select b from BeyBlade b where b.season=:ss")
-    List<BeyBlade> getRandomBeyBySS(byte ss);
+    @Query("select b from BeyBlade b where b.season=:ss and b.type.id=:typeBey")
+    List<BeyBlade> getRandomBeyBySS(byte ss,byte typeBey);
 }

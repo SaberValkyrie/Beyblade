@@ -307,18 +307,28 @@ public class GameController {
             return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Hãy chọn Beyblade Vĩnh Viễn",  null);
         }
         userService.deteleItem(items);
+        Account accountToken = userService.getAccountByUser(userToken.username);
 
         int coint = Util.nextInt(item.beyBlade.price / 5,item.beyBlade.price / 2);
+
+        accountToken.coint += coint;
+        userService.saveAccount(accountToken);
+
         return Util.checkStatusRes(HttpStatus.OK, "Bán Thành Công " + items.beyBlade.name + " và nhận được " + Util.numberToMoney(coint) + " Beypoint",  items);
     }
+
+
+
+
+
+
 
     @GetMapping("/register")
     public ResponseEntity<ResponseOpject> getAllregister() {
         List<Register> list = service.topDangKy;
         return  Util.checkStatusRes(HttpStatus.OK, "Đã tìm được " + list.size() + "" ,  list);
     }
-
-    @PostMapping("/register/{token}")
+    @PostMapping("/register/{token}") //đăng kí và random bey
     public ResponseEntity<ResponseOpject> res(@PathVariable String token,@RequestBody TypeBey typeBey) {
         User userToken = tokenService.getUserFromToken(token);
         if (userToken == null){
@@ -328,53 +338,107 @@ public class GameController {
         if (service.isUsernameTaken(userToken.username)) {
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã đăng ký trước đó", null);
         }
+
+        if (LocalTime.now().getHour() % 2 == 0){//0 2 4 6
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, " Chỉ được đăng kí vào các khung giờ lẻ , ví dụ 1h, 3h ,5h ,7h,..", null);
+        }
+
+        if (service.topDangKy.size() >= 12){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Số lượng người đăng ký đã đạt giới hạn", null);
+        }
+
+        BeyBlade beyBlade = service.getRandomBeyBySS(typeBey.id);
         Register register = new Register();
         register.avatar = userToken.avatar;
         register.username = userToken.username;
         register.type = typeBey;
         register.createTime = new Timestamp(System.currentTimeMillis());
         register.isDie = false;
+        register.bey = beyBlade;
+
+        register.hp = (int) ((typeBey.id == 1 ? 1_000_000
+                                                : (typeBey.id == 2 ? 2_000_000
+                                                : (typeBey.id == 3 ? 3_000_000 : 1_000_000))
+                                                ) + beyBlade.hp);
+
+        register.buff = 5;
         service.topDangKy.add(register);
 
         return  Util.checkStatusRes(HttpStatus.OK, "Đăng Ký Thành Công Với username: " + userToken.username  ,  register);
     }
 
-    @GetMapping("/getRandomBey/{token}")
+    @GetMapping("/checkBey/{token}")//check khi vào trang battle
     public ResponseEntity<ResponseOpject> randomBey(@PathVariable String token) {
         User userToken = tokenService.getUserFromToken(token);
         if (userToken == null){
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
         }
-        BeyBlade beyBlade = service.getRandomBeyBySS();
-
         Register res = service.getByUserName(userToken.username);
         if (res == null){
             return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Đăng Ký Trước ", null);
         }
-        res.bey = beyBlade;
-
+        int hour = LocalTime.now().getHour();
+        if (hour % 2 != 0) {
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Vui lòng chờ tới " + (LocalTime.now().getHour() + 1 ) + "h 0p để bắt đầu" , null);
+        }
         return Util.checkStatusRes(HttpStatus.OK, "Tìm được ", res);
     }
+    @PostMapping("/setSinhTon")//check khi mình win battle
+    public ResponseEntity<ResponseOpject> setSinhTon(@RequestBody BattleSinhTon battleSinhTon) {
+        Register res = service.getByUserName(battleSinhTon.user1);
+        if (res == null){
+            return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Đăng Ký Trước ", null);
+        }
 
-    @PostMapping("/setBattle/{token}")
+       Register dich = service.getByUserName(battleSinhTon.user2);
+        if (dich.isDie){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Đã có người hạ đối thủ này trước bạn", null);
+        }
+
+        dich.isDie = true;
+
+        int c = Util.nextInt(1000,3000);
+        Account account = userService.getAccountByUser(battleSinhTon.user1);
+        account.coint += c;
+        userService.saveAccount(account);
+
+        Register top1 = service.getTop1();
+        if (top1 != null && top1.username.equals(account.username)){
+            account.coint += 10000;
+            userService.saveAccount(account);
+
+            User u = userService.getUserByUsername(top1.username);
+
+            userService.addVoucherInBag(u,14);
+            userService.addVoucherInBag(u,15);
+
+            service.addThongBao(battleSinhTon.user1 + " Đã đánh bại " + battleSinhTon.user2 + " và đạt chức vô địch ", (byte) 1);
+
+            return Util.checkStatusRes(HttpStatus.OK, "Chúc mừng bạn đã vô địch,bạn nhận được " + Util.numberToMoney(c + 10000) + " Beypoint và phần quà bí mật", res);
+
+        }
+        service.addThongBao(battleSinhTon.user2 + " Đã bị hạ bởi " + battleSinhTon.user1, (byte) 1);
+
+        return Util.checkStatusRes(HttpStatus.OK, "Chúc mừng bạn đã đánh bại được  "+ battleSinhTon.user2 + " và nhận được " + Util.numberToMoney(c) + " Beypoint", res);
+    }
+    @GetMapping("/thongbao/{type}")//get boss
+    public ResponseEntity<ResponseOpject> thongbao(@PathVariable byte type) {
+        return Util.checkStatusRes(HttpStatus.OK, "", service.getThongBao(type));
+    }
+    @PostMapping("/setBattle/{token}")//get boss
     public ResponseEntity<ResponseOpject> res(@PathVariable String token,
                                               @RequestBody Register register) {
         User userToken = tokenService.getUserFromToken(token);
         if (userToken == null){
             return Util.checkStatusRes(HttpStatus.UNAUTHORIZED, "Lỗi token ", null);
         }
-
-//        // Kiểm tra username đã tồn tại
-//        if (service.isUsernameTaken(userToken.username)) {
-//            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Bạn đã đăng ký trước đó", null);
-//        }
-        BeyBlade beyBlade = service.getRandomBeyBySS();
-
         Register res = service.getByUserName(register.username);
         if (res == null){
             return Util.checkStatusRes(HttpStatus.NOT_FOUND, "Vui Lòng Đăng Ký Trước ", null);
         }
-        res.bey = beyBlade;
+        if (res.isDie){
+            return Util.checkStatusRes(HttpStatus.BAD_REQUEST, res.username + " đã bị hạ", null);
+        }
         return  Util.checkStatusRes(HttpStatus.OK, "Hãy Chiến Đấu chống lại " + register.username + " nào!"  ,  res);
     }
 
@@ -739,17 +803,14 @@ public class GameController {
         List<TOP> topDB = service.getTop(); // Dữ liệu từ cơ sở dữ liệu
         List<TOP> topBOT = service.topList;
 
+        String txt="Nhân Vật   "+ "⏫" + battle.user1 + "⏫" + "    Đã Đánh Bại     "+ "⏬" + battle.user2 + "⏬" +   "      và đạt TOP " + battle.topUser2 + "";
         // Kết hợp hai danh sách
         List<TOP> topAll = service.getTopAll(topBOT,topDB);
         int top = 0;
-
         for (TOP t : topAll){
             if (t.top == battle.topUser2){
                  topAnother = service.getTopByUserName(battle.user2);
-
                 top = topAnother != null ? topAnother.top : t.top;
-
-
               if (topAnother != null){
                   topAnother.top = topMe.top;
                   topAnother.lost += 1;
@@ -762,9 +823,11 @@ public class GameController {
         if (top != battle.topUser2) { // so sánh nếu top của another hiện tại khác top lúc thách đấu
             return Util.checkStatusRes(HttpStatus.BAD_REQUEST, "Đã có người đánh bại " + battle.user2 + " trước bạn", null);
         }
+
+
         topMe.top = top;
         topMe.win += 1;
-        service.saveTop(topMe);
+        service.saveTop(topMe,txt);
         return Util.checkStatusRes(HttpStatus.OK, "Chúc Mừng Bạn đã đánh bại được " + battle.user2 + " và đạt top " + top, battle);
     }
 
@@ -774,6 +837,16 @@ public class GameController {
     ) {
         return attack(battle.me,battle.boss.bey,battle.boss.dame, (byte) 0);
     }
+
+
+    @PostMapping("/attackSinhTon")
+    public ResponseEntity<ResponseOpject> attackSinhTon(
+            @RequestBody SinhTon battle
+    ) {
+        return attack(battle.me,battle.boss,battle.boss.power, (byte) 0);
+    }
+
+
     @PostMapping("/spin/{token}/{type}")
     public ResponseEntity<ResponseOpject> spinNow(
             @PathVariable String token,
